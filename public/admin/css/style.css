@@ -1,0 +1,2065 @@
+body{
+    font-family: 'Poppins', sans-serif;
+    margin: 0 auto;
+    background-color: #fafbfe;
+    color: var(--side-bar);
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0.9;
+    }
+    to {
+        opacity: 1;
+    }
+}
+:root{
+    --side-bar: rgb(14, 52, 77);
+    --light-gray: #f3f9fa;
+    --teal:  #2c93a6;
+    --nav-bar-background: white;
+    --new-nav: #192231;
+    --nav-bar: #3f5874;
+    --green: #1aa353;
+    --blue: rgb(77, 195, 254);
+    --light-gray-blue: #4b587c96;
+    --border: rgb(200, 200, 200);
+    --background: rgb(253, 253, 253);
+    --shadow: rgb(210, 210, 210);
+}
+.wrapper {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+.form-control:focus{
+    outline: 0;
+    box-shadow: none;
+}
+
+/* .............................. sidebar start  ..........................*/
+#sidebar{
+    background-color: var(--side-bar);
+    display: flex;
+    flex-direction: column;
+    width: 8%;
+    height: 100vh;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    padding: 0 15px 0 8px;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+#sidebar > .d-flex{
+    border-bottom: 1px solid rgba(204, 204, 204, 0.767);
+    margin-bottom: 25px;
+    /* padding: 20px auto !important; */
+}
+#sidebar li{
+    list-style: none;
+}
+#sidebar.expand{
+    width: 350px;
+}
+.toggle-btn{
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 15px 22px 15px;
+}
+.toggle-btn i{
+    color: #fff;
+    font-size: 1.3rem;
+}
+.sidebar-logo{
+    text-wrap: nowrap;
+    padding: 12px 0 9px;
+}
+.sidebar-logo a{
+    color: #fff;
+    text-decoration: none;
+}
+.sidebar-logo a h4{
+    font-size: 15pt;
+}
+.sidebar-nav{
+    padding: 0 25px 80px 8px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-right: -12px;
+}
+.sidebar-nav::-webkit-scrollbar{
+    width: 4px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb{
+    background-color: var(--blue);
+    border-radius: 5px;
+}
+.sidebar-nav::-webkit-scrollbar-track{
+    background-color: var(--light-gray-blue);
+    border-radius: 5px;
+}
+.sidebar-link-name{
+    color: #fff;
+    display: block;
+    padding: 6px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.sidebar-link-name svg{
+    margin: 3px 15px 5px 3px;
+}
+.sidebar-link-name span{
+    font-size: 13pt;
+}
+.sidebar-link-name:hover,
+.sidebar-link:hover{
+    color: var(--blue);
+}
+.sidebar-item{
+    position: relative;
+    margin-bottom: 22px;
+}
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) .sidebar-link-name span,
+#sidebar:not(.expand) .sidebar-link {
+  display: none;
+}
+.sidebar-link-name.active{
+    background-color: var(--light-gray-blue);
+    color: var(--blue);
+    border-radius: 5px;
+}
+.sidebar-link-name.active svg path{
+    color: var(--blue);
+}
+.sidebar-link{
+    display: block;
+    width: 90%;
+    color: white;
+    text-decoration: none;
+    padding: 8px 10px;
+    font-size: 11pt;
+    margin: 0 20px 2px;
+}
+.sidebar-dropdown.hide{
+    display: none;
+}
+.sidebar-link-name[data-bs-toggle="collapse"]::after{
+    border: solid;
+    border-width:0 1px 1px 0;
+    content: "";
+    display: block;
+    padding: 3px;
+    position: absolute;
+    right: 30px;
+    top: 16px;
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+    border-color: var(--blue);
+}
+.sidebar-link-name[data-bs-toggle="collapse"].collapsed::after{
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+}
+#sidebar:not(.expand) .sidebar-link-name[data-bs-toggle="collapse"]::after {
+    right: -14px;
+}
+/* .............................. sidebar end ..........................*/
+
+
+/* ...............................main start  ..........................*/
+.main {
+    width: 100%;
+    transition: all 0.35s ease-in-out;
+    min-height: 100vh;
+    overflow-x: auto;
+}
+.navbar{
+    color: white;
+    background-color: var(--new-nav);
+}
+.navbar-expand .navbar-nav{
+    margin-left: auto;
+}
+nav > button{
+    opacity: 0;
+    visibility: hidden;
+}
+nav h4{
+    font-size: 17pt;
+    margin-left: -14px;
+}
+.navbar-collapse{
+    margin-right: 20px;
+}
+/* .dropdown-menu form button{
+    margin-left: -10px;
+    color: rgb(250, 64, 64);
+}
+.dropdown-menu form button:hover{
+    color: rgb(250, 64, 64);
+} */
+.dropdown-item:hover{
+    color: var(--teal)!important;
+    background-color: transparent !important;
+}
+.dropdown-item:focus,
+.dropdown-menu form button:focus{
+    border: none;
+}
+@media screen and (max-width: 1160px){
+    #sidebar{
+        margin-top: 50px;
+        box-shadow: none;
+        width: 92px;
+        height: 100vh;
+        padding-top: 25px;
+        position: fixed;
+        display: none;
+    }
+    #sidebar.active {
+        display: block;
+        z-index: 100;
+    }
+    #sidebar.animated {
+        transition: all 0.25s ease-in-out;
+    }
+    #sidebar > .d-flex{
+        display: none !important;
+    }
+    .sidebar-nav{
+        padding: 10px 32px 90px 2px;
+        margin-top: -5px;
+    }
+    nav > button{
+        opacity: 1;
+        visibility: visible;
+    }
+    nav h4{
+        font-size: 14pt;
+        margin-top: 8px;
+        margin-left: 15px;
+    }
+    nav{
+        box-shadow: none;
+        padding-left: 20px;
+    }
+    #sidebar.expand{
+        width: 300px;
+        z-index: 100;
+    }
+    .navbar-nav li:first-child{
+        margin-right: 15px !important;
+    }
+}
+@media screen and (min-width: 1500px){
+    #sidebar{
+        width: 100px;
+    }
+}
+/* ...............................main end  ..........................*/
+
+
+/*.............................................  cinema table start ..............................*/
+#table-bg{
+    background-color: var(--background);
+    color: black;
+    border-radius: 5px;
+}
+/* .table, td, th{
+    border: 1px solid rgb(82, 82, 82);
+} */
+.table-responsive{
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-top: 20px;
+}
+.table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgb(255, 253, 253);
+}
+thead{
+    color: white;
+    background-color: rgb(35, 72, 96);
+}
+td{
+    padding: 11px !important;
+    font-weight: 500;
+    font-family:sans-serif;
+}
+#table-bg table a,
+#table-bg table button{
+    font-size: 11pt;
+    margin-top: -5px;
+}
+#hall-button button{
+    color:var(--teal);
+    align-items: center;
+    margin-top: -10px;
+    border: 1px solid var(--nav-bar);
+}
+#hall-button button:hover{
+    background-color: var(--light-gray-blue);
+    color: white;
+}
+/* #edit button,
+#delete button{
+    background-color: #3a92cc;
+    color: white;
+    align-items: center;
+    margin-top: -10px;
+} */
+.content > div > h3,
+.content > div > div > h3{
+    font-size: 18pt;
+}
+select{
+    cursor: pointer;
+}
+
+.search-cinema{
+    display: flex;
+    line-height: 28px;
+    align-items: center;
+    position: relative;
+    max-width: 280px;
+}
+.search-cinema .input{
+    width: 100%;
+    height: 40px;
+    line-height: 28px;
+    padding: 0 1rem;
+    padding-left: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    color: black;
+    transition: .3s ease;
+}
+.search-cinema .input::placeholder{
+    color: rgb(117, 117, 117);
+    font-size: 11pt;
+}
+.search-cinema .icon{
+    position: absolute;
+    left: 1rem;
+    fill: rgb(117, 117, 117);
+    width: 1rem;
+    height: 1rem;
+}
+#search-form-small{
+    display: none;
+}
+h5{
+    font-size: 14pt;
+}
+
+.cast img{
+    /* width: 100px; */
+    height: 200px;
+    display: block;
+    object-fit: contain;
+}
+#add-content h4,
+.modal h4,
+.card h4,
+#table-bg h4{
+    color: var(--nav-bar);
+}
+.modal h4{
+    font-size: 16pt;
+}
+.card h4{
+    font-size: 17pt;
+}
+@media screen and (max-width: 634px){
+    #search-form{
+        display: none;
+    }
+    #search-form-small{
+        display: block;
+        margin-top: 10px;
+    }
+    .content{
+        padding: 20px 5px !important;
+    }
+    h5{
+        font-size: 13pt;
+    }
+}
+/*............................................. cinema table end ..............................*/
+
+
+/* ...........................................add seat modal start  .............................*/
+.selected-for-removal{
+    color: red;
+}
+.screen-container{
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+    position: relative;
+}
+.screen{
+    background: linear-gradient(to bottom, #333, #4b4b4b);
+    color: white;
+    margin-bottom: 20px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 50px 50px 0 0;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+}
+#add-seat-form .seat-layout{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#add-seat-form .seat-plan-row{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+#add-seat-form .seat{
+    cursor: pointer;
+    text-align: center;
+    margin-right: 10px;
+}
+#add-seat-form .double-seat{
+    cursor: pointer;
+    text-align: center;
+}
+#add-seat-form .double-seat .svg-number{
+    margin-bottom: -5px !important;
+}
+#add-seat-form .seat .seat-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#add-seat-form .svg-number{
+    font-size: 9pt !important;
+}
+#add-seat-form .lucide-armchair,
+#add-seat-form .lucide-couple-armchair{
+    width: 42px;
+    height: 42px;
+    position: relative;
+    margin-top: -22px !important;
+}
+.ck-editor__editable_inline{
+    height: 150px;
+    overflow-y: auto;
+    resize: none;
+}
+/* ...........................................add seat modal end .............................*/
+
+
+/*............................................. profile section start ..............................*/
+.profile-card{
+    width: 400px;
+    background-color: var(--background);
+    color: black;
+    box-shadow: 1px 2px 3px 2px var(--shadow);
+    border-radius: 10px;
+}
+.profile-header{
+    display: flex;
+    align-items: center;
+    padding: 20px 0 0 20px;
+}
+.profile-header i{
+    color: var(--nav-bar);
+}
+.profile-header h3{
+    font-size: 15pt;
+}
+.profile-content{
+    padding: 0 20px 20px 20px;
+}
+.profile-item{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.profile-label{
+    font-weight: 600;
+    color: rgb(16, 16, 16);
+    width: 40%;
+}
+.profile-value{
+    color: var(--nav-bar);
+    margin-left: 0;
+    width: 100%;
+    text-align: left;
+    font-weight: 600;
+}
+@media screen and (max-width: 488px){
+    .profile-card{
+        width: 100%;
+    }
+    .profile-label{
+        margin-right: 10px;
+        font-size: 11pt;
+    }
+    .profile-header h3,
+    .profile-header i{
+        font-size: 14pt;
+    }
+}
+/*............................................. profile section end ..............................*/
+
+
+/*........................................ profile detail edit and change password start ...........................*/
+#profile-detail-content{
+    background-color: var(--background);
+    color: black;
+    padding: 5px 20px 10px 20px;
+    box-shadow: 1px 2px 3px 2px var(--shadow);
+    border-radius: 10px;
+    margin: 10px auto 40px;
+}
+#profile-detail{
+    list-style: none;
+    text-align: center;
+    display: table;
+    width: 100%;
+    margin: 0 auto;
+}
+#profile-detail li{
+    position: relative;
+    padding: 15px 0;
+    display: table-cell;
+}
+#profile-detail li a{
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    font-size: 14pt;
+    display: inline-block;
+    position: relative;
+    padding: 0 10px;
+}
+#profile-detail li a:hover::after,
+#profile-detail li a.text-active::after {
+    position: absolute;
+    content: "";
+    display: block;
+    background-color: var(--teal);
+    height: 2px;
+    margin-top: 2px;
+    width: 100%;
+    left: 0;
+}
+#profile-detail li a::after{
+    position: absolute;
+    content: "";
+    display: block;
+    background-color: var(--teal);
+    height: 2px;
+    width: 0;
+    left: 50%;
+    margin-top: 3px;
+    transition: 0.25s ease-out;
+}
+#edit-profile .card,
+#change-password .card{
+    width: 100%;
+    border: 0;
+}
+.card form input::placeholder,
+.modal form input::placeholder,
+.card input::placeholder,
+textarea::placeholder{
+    font-size: 11pt;
+    color: rgb(164, 164, 164);
+}
+#change-password{
+    display: none;
+}
+@media screen and (max-width: 576px){
+    #profile-detail-content{
+        padding: 5px 0 30px 0;
+    }
+    #profile-detail li a{
+        padding: 0 6px;
+        font-size: 12pt;
+    }
+    form label{
+        font-size: 11pt;
+    }
+}
+/*........................................ profile detail edit and change password start ...........................*/
+
+
+/*............................................... movie lists start ...............................................*/
+#add-movie .modal-content{
+    padding: 0 40px;
+}
+#add-movie-form,
+#add-schedule-form{
+    width: 100%;
+    background-color: rgb(255, 254, 254);
+    box-shadow: -2px 3px 10px 3px rgba(153, 147, 147, 0.1);
+    border: 0;
+}
+textarea{
+    resize: none;
+}
+#movie-table{
+    margin-top: 20px;
+}
+@media screen and (max-width: 768px){
+    #movie-poster{
+        display: block;
+        margin: 0 auto 25px;
+        width: 300px;
+    }
+}
+@media screen and (max-width: 630px){
+    #add-movie .modal-content{
+        padding: 0 10px;
+    }
+}
+/*................................................  movie lists end ............................................*/
+
+
+/*................................................... schedule start .......................................... */
+input[type=range]{
+    margin: 20px 0;
+    width: 100%;
+}
+input[type=range]::-webkit-slider-runnable-track{
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+input[type=range]::-webkit-slider-thumb{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    margin-top: -8px;
+}
+.range-wrap{
+    position: relative;
+}
+.range-value{
+    position: absolute;
+    top: -50%;
+}
+.range-value span{
+    width: 30px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: #03a9f4;
+    color: #fff;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 6px;
+}
+.range-value span:before{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 10px solid #03a9f4;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -1px;
+}
+#select-form{
+    margin-top: -8px;
+}
+/*................................................... schedule end .......................................... */
+
+
+/*................................................... order list start .......................................... */
+@media screen and (min-width: 768px) and (max-width: 992px){
+    #order-img > img{
+        display: block;
+        margin: 0 auto 25px;
+        width: 70% !important;
+        border-radius: 5px;
+    }
+}
+@media screen and (max-width: 768px){
+    #order-img > img{
+        margin-bottom: 25px;
+    }
+}
+@media screen and (max-width: 576px){
+    #order-img ~ .order-lg-first .col-lg-6{
+        margin-bottom: 15px;
+    }
+}
+/*................................................... order list end .......................................... */
+
+
+/*.................................................. conversation model start .......................................... */
+.message{
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 15px;
+    max-width: 70%;
+    position: relative;
+    display: inline-block;
+    clear: both;
+}
+.sent{
+    background-color: var(--light-gray-blue);
+    float: right;
+    text-align: left;
+    color: white;
+}
+.received{
+    background-color: var(--light-gray-blue);
+    float: left;
+    text-align: left;
+    color: white;
+}
+.message > p{
+    margin: 5px 0;
+    padding: 0 4px !important;
+    cursor: default;
+}
+.message-time{
+    font-size: 0.8em;
+    color: #666;
+    position: absolute;
+    margin-top: 10px !important;
+    right: 10px;
+}
+/*................................................... conversation model end .......................................... */
+
+
+/*................................................... website information start .......................................... */
+#web-info-text{
+    color: var(--nav-bar);
+}
+#web-info-text ~ label{
+    line-height: 25px;
+}
+@media screen and (max-width: 576px){
+    .website-img{
+        position: relative;
+    }
+    #website-logo{
+        position: absolute;
+        margin: 20px 0 0 20px;
+        width: 80px;
+    }
+}
+/*................................................... website information end .......................................... */
+
+
+/* ........................................... theater list start .............................*/
+.sold{
+    color: #b6bfbf;
+}
+.selected{
+    color: var(--green);
+}
+.available{
+    color: black;
+}
+#seat-plan-container{
+    display: block;
+    width: 100%;
+    margin: auto;
+    overflow-x: auto;
+    padding-top: 40px;
+    margin-bottom: 50px;
+}
+#seat-plan-container::-webkit-scrollbar{
+    height: 8px;
+}
+#seat-plan-container::-webkit-scrollbar-track{
+    background: var(--border);
+    border-radius: 5px;
+}
+#seat-plan-container::-webkit-scrollbar-thumb{
+    background: var(--gray);
+    border-radius: 5px;
+}
+.seat-content{
+    padding: 2px 0;
+}
+#seat-plan-container .lucide-armchair,
+#seat-plan-container .lucide-couple-armchair{
+    width: 50px;
+    height: 50px;
+    position: relative;
+    margin-top: -30px !important;
+}
+.svg-number{
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 9pt !important;
+}
+#seat-plan,
+#double-seat-paln{
+    width: fit-content;
+    display: grid;
+    margin: auto;
+}
+#seat-plan .seat,
+#double-seat-plan .seat{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    width: fit-content;
+}
+#seat-plan .seat.available:hover .box{
+    display: block !important;
+}
+.box{
+    display: none;
+    height: auto;
+    background-color: var(--nav-bar);
+    padding: 10px;
+    position: absolute;
+    margin-top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    text-align: center;
+    font-weight: 600;
+    border-radius: 6px;
+    font-size: 11pt;
+    top: 0;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.box.arrow-bottom:after{
+    content: " ";
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top: 13px solid var(--nav-bar);
+    border-right: 13px solid transparent;
+    border-left: 13px solid transparent;
+    border-bottom: none;
+}
+
+/* #seat-plan-container{
+    display: block;
+    width: 100%;
+    margin: -20px auto 20px;
+    overflow-x: auto;
+}
+#seat-plan-container .lucide-armchair{
+    width: 50px;
+    height: 50px;
+    position: relative;
+    margin-top: -30px !important;
+}
+.svg-number{
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 10pt !important;
+}
+#seat-plan{
+    width: 100%;
+    overflow-x: auto;
+    padding-top: 60px;
+}
+#seat-plan .seat-plan-row{
+    width: fit-content !important;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 30px;
+    padding: 0 30px;
+}
+.row-label{
+    margin-right: 24px;
+    font-size: 16pt;
+}
+#seat-plan .seat{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    width: fit-content;
+    margin-right: 5px;
+}
+#seat-plan .seat.available:hover .box{
+    display: block !important;
+}
+.box{
+    display: none;
+    width: fit-content;
+    height: auto;
+    background-color: var(--nav-bar);
+    color: var(--teal);
+    padding: 8px 10px;
+    position: absolute;
+    margin-top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    text-align: center;
+    font-weight: 600;
+    border-radius: 6px;
+    font-size: 10pt;
+    top: 0;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.box.arrow-bottom:after{
+    content: " ";
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top: 13px solid var(--nav-bar);
+    border-right: 13px solid transparent;
+    border-left: 13px solid transparent;
+    border-bottom: none;
+}
+#seat-plan::-webkit-scrollbar{
+    height: 9px;
+}
+#seat-plan::-webkit-scrollbar-track{
+    background: #e3e3e3c1;
+}
+#seat-plan::-webkit-scrollbar-thumb{
+    background: var(--nav-bar);
+} */
+/* ........................................... theater list end.............................*/
+
+
+/*................................... ..........auth section start .................................. */
+#auth-bg{
+    background-color: #0a0f1c;
+    color: white;
+    overflow: hidden;
+}
+.login-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+.login-form{
+    background-color: #192231;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    max-width: 450px;
+    width: 100%;
+    /* border: 1px solid rgb(233, 230, 230); */
+}
+.login-content h2 {
+    margin: 5px 0 25px;
+    text-transform: uppercase;
+    font-size: 18pt;
+    text-align: center;
+}
+.login-content p {
+    font-size: 9pt;
+}
+.login-content .input-div {
+    position: relative;
+    display: grid;
+    grid-template-columns: 7% 93%;
+    margin: 25px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #c6c6c6;
+}
+.input-i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.input-div > div {
+    position: relative;
+    height: 45px;
+}
+.input-div > div > input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0.5rem 0.7rem;
+    font-size: 1.1rem;
+    font-family: "poppins", sans-serif;
+    color: white;
+}
+.input-div > div > input::placeholder {
+    color: #9c9c9c;
+    font-size: 12pt;
+}
+.login-content input.btn {
+    display: block;
+    width: 100%;
+    height: 45px;
+    /* border-radius: 25px; */
+    outline: none;
+    border: none;
+    background-color: #ffd700;
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    margin-top: 40px;
+    cursor: pointer;
+    transition: 0.5s;
+    color: black;
+    font-size: 11pt;
+}
+.login-content .register-link {
+    font-size: 10pt;
+}
+.login-content input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    -webkit-text-fill-color: #fff !important;
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+.login-form form:nth-child(2) {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+@media screen and (max-width: 430px){
+    .login-content h2{
+        font-size: 16pt;
+    }
+    .input-div > div > input::placeholder,
+    .input-i{
+        font-size: 11pt;
+    }
+}
+
+#booking-summary .summary-content img{
+    display: block;
+    margin: auto;
+    width: 280px;
+    height: auto;
+    object-fit: cover;
+}
+@media screen and (max-width: 576px){
+    #booking-summary .summary-content img{
+        width: 220px;
+        height: 130px;
+    }
+}
+/*................................... ..........auth section end .................................. */
+
+
+#movie-list img{
+    width: 100px !important;
+    height: 150px;
+    object-fit: cover;
+}
+
+/*................................... ..........movie seller start .................................. */
+#movie-seller img{
+    /* width: 220px !important; */
+    /* height: 370px; */
+    object-fit: cover;
+    border-radius: 8px;
+}
+#movie-seller h4{
+    color: var(--side-bar);
+}
+#movie-seller label{
+    font-size: 11pt;
+    color: rgb(122, 122, 122);
+}
+#seller-table{
+    margin-top: 50px;
+}
+#seller-table img{
+    display: block;
+    margin: auto;
+    width: 150px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+@media screen and (max-width: 576px){
+    #movie-seller .col-lg-3 img{
+        margin: auto;
+        width: 200px !important;
+        height: 300px;
+    }
+    #movie-seller .col-lg-9{
+        margin-top: 20px;
+        padding-left: 20px !important;
+    }
+    #movie-list img{
+        width: 60px !important;
+        height: 90px;
+        object-fit: cover;
+    }
+}
+@media screen and (min-width: 1300px){
+    #movie-seller .col-lg-3 img {
+        width: 230px !important;
+        margin: auto;
+        height: 340px;
+    }
+}
+
+#select-date > ul{
+    padding: 28px 20px 15px;
+    border-radius: 10px;
+    border: 1px solid rgb(220, 220, 220);
+    background-color: var(--nav-bar-background);
+    font-size: 11pt;
+}
+.select-time ul > p{
+    display: block;
+    width: 100%;
+    color: rgb(104, 102, 102);
+}
+#select-date > ul > li,
+.select-time > ul > li{
+    list-style-type: none;
+    height: auto;
+}
+#select-date > ul button{
+    width: 100%;
+    height: 50px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.select-time ul li > button{
+    width: 100%;
+    height: max-content;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    font-size: 11pt;
+    padding: 10px;
+}
+.select-time ul li > button > div:last-child{
+    margin-top: 10px;
+}
+#caret-right{
+    color: var(--green);
+    font-size: 14pt;
+}
+#caret-right ~ h5{
+    font-size: 13pt;
+    margin-top: 5px;
+}
+#select-date button:hover,
+.select-time ul li > button:hover{
+    color: var(--nav-bar);
+}
+.select-time ul li > button:hover{
+    color: var(--nav-bar);
+}
+.js-select-active{
+    background-color: var(--nav-bar) !important;
+    color: white !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+}
+#select-cinema-time{
+    margin: 70px auto;
+}
+#cinema-time-content{
+    /* border: 1px solid rgb(174, 174, 174); */
+    padding: 0 20px;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid rgb(220, 220, 220);
+    background-color: var(--nav-bar-background);
+}
+#cinema-time-content h6{
+    font-size: 13pt;
+}
+.cinema-down{
+    display: none;
+}
+.cinema-down:hover,
+.cinema-up:hover{
+    color: var(--teal);
+    cursor: pointer;
+}
+#cinema-name label{
+    background-color: var(--secondary) !important;
+    margin-bottom: 10px;
+    padding: 0 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 11pt;
+}
+
+#table-bg-show{
+    color: black;
+    padding: 10px 20px 20px 20px;
+}
+#table-bg-show #ticket-m-poster img{
+    width: 190px !important;
+    height: 280px;
+    object-fit: cover;
+}
+#table-bg-show #ticket-m-poster h4{
+    font-size: 14pt;
+    margin-top: 10px;
+    color: var(--side-bar);
+}
+#table-bg-show #ticket-m-poster ul,
+.select-time .modal-content ul{
+    display: block;
+    width: fit-content;
+    margin: auto;
+    padding-left: 0;
+}
+.select-time .modal-content .row{
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px 0 20px;
+    color: black;
+}
+.select-time .modal-content h5{
+    margin-top: 25px;
+    font-weight: bold;
+    color: var(--side-bar) !important;
+    font-size: 13pt;
+}
+.select-time .modal-content ul{
+    font-size: 11pt;
+}
+.select-time .modal-content > div > button{
+    width: fit-content;
+    padding: 8px 15px !important;
+    background-color: #3f5874;
+    color: white;
+}
+.select-time .modal-content .row .col-lg-7 label{
+    color: rgb(143, 143, 143);
+    font-size: 11pt;
+}
+.select-time .modal-content .row .col-lg-7 button{
+    background-color: rgb(64, 76, 94);
+    color: white;
+    /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568); */
+    padding: 10px 0 !important;
+    font-size: 13pt !important;
+    margin-top: 30px !important;
+}
+/* .select-time .modal-content .row .col-lg-7 button:hover{
+    color: var(--teal);
+} */
+@media screen and (min-width: 768px) and (max-width: 992px){
+    .select-time .modal-lg{
+        max-width: 700px;
+    }
+}
+@media screen and (max-width: 768px){
+    .select-time img{
+        display: block;
+        width: 50% !important;
+        margin: auto;
+    }
+    #cinema-name > h6{
+        margin-right: 5px !important;
+    }
+    #select-cinema-time #search-form-small{
+        display: none;
+    }
+}
+@media screen and (max-width: 620px){
+    #cinema-name{
+        width: 85%;
+    }
+}
+@media screen and (max-width: 575px){
+    #order-location1{
+        margin: 60px auto;
+    }
+    #o-location-n > div:last-child > h6{
+        font-size: 11pt !important;
+    }
+    #select-date{
+        padding-bottom: 15px;
+    }
+    #caret-right{
+        margin-right: 10px !important;
+    }
+    #select-date > ul{
+        background-color: transparent;
+        border: none;
+        display: grid;
+        row-gap: 0;
+        grid-template-columns: repeat(30, 1fr);
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 0;
+        border-radius: 0;
+        margin: 8px -6px !important;
+    }
+    #select-date > ul::-webkit-scrollbar{
+        display: none;
+    }
+    #select-date > ul button{
+        width: fit-content;
+        height: auto;
+        padding: 10px 20px;
+        margin-right: -6px;
+    }
+    #select-date > ul button:hover{
+        border: 1px solid var(--secondary);
+        background-color: #3f5874;
+        color: white;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568);
+    }
+    #select-date > ul button > span{
+        display: block;
+        font-size: 11pt;
+    }
+    #select-cinema-time{
+        margin: 20px auto 70px;
+    }
+    #select-cinema-time > div:first-child{
+        display: block !important;
+        width: 100%;
+    }
+    #select-cinema-time > div:first-child form{
+        margin: 8px auto 20px;
+    }
+    #cinema-time-content{
+        padding: 5px 15px 10px;
+    }
+    /* .select-time > ul{
+        display: grid !important;
+        grid-template-columns: repeat(2,1fr);
+    } */
+    .select-time ul > p{
+        grid-column: 1 / -1;
+        width: 100% !important;
+        display: block !important;
+    }
+}
+@media screen and (max-width: 487px){
+    #cinema-name > h6{
+        font-size: 12pt;
+    }
+    #cinema-name label{
+        padding: 0 10px;
+        font-size: 10pt;
+    }
+}
+@media screen and (max-width: 348px){
+    #o-location-n > div:last-child > h6{
+        font-size: 10pt !important;
+    }
+    #order-location1 label,
+    #order-location2 label,
+    #order-location3 label{
+        width: 25px;
+        height: 25px;
+        font-size: 10pt;
+    }
+    #caret-right,
+    #caret-right ~ h5{
+        font-size: 13pt;
+    }
+    .select-time > ul{
+        display: block !important;
+    }
+}
+/*................................... ..........movie seller start .................................. */
+
+
+/* ...........................................seat selected start ........................................ */
+#selected-movie-label{
+    /* background-color: rgb(64, 76, 94); */
+    padding: 10px;
+}
+#selected-movie-label button{
+    color: white;
+    background-color: var(--teal);
+    padding: 8px 20px;
+    font-size: 11pt;
+    border: transparent;
+}
+#selected-movie-label h5{
+    font-weight: bold;
+    font-size: 14pt;
+    margin-top: 10px;
+}
+#selected-movie-label ul{
+    font-size: 10pt;
+    margin-top: 15px;
+    padding-left: 0;
+    list-style: none;
+}
+@media screen and (max-width: 576px){
+    #selected-movie-label button{
+        display: none;
+    }
+    #selected-movie-label .col-sm-12{
+        display: flex;
+        justify-content: left;
+    }
+    /* #selected-movie-label .col-md-6,
+    #selected-movie-label .col-md-6 ul{
+        display: block !important;
+       text-align: left !important;
+    } */
+}
+#seat-design h5{
+    font-size: 12pt;
+    margin-bottom: -1px;
+    margin-top: 10px;
+}
+#seat-design label{
+    font-size: 10pt;
+}
+#seatPlan{
+    margin-top: 15px;
+}
+#check-out{
+    background-color:rgb(64, 76, 94);
+    margin: 40px auto;
+    padding: 30px 25px;
+    border-radius: 8px;
+    color: white;
+}
+#check-out h5{
+    font-size: 13pt;
+    font-weight: bold;
+}
+#seat-number h6{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    text-align: center;
+    font-weight: bold;
+    width: 60px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 12pt;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568);
+    border: 1px solid rgb(105, 105, 105);
+    cursor: pointer;
+    margin-right: 0;
+}
+#seat-number .parents{
+    padding: 0;
+}
+#check-out button{
+    color: white;
+    background-color: #2097ac;
+    padding: 8px !important;
+    width: 100%;
+    margin-top: 15px;
+    border: none;
+}
+
+.border-none{
+    border: none !important;
+}
+#payment > .mx-4{
+    margin: -10px 20px 40px !important;
+}
+#booking-summary{
+    display: block;
+    position: relative;
+    box-shadow: none !important;
+    background-color: var(--nav-bar-background);
+    border: 1px solid var(--border);
+}
+#booking-summary > div{
+    padding: 10px 8px !important;
+}
+#booking-summary > h5{
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dotted black;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-size: 10pt;
+}
+#booking-summary label{
+    font-size: 10pt;
+    color: rgb(117, 117, 117);
+}
+#booking-summary h6{
+    font-size: 11pt;
+}
+#booking-summary .item-right .up-border,
+#booking-summary .item-right .down-border{
+    width: 45px;
+    height: 40px;
+    background-color: #fafbfe;
+    border-radius: 50%;
+    position: absolute;
+}
+#booking-summary .item-right .up-border{
+    top: -22px;
+    right: 50%;
+    transform: translateX(50%);
+    border-bottom: 1px solid var(--border);
+}
+#booking-summary .item-right .down-border{
+    bottom: -22px;
+    right: 50%;
+    transform: translateX(50%);
+    border-top: 1px solid var(--border);
+}
+#booking-summary > div > div:nth-child(3) > .d-flex:nth-child(3) > .me-5:last-child{
+    margin-right: 0 !important;
+}
+#booking-total,
+#payment-option{
+    background-color: rgb(252, 252, 252);
+    padding: 0 0 20px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+#booking-total h5,
+#payment-option h5,
+#user-contact-info h5{
+    font-weight: bold;
+    display: block;
+    margin-bottom: 25px;
+    text-align: center;
+    background-color: rgb(64, 76, 94);
+    padding: 12px 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 12pt;
+    color: rgb(222, 222, 222);
+}
+#total-price{
+    color: var(--side-bar);
+    font-weight: bold;
+    font-size: 13pt;
+}
+#payment hr{
+    margin: 10px;
+    color: gray;
+}
+#payment #promo-code #add_promotion,
+#seller_order,
+#seller_booking{
+    background-color: var(--teal) !important;
+    font-size: 11pt;
+    border: 1px solid transparent;
+}
+#payment .col-lg-7 input:focus{
+    box-shadow: none;
+    border: 1px solid var(--teal);
+}
+#payment .col-lg-7 input::placeholder{
+    font-size: 11pt;
+}
+#payment #pay_amount{
+    margin-top: 20px;
+}
+#payment #pay_amount label{
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    background-color: rgb(64, 76, 94);
+    padding: 12px 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 11pt !important;
+    color: rgb(222, 222, 222);
+    width: fit-content;
+}
+#payment #pay_amount input{
+    border: 1px solid var(--border);
+}
+
+#promo-code{
+    padding: 12px 20px;
+    background-color: rgb(252, 252, 252);
+    border-radius: 5px;
+    border: 1px solid var(--border);
+}
+#promo-code h5{
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 5px;
+}
+#promo-code i{
+    font-size: 12pt;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+#promo-form{
+    display: none;
+    padding-bottom: 10px;
+}
+
+.custom-radio{
+    cursor: pointer;
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+.custom-radio.active{
+    background-color: #75757520;
+}
+.custom-radio.inactive{
+    background-color: transparent;
+}
+.custom-radio label{
+    cursor: pointer;
+    width: 100%;
+}
+.payment-content{
+    padding: 10px 30px;
+    font-size: 11pt;
+}
+
+#pay_amount > div label{
+    font-weight: bold;
+    display: block;
+    color: var(--side-bar);
+    font-size: 15pt !important;
+}
+#pay_amount > div input{
+    background-color: rgb(250, 250, 250);
+}
+@media screen and (max-width: 992px){
+    #check-out{
+        display: block;
+        width: 95%;
+    }
+}
+@media screen and (max-width: 576px){
+    #seat-number{
+        display: flex !important;
+        width: 100%;
+        align-items: center;
+    }
+    #seat-number > div{
+        display: block;
+        width: fit-content;
+    }
+    #check-out .col-lg-6{
+        margin-bottom: 30px;
+    }
+    #check-out .col-lg-4{
+        display: flex;
+        align-items: center;
+    }
+    #check-out .col-lg-4 > h5{
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+}
+/* ...........................................seat selected end ........................................ */
+
+.border-none{
+    border: none !important;
+}
+
+/* ........................................... report start ........................................ */
+.report-table{
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 60px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+}
+.report-table table{
+    width: 100%;
+    border-collapse: collapse !important;
+    border: none !important;
+}
+.report-table table tbody tr:nth-child(even),
+table tbody tr:nth-child(even){
+    background-color: rgba(192, 192, 192, 0.16);
+}
+.report-table table a{
+  padding: 4px 6px !important;
+  font-size: 9pt !important;
+}
+.report-table table thead{
+    color: var(--light-gray);
+    background-color: rgb(64, 76, 94);
+}
+.report-table table th{
+    padding: 10px 20px !important;
+}
+.report-table table td{
+    padding: 4px 20px !important;
+    font-weight: 500;
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+.report-table td, .report-table th{
+    border: none !important;
+}
+
+
+.today-select a button{
+    width: 120px;
+    background-color: rgb(251, 251, 251);
+    border: 1px solid rgb(180, 179, 179);
+    border-radius: 5px;
+    font-size: 10pt;
+    padding: 5px;
+}
+.today-select a button:focus{
+    background-color: rgb(235, 235, 235);
+    border: 1px solid rgb(180, 180, 180);
+}
+
+
+.report-graph .wrapper{
+    width: 100%;
+    margin: auto;
+}
+.report-graph h5{
+    color: var(--nav-bar);
+}
+.pie-wrapper{ height: 230px; }
+.chart-wrapper{ height: 260px; }
+.line-wrapper{ height: 200px; }
+.movie-chart-wrapper{ height: 300px; }
+
+.wk-chart-wrapper,
+.wk-line-wrapper{
+    height: 330px;
+}
+@media screen and (max-width: 576px){
+    .pie-wrapper,
+    .wk-line-wrapper{
+        height: 200px;
+    }
+}
+
+.summary-cards .row > div > div{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.summary-cards .row > div > div label{
+    color: rgb(65, 65, 65);
+}
+.summary-cards .row > div > div p{
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: bolder;
+}
+.rep-success{ background-color: #2e7d32; }
+.rep-pending{ background-color: #c89f0a; }
+.rep-booking{ background-color: #1565c0; }
+.rep-cancel{ background-color: #6c757d; }
+.rep-reject{ background-color: #c62828; }
+
+.export-btn button{
+    background-color: #197bac;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+.export-btn button i{
+    font-size: 10pt;
+}
+/* ........................................... report end ........................................ */
+
+
+/*..................................... concession start ........................................ */
+#product-list img{
+    width: 100px !important;
+    height: 100px;
+    object-fit: cover;
+}
+@media screen and (max-width: 576px){
+    #product-list img{
+        width: 50px !important;
+        height: 50px;
+    }
+}
+
+body.product-page{
+    overflow: hidden;
+}
+body.product-page .wrapper{
+    height: 100%;
+}
+
+.snack-list{
+    height: 80vh;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 50px;
+}
+.snack-content img{
+    position: relative;
+    height: 120px;
+    object-fit: cover;
+    margin-top: 5px;
+}
+.snack-content button{
+    background-color: var(--background);
+    box-shadow: 1px 2px 5px 1px var(--shadow);
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 10px;
+}
+.snack-content button:active{
+    border: 1px solid var(--border);
+}
+.snack-content h6{
+    line-height: 1.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+.snack-content p{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #3b3b3b;
+    color: white;
+    font-size: 9pt;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+#cart-detail-content > h5{
+    background-color: var(--side-bar);
+    color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 10px;
+    font-size: 12pt;
+    margin-bottom: 0;
+}
+
+#snack-cart #no_cart_data{
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    padding-top: 70px;
+}
+#snack-cart #cart{
+    padding-left: 4px;
+    padding-top: 10px;
+    height: 60vh;
+    overflow-y: auto;
+    padding-right: 12px;
+}
+#snack-cart #cart::-webkit-scrollbar{
+    width: 5px;
+}
+#snack-cart #cart::-webkit-scrollbar-thumb{
+    background-color: var(--teal);
+    border-radius: 5px;
+}
+#snack-cart #cart::-webkit-scrollbar-track{
+    background-color: var(--border);
+    border-radius: 5px;
+}
+.cart-content h5{
+    width: 130px;
+    font-size: 12pt;
+    line-height: 1.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+.cart-content label{
+    font-size: 11pt;
+    color: rgb(122, 122, 122);
+}
+.cart-content > div:nth-child(3){
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+}
+.cart-content .btn-remove{
+    padding: 1px 5px;
+    font-size: 11pt;
+}
+@media screen and (min-height: 994px){
+    .snack-list{
+        height: 88vh;
+    }
+    #snack-cart #cart{
+        height: 75vh;
+    }
+}
+@media screen and (min-width: 1600px){
+    .snack-content img{
+        height: 160px;
+    }
+    .cart-content h5{
+        width: 200px;
+    }
+}
+@media screen and (min-width: 1500px){
+    .snack-list > .row{
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .snack-list > .row > div{
+        width: 100%;
+        height: fit-content;
+    }
+}
+@media screen and (max-width: 767px){
+    .snack-content img{
+        width: 140px !important;
+        height: 130px !important;
+    }
+    .snack-list,
+    #snack-cart #cart{
+        height: 100%;
+    }
+    body.product-page{
+        overflow: auto;
+    }
+    body.product-page .wrapper{
+        height: 100vh;
+    }
+    #snack-cart{
+        margin-bottom: 60px ;
+    }
+    #snack-cart #no_cart_data{
+        position: relative;
+        height: 100px;
+    }
+    .product-seller-container{
+        margin: auto;
+    }
+}
+@media screen and (max-width: 575px){
+    .snack-list > .row{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .snack-content img{
+        width: 100px !important;
+        height: 90px !important;
+    }
+}
+
+.payment-cart .d-flex > div:first-child{
+    margin-top: -4px;
+}
+.payment-cart i{
+    font-size: 3pt;
+    margin-right: 6px;
+}
+.payment-cart .d-flex > label{
+    width: 300px;
+    margin-right: 15px;
+}
+@media screen and (min-width: 767px) and (max-width: 992px){
+    .payment-cart .d-flex > label{
+        width: 220px;
+    }
+}
+@media screen and (max-width: 576px){
+    .payment-cart .d-flex > label{
+        width: 180px;
+    }
+}
+@media screen and (max-width: 430px){
+    .payment-cart .d-flex > label{
+        width: 120px;
+    }
+}
+/*..................................... concession end ........................................ */
+
+
+/*..................................... multi dropdown start ........................................ */
+.multi-select{
+    width: 220px;
+    position: relative;
+}
+.multi-select .select-box{
+    border: 1px solid #e0e0e0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+.multi-select .arrow{
+    font-size: 13px;
+}
+.multi-dropdown{
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    margin-top: 6px;
+    padding: 8px;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+.multi-dropdown .text-content{
+    border-top:  1px solid var(--border);
+    margin-top: 5px;
+    padding-top: 5px;
+}
+.multi-dropdown label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.multi-dropdown label:hover{
+    background: #f3f4f6;
+}
+.multi-select .selected-text,
+.multi-dropdown .label-text{
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.multi-dropdown.show{
+  display: block;
+}
+/*..................................... multi dropdown end ........................................ */
