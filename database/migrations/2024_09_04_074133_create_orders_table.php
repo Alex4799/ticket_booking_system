@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
 
-    protected $connection = 'mysql_order';
+    // protected $connection = 'mysql_order';
     /**
      * Run the migrations.
      */
