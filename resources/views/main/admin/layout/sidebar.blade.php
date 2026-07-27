@@ -40,10 +40,7 @@
             </a>
             <ul id="movies" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li>
-                    <a href="#" class="sidebar-link ">Add Movie</a>
-                </li>
-                <li>
-                    <a href="#" class="sidebar-link ">Movie Lists</a>
+                    <a href="{{route('admin#movieList')}}" class="sidebar-link ">Movie</a>
                 </li>
             </ul>
         </li>

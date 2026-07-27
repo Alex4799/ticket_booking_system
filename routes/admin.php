@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CinemaController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HallController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\SeatPlanController;
 use Illuminate\Support\Facades\Route;
@@ -68,5 +69,34 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::delete('/',[GenreController::class,'delete'])->name('admin#genreDelete')->middleware('verify_admin');
     });
 
+    Route::prefix('movie')->group(function () {
+        Route::get('/',[MovieController::class,'list'])->name('admin#movieList');
+        // Route::get('/',[MovieController::class,'createPage'])->name('admin#movieCreatePage');
+        Route::post('/',[MovieController::class,'create'])->name('admin#movieCreate');
+        Route::get('view/{id}',[MovieController::class,'view'])->name('admin#movieView');
+        Route::patch('/',[MovieController::class,'update'])->name('admin#movieUpdate');
+        Route::delete('/',[MovieController::class,'delete'])->name('admin#movieDelete');
+
+        Route::prefix('extra/edit')->group(function () {
+            Route::get('/{id}',[MovieController::class,'extraEdit'])->name('admin#movieExtraEdit');
+
+            Route::prefix('genre')->group(function () {
+                Route::post('add',[MovieController::class,'genreAdd'])->name('admin#movieGenreAdd');
+                Route::get('delete/{id}/{index}',[MovieController::class,'genreDelete'])->name('admin#movieGenreDelete');
+            });
+
+            Route::prefix('cast')->group(function () {
+                Route::post('add',[MovieController::class,'castAdd'])->name('admin#movieCastAdd');
+                Route::patch('update',[MovieController::class,'castUpdate'])->name('admin#movieCastUpdate');
+                Route::get('delete/{id}/{index}',[MovieController::class,'castDelete'])->name('admin#movieCastdelete');
+            });
+
+            Route::prefix('cover')->group(function () {
+                Route::post('add',[MovieController::class,'coverAdd'])->name('admin#movieCoverAdd');
+                Route::patch('update',[MovieController::class,'coverUpdate'])->name('admin#movieCoverupdate');
+                Route::get('delete/{id}/{index}',[MovieController::class,'coverDelete'])->name('admin#movieCoverDelete');
+            });
+        });
+    });
 
 });

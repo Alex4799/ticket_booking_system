@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('main_genre');
-            $table->json('genre');
-            $table->json('cast');
+            $table->json('genre')->nullable();
+            $table->json('cast')->nullable();
             $table->string('director');
-            $table->json('cover');
+            $table->json('cover')->nulable();
             $table->string('poster')->nullable();
             $table->string('release_date');
             $table->string('run_time');
