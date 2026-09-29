@@ -6,6 +6,7 @@ use App\Models\Cinema;
 use App\Models\Hall;
 use App\Models\Seat;
 use App\Models\SeatPlan;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,9 @@ class HallController extends Controller
                             $query->where('name','like','%'.request('search_key').'%');
                         })->leftJoin('cinemas','halls.cinema_id','cinemas.id')
                         ->paginate(10);
-        $cinema=Cinema::where('active',1)->get();
+        $cinema=Cache::rememberForever('cinema_active', function () {
+            return Cinema::where('active',1)->get();
+        });
 
         return view('main.admin.hall.list',compact('hall','cinema'));
     }
@@ -28,17 +31,22 @@ class HallController extends Controller
         $this->validation($request);
         $data=$this->changeFormat($request);
         $hall=Hall::create($data);
+        Cache::forget('hall_active');
         return redirect()->route('admin#hallView',$hall->id);
     }
 
     public function view($id){
         $hall=$this->getHall($id);
-        $cinema=Cinema::where('active',1)->get();
+        $cinema=Cache::rememberForever('cinema_active', function () {
+            return Cinema::where('active',1)->get();
+        });;
         $seatPlan=SeatPlan::where('active',1)->get();
-        $seat=Seat::select('seats.*','seat_plans.name as seat_plan_name','seat_plans.seat_color as seat_color')
+        $seat=Cache::rememberForever("hall{$id}_seat", function () use($id) {
+            return Seat::select('seats.*','seat_plans.name as seat_plan_name','seat_plans.seat_color as seat_color')
                     ->leftJoin('seat_plans','seats.seat_plan_id','seat_plans.id')
                     ->where('hall_id',$id)
                     ->get();
+        });
         $summary = $seat->groupBy('seat_plan_name')->map(function ($group) {
                         $first = $group->first();
                         return [
@@ -64,6 +72,63 @@ class HallController extends Controller
         return redirect()->route('admin#hallList');
     }
 
+    public function duplicate(Request $request){
+        DB::beginTransaction();
+        try {
+            $originalHall=$this->getHall($request->id);
+            $originalSeat=Seat::where('hall_id',$request->id)->get();
+            $data=$this->changeFormat($originalHall);
+            $data['du_id']=$originalHall->id;
+            $newHall=Hall::create($data);
+            $now=now();
+            $newSeat=$originalSeat->map(function($item) use ($newHall,$now){
+                return [
+                    'name'=>$item->name,
+                    'hall_id'=>$newHall->id,
+                    'seat_plan_id'=>$item->seat_plan_id,
+                    'seat_type'=>$item->seat_type,
+                    'active'=>$item->active,
+                    'created_at'=>$now,
+                    'updated_at'=>$now
+                ];
+            })->toArray();
+            if (!empty($newSeat)) {
+                Seat::insert($newSeat);
+            }
+            DB::commit();
+            return redirect()->route('admin#hallView',$newHall->id);
+        } catch (Exception $e) {
+            logger($e);
+            DB::rollBack();
+            return back()->with(['danger'=>'Something is wrong . Please try again']);
+        }
+    }
+
+    public function replaceSeatPlan(Request $request){
+        Validator::make($request->all(),[
+            'from'=>'required',
+            'to'=>'required|different:from',
+            'hall_id'=>'required',
+        ],[
+            'to.different' => 'The new seat plan must be different from the current seat plan.',
+        ])->validate();
+        DB::beginTransaction();
+        try {
+            $seatCount=Seat::where('hall_id',$request->hall_id)
+                        ->where('seat_plan_id',$request->from)
+                        ->update([
+                            'seat_plan_id'=>$request->to,
+                            'updated_at'=>now(),
+                        ]);
+            DB::commit();
+            return back()->with(['success'=>"Successfully replaced seat plan for {$seatCount} seat(s)."]);
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+            return back()->with(['danger'=>'Something is wrong . Please try again']);
+        }
+    }
+
     // private function
     private function validation($request){
         Validator::make($request->all(),[
@@ -86,6 +151,7 @@ class HallController extends Controller
 
     private function removeHallCache($id){
         Cache::forget("hall{$id}");
+        Cache::forget('hall_active');
     }
 
     private function getHall($id) {

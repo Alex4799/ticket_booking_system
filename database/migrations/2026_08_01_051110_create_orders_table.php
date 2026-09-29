@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
-    // protected $connection = 'mysql_order';
     /**
      * Run the migrations.
      */
@@ -28,7 +26,7 @@ return new class extends Migration
             $table->string('show_time');
             $table->date('date');
             $table->integer('hall_id');
-            $table->json('genre');
+            $table->json('genre')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('payment_slip')->nullable();
             $table->string('payment_type')->nullable();

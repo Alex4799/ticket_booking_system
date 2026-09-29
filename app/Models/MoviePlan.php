@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MoviePlan extends Model
 {
     use HasFactory;
-    // protected $connection = 'mysql_plan_seat';
     protected $fillable=[
         'movie_id',
         'movie_name',

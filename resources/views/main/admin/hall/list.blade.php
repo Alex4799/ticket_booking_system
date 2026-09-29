@@ -39,6 +39,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Hall Name</th>
+                                            <th>Cinema Name</th>
                                             <th>Active</th>
                                             <th></th>
                                         </tr>
@@ -49,6 +50,7 @@
                                                 <tr>
                                                     <td>{{$item->id}}</td>
                                                     <td>{{$item->name}}@if ($item->du_id!=null) (Copy) @endif</td>
+                                                    <td>{{$item->cinema_name}}</td>
                                                     <td>
                                                         @if ($item->active==1)
                                                             <span class="text-success">Active</span>

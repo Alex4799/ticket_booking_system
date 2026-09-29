@@ -18,7 +18,7 @@ return new class extends Migration
             $table->longText('contact');
             $table->integer('cinema_id');
             $table->longText('location');
-            $table->integer('active')->default(0);
+            $table->integer('active')->default(0)->nullable();
             $table->timestamps();
         });
     }

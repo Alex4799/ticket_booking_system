@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('description');
             $table->integer('category_id');
             $table->string('image');
-            $table->integer('active')->default(0);
+            $table->integer('active')->default(0)->nullable();
             $table->timestamps();
         });
     }

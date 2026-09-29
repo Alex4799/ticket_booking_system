@@ -54,10 +54,6 @@ class SeatPlanController extends Controller
     }
 
     public function delete(Request $request){
-        $seatPlan=$this->getSeatPlan($request->id);
-        if (isset($seatPlan->image)) {
-            Storage::delete('seat_plan/'.$seatPlan->image);
-        }
         SeatPlan::where('id',$request->id)->delete();
         $this->removeSeatPlanCache($request->id);
         return redirect()->route('admin#seatPlanList');

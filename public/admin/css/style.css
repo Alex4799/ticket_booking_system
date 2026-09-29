@@ -770,10 +770,10 @@ input[type=range]::-webkit-slider-thumb{
 
 /* ........................................... theater list start .............................*/
 .sold{
-    color: #b6bfbf;
+    color: #b6bfbf !important;
 }
 .selected{
-    color: var(--green);
+    color: var(--green) !important;
 }
 .available{
     color: black;

@@ -16,6 +16,8 @@ class Promotion extends Model
         'percentage',
         'amount',
         'promo_code',
+        'max_count',
+        'used_count',
         'start_date',
         'end_date',
         'active',

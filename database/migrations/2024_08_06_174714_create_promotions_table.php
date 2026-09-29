@@ -17,7 +17,9 @@ return new class extends Migration
             $table->longText('description');
             $table->string('image');
             $table->string('promo_code');
-            $table->integer('cinema_id')->default(0);
+            $table->integer('cinema_id')->default(0)->nullable();
+            $table->integer('hall_id')->default(0)->nullable();
+            $table->integer('movie_id')->default(0)->nullable();
             $table->integer('percentage')->nullable();
             $table->integer('amount')->nullable();
             $table->string('start_date');

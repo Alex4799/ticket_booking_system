@@ -284,7 +284,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="modal fade" id="duplicate-hall" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="duplicate-hallLabel" aria-hidden="true">
+                <div class="modal fade" id="duplicate-hall" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="duplicate-hallLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -312,8 +312,8 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
-                {{-- <div class="modal fade" id="replace-seat-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="replace-seat-planLabel" aria-hidden="true">
+                </div>
+                <div class="modal fade" id="replace-seat-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="replace-seat-planLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -321,7 +321,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{route('admin#seatReplace')}}" method="post" class="mt-1">
+                                <form action="{{route('admin#replaceSeatPlan')}}" method="post" class="mt-1">
                                     @csrf
 
                                     <div class="form-group mb-4">
@@ -357,7 +357,7 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
             {{-- model end --}}
 @endsection

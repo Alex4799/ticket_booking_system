@@ -21,6 +21,7 @@ class SeatController extends Controller
                 Seat::create($data);
             }
         }
+        Cache::forget("hall{$request->hall_id}_seat");
         return back()->with(['success'=>'Seat create successful.']);
     }
 
@@ -40,14 +41,14 @@ class SeatController extends Controller
         $this->validation($request);
         $data=$this->changeFormat($request);
         Seat::where('id',$request->id)->update($data);
-        $this->removeSeat($request->id);
+        $this->removeSeat($request->id,$request->hall_id);
         return back()->with(['success'=>'Seat update successful.']);
     }
 
     public function delete(Request $request){
         $seat=Seat::find($request->id);
         $seat->delete();
-        $this->removeSeat($request->id);
+        $this->removeSeat($request->id,$seat->hall_id);
         return redirect()->route('admin#hallView',$seat->hall_id);
     }
 
@@ -72,7 +73,8 @@ class SeatController extends Controller
         ];
     }
 
-    private function removeSeat($id){
+    private function removeSeat($id,$hall_id){
         Cache::forget("seat{$id}");
+        Cache::forget("hall{$hall_id}_seat");
     }
 }

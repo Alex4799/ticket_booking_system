@@ -16,6 +16,7 @@ class MovieController extends Controller
                     ->when(request('search_key'),function($query){
                         $query->where('name','%'.request('search_key').'%');
                     })
+                    ->orderBy('created_at','desc')
                     ->paginate(10);
         $genre=Genre::get();
         return view('main.admin.movie.list',compact('movie','genre'));
@@ -30,6 +31,7 @@ class MovieController extends Controller
             $data['poster']=$imageName;
         }
         $movie=Movie::create($data);
+        Cache::forget("movie_active");
         return redirect()->route('admin#movieView',$movie->id)->with(['success'=>'Movie Create successful.']);
     }
 
@@ -236,6 +238,8 @@ class MovieController extends Controller
     }
     private function removeMovie($id){
         Cache::forget("movie{$id}");
+        Cache::forget("movie_active");
+
     }
 }
 

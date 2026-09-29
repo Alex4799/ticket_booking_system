@@ -21,6 +21,8 @@ return new class extends Migration
             $table->longText('footer_letter');
             $table->json('about_image');
             $table->longText('aboutus_letter');
+            $table->integer('payment_type')->default(1);
+            $table->integer('default_order_reject_min')->default(45);
             $table->timestamps();
         });
     }

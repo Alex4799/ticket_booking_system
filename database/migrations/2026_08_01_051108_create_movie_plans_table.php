@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
-    // protected $connection = 'mysql_plan_seat';
     /**
      * Run the migrations.
      */
@@ -18,6 +16,7 @@ return new class extends Migration
             $table->integer('movie_id');
             $table->string('movie_name')->nullable();
             $table->integer('hall_id');
+            $table->integer('hall_du_id');
             $table->string('start_time');
             $table->string('end_time');
             $table->string('clean_time');

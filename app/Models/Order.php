@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use HasFactory,SoftDeletes;
-    // protected $connection = 'mysql_order';
     protected $fillable=[
         'invoice',
         'user_name',

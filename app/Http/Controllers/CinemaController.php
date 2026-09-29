@@ -29,6 +29,7 @@ class CinemaController extends Controller
             }
         }
         $cinema=Cinema::create($data);
+        Cache::forget("cinema_active");
         return redirect()->route('admin#cinemaView',$cinema->id);
     }
 
@@ -134,5 +135,6 @@ class CinemaController extends Controller
 
     private function reomveCinemaCache($id){
         Cache::forget("cinema{$id}");
+        Cache::forget("cinema_active");
     }
 }
