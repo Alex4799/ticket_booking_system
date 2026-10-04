@@ -9,6 +9,7 @@ class StoreItem extends Model
 {
     use HasFactory;
     protected $fillable=[
+        'product_id',
         'product_name',
         'qty',
         'purchase_price',

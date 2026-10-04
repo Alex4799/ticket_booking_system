@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->integer('send_store_id');
+            $table->integer('store_item_id');
             $table->string('product_name');
             $table->integer('receive_store_id');
             $table->integer('qty');
             $table->integer('price');
             $table->integer('total_price');
-            $table->integer('status')->default(0);
+            $table->integer('additional_fees')->default(0)->nullable();
+            $table->integer('status')->default(0)->nullable();
             $table->timestamps();
         });
     }

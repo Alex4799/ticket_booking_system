@@ -3,6 +3,7 @@
 use App\Http\Controllers\ConJobController;
 use App\Http\Controllers\MovieSeatController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,5 @@ Route::prefix('conjob/check')->group(function () {
     Route::get('order',[ConJobController::class,'checkOrder']);
     Route::get('promotion',[ConJobController::class,'checkPromotion']);
 });
+
+Route::get('cart/filter/product',[SellerController::class,'filterProduct'])->name('filterProduct');

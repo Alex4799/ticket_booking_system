@@ -114,12 +114,12 @@
                                             </div>
                                         @else
                                             <div class="py-2 d-flex justify-content-end">
-                                                <a href="#" target="_blank" class="btn btn-success">Generate Invoice</a>
+                                                <a href="{{route('admin#invoice',$order->id)}}" target="_blank" class="btn btn-success">Generate Invoice</a>
                                             </div>
                                         @endif
                                     @else
                                         <div class="py-2 d-flex justify-content-end">
-                                            <a href="#" target="_blank" class="btn btn-success">Generate Invoice</a>
+                                            <a href="{{route('admin#invoice',$order->id)}}" target="_blank" class="btn btn-success">Generate Invoice</a>
                                         </div>
                                     @endif
                                 @endif

@@ -22,7 +22,7 @@
                             <h5 class="col-md-6 py-2">Name - {{$admin->name}}</h5>
                             <h5 class="col-md-6 py-2">Email - {{$admin->email}}</h5>
                             <h5 class="col-md-6 py-2">Position - {{$admin->position}}</h5>
-                            <h5 class="col-md-6 py-2">Location - {{$admin->location}}</h5>
+                            <h5 class="col-md-6 py-2">Location - {{$admin->cinema_name??'All'}}</h5>
                         </div>
                         <div>
                             <h4 class="py-2">Permission</h4>
@@ -79,10 +79,21 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <div class="py-2 d-flex justify-content-end gap-1">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
-                        </div>
+                        @if (in_array(Auth::user()->position,['developer','CEO','manager','admin']))
+                            @if (Auth::user()->position=='manager')
+                                @if (!in_array($admin->position,['developer','CEO','admin','manager']))
+                                    <div class="py-2 d-flex justify-content-end gap-1">
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="py-2 d-flex justify-content-end gap-1">
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
+                                </div>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>

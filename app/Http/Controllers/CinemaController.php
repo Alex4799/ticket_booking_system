@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cinema;
+use App\Models\Hall;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +15,11 @@ class CinemaController extends Controller
     public function list(){
         $cinema=Cinema::when(request('search_key'),function($query){
                         $query->where('name','like','%'.request('search_key').'%');
-                    })->paginate(10);
+                    })
+                    ->when(Auth::user()->position=='manager',function($query){
+                        $query->where('id',Auth::user()->location);
+                    })
+                    ->paginate(10);
         return view('main.admin.cinema.list',compact('cinema'));
     }
 
@@ -35,7 +41,8 @@ class CinemaController extends Controller
 
     public function view($id){
         $cinema=$this->getCinemaCache($id);
-        return view('main.admin.cinema.view',compact('cinema'));
+        $hall=Hall::where('cinema_id',$id)->paginate();
+        return view('main.admin.cinema.view',compact('cinema','hall'));
     }
 
     public function update(Request $request){

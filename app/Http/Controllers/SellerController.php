@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Events\SeatStatusEvent;
+use App\Models\Cinema;
 use App\Models\Movie;
 use App\Models\MoviePlan;
 use App\Models\MovieSeat;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\ProductCategory;
+use App\Models\ProductOrder;
+use App\Models\ProductOrderItem;
 use App\Models\Promotion;
+use App\Models\StoreItem;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -23,6 +30,9 @@ class SellerController extends Controller
         $currentTime=now()->format('H:i');
         $movie=MoviePlan::select('movie_plans.id','movie_plans.movie_id','movies.name','movies.poster','movie_plans.date',
                         'movies.genre','movies.run_time','movies.release_date','halls.name as hall_name','movie_plans.start_time')
+                        ->when(in_array(Auth::user()->position,['manager','ticket-seller']),function($query){
+                            $query->where('halls.cinema_id',Auth::user()->location);
+                        })
                         ->where('movie_plans.active',1)
                         ->whereRaw("STR_TO_DATE(CONCAT(movie_plans.date, ' ', movie_plans.end_time), '%Y-%m-%d %H:%i:%s') > ?", [Carbon::now()])
                         ->leftJoin('movies','movie_plans.movie_id','movies.id')
@@ -183,6 +193,7 @@ class SellerController extends Controller
                 'show_time'=>$moviePlan->start_time,
                 'date'=>$moviePlan->date,
                 'hall_id'=>$moviePlan->hall_id,
+                'cinema_id'=>$moviePlan->cinema_id,
                 'genre'=>$moviePlan->main_genre,
                 'movie_plan_id'=>$request->movie_plan_id,
                 'seats'=>$request->seats,
@@ -260,6 +271,91 @@ class SellerController extends Controller
         Cache::forget("movie_plan_{$request->movie_plan_id}");
         Order::create($data);
         return back()->with(['success'=>'Hall rental create successful.']);
+    }
+
+    // product
+    public function cart(){
+        $cinema_id=request('cinema_id')??Auth::user()->location??2;
+        $storeItem=StoreItem::select('store_items.*','products.image as product_image','products.category_id')
+                            ->leftJoin('stores','store_items.store_id','stores.id')
+                            ->leftJoin('products','store_items.product_id','products.id')
+                            ->where('stores.cinema_id',$cinema_id)
+                            ->where('store_items.active',1)
+                            ->where('store_items.selling_type',0)
+                            ->get();
+        $category=Cache::rememberForever('category', function () {
+            return ProductCategory::get();
+        });
+        $cinema=Cache::rememberForever('cinema_active', function () {
+            return Cinema::where('active',1)->get();
+        });
+        return view('main.admin.seller.product.list',compact('storeItem','category','cinema'));
+    }
+
+    public function checkOutProduct(Request $request){
+        $cart=json_decode($request->data);
+        $totalPrice=0;
+        foreach ($cart as $item) {
+            $storeItem=StoreItem::find($item->id);
+            if ($storeItem->qty<$item->qty && $storeItem->type==0) {
+                return back()->with(['warning'=>"Qty of $item->product_name is not enough. System is reduce to max qty.","overQty"=>['id'=>$item->id,'max_qty'=>$storeItem->qty]]);
+            }
+            $totalPrice+=$item->product_price*$item->qty;
+        }
+        $payment=Cache::rememberForever('payment_active', function () {
+            return Payment::where('payments.active',1)->get();
+        });
+        return view('main.admin.seller.product.paymentInfo',compact('cart','totalPrice','payment'));
+    }
+
+    public function orderProduct(Request $request){
+        DB::beginTransaction();
+        try {
+            $cart=json_decode($request->product);
+            $productOrder=ProductOrder::create([
+                'payment_method'=>$request->payment_method,
+                'total_price'=>$request->total_price,
+                'pay_amount'=>$request->pay_amount,
+                'change'=>$request->pay_amount?$request->pay_amount-$request->total_price:0,
+                'product'=>$request->product,
+                'promotion_id'=>$request->promotion_id,
+                'promotion_price'=>$request->promotion_price,
+                'cinema_id'=>Auth::user()->location,
+                'status'=>1,
+            ]);
+            $productItem=[];
+            foreach ($cart as $item) {
+                $storeItem=StoreItem::lockForUpdate()->find($item->id);
+                if ($storeItem->qty<$item->qty && $storeItem->type==0) {
+                    DB::rollback();
+                    return back()->with(['warning'=>"Qty of $item->product_name is not enough. System is reduce to max qty.","overQty"=>['id'=>$item->id,'max_qty'=>$storeItem->qty]]);
+                }
+                $productItem[]=[
+                    'order_id'=>$productOrder->id,
+                    'product_id'=>$storeItem->product_id,
+                    'store_item_id'=>$storeItem->id,
+                    'product_name'=>$storeItem->product_name,
+                    'product_price'=>$storeItem->selling_price,
+                    'profit'=>$storeItem->profit,
+                    'store_id'=>$storeItem->store_id,
+                    'instock'=>$storeItem->qty,
+                    'qty'=>$item->qty,
+                    'created_at'=>now(),
+                    'updated_at'=>now(),
+                ];
+                if ($storeItem->type==0) {
+                    $storeItem->qty=$storeItem->qty-$item->qty;
+                    $storeItem->save();
+                }
+            }
+            ProductOrderItem::insert($productItem);
+            DB::commit();
+            return redirect()->route('admin#orderViewProduct',$productOrder->id)->with(['success'=>'Order create successful.']);
+        } catch (Exception $e) {
+            logger($e);
+            DB::rollback();
+            return back()->with(['error'=>'An error occur. Please try again.']);
+        }
     }
 
     // private function

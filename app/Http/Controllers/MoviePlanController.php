@@ -12,6 +12,7 @@ use App\Models\Payment;
 use App\Models\Seat;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -19,10 +20,15 @@ use Illuminate\Support\Facades\Validator;
 class MoviePlanController extends Controller
 {
     public function cinemaList(){
-        $cinema=Cinema::where('active',1)->get()->map(function($item){
-            $item->hall=Hall::select('halls.id','halls.name')->where('cinema_id',$item->id)->get()->toArray();
-            return $item->toArray();
-        });
+        $cinema=Cinema::where('active',1)
+                    ->when(Auth::user()->position=='manager',function($query){
+                        $query->where('id',Auth::user()->location);
+                    })
+                    ->get()
+                    ->map(function($item){
+                        $item->hall=Hall::select('halls.id','halls.name')->where('cinema_id',$item->id)->get()->toArray();
+                        return $item->toArray();
+                    });
         return view('main.admin.moviePlan.cinema',compact('cinema'));
     }
 
@@ -103,7 +109,7 @@ class MoviePlanController extends Controller
     public function view($id){
         $moviePlan=Cache::remember("movie_plan_{$id}",now()->addDay(), function () use($id) {
             return MoviePlan::select('movie_plans.*','movies.name as movie_name','movies.run_time','movies.cover','movies.poster',
-                            'halls.name as hall_name','halls.seat_column','cinemas.name as cinema_name')
+                            'halls.name as hall_name','halls.seat_column','cinemas.name as cinema_name','cinemas.id as cinema_id')
                             ->where('movie_plans.id',$id)
                             ->leftJoin('movies','movie_plans.movie_id','movies.id')
                             ->leftJoin('halls','movie_plans.hall_id','halls.id')

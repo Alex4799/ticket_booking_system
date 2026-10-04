@@ -12,36 +12,6 @@
             </ol>
         </nav>
     </div>
-    <div class="p-2">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{session('success')}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('warning'))
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{session('warning')}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('danger'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{session('danger')}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        @if($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{$error}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 offset-md-1">
@@ -49,7 +19,7 @@
                     <h4 class="text-center py-2 mb-4">View Purchase</h4>
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="{{Storage::url('product/'.$purchase->products_image)}}" class="w-100 img-thumbnail" alt="">
+                            <img src="{{Storage::url('product/'.$purchase->product_image)}}" class="w-100 img-thumbnail" alt="">
                         </div>
                         <div class="col-md-8">
                             <div class="py-2">
@@ -96,9 +66,9 @@
                                             @endif
                                             </button>
                                             <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChange',[$purchase->id,0])}}">Pending</a></li>
-                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChange',[$purchase->id,1])}}">Success</a></li>
-                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChange',[$purchase->id,2])}}">Reject</a></li>
+                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChangeStatus',[$purchase->id,0])}}">Pending</a></li>
+                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChangeStatus',[$purchase->id,1])}}">Success</a></li>
+                                            <li><a class="dropdown-item" href="{{route('admin#purchaseChangeStatus',[$purchase->id,2])}}">Reject</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -125,133 +95,112 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="edit-purchase" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-purchaseLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title d-block w-100 text-center" id="edit-purchaseLabel">Edit Purchase</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{route('admin#purchaseUpdate')}}" method="post" class="mt-1">
-                            @csrf
-                            @method('PATCH')
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Product</label>
-                                <select name="product_name" id="" class="form-control @error('product_name') is-invalid @enderror">
-                                    <option value="">Choose Product</option>
-                                    @foreach ($product as $item)
-                                        <option value="{{$item->name}}" @if ($item->name==$purchase->product_name) selected @endif>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('product_name')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Supplier</label>
-                                <select name="supplier_id" id="" class="form-control @error('supplier_id') is-invalid @enderror">
-                                    <option value="">Choose Supplier</option>
-                                    @foreach ($supplier as $item)
-                                        <option value="{{$item->id}}" @if ($item->id==$purchase->supplier_id) selected @endif>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('supplier_id')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Store</label>
-                                <select name="store_id" id="" class="form-control @error('store_id') is-invalid @enderror">
-                                    <option value="">Choose Store</option>
-                                    @foreach ($store as $item)
-                                        <option value="{{$item->id}}" @if ($item->id==$purchase->store_id) selected @endif>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('store_id')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Qty</label>
-                                <input id="" name="qty" type="number" value="{{$purchase->qty}}" class="form-control @error('qty') is-invalid @enderror" placeholder="Enter product qty">
-                                @error('qty')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Price (For one item)</label>
-                                <input id="" name="price" type="number" value="{{$purchase->price}}" class="form-control @error('price') is-invalid @enderror" placeholder="Enter product price">
-                                @error('price')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <input type="hidden" name="id" value="{{$purchase->id}}">
+        @if ($purchase->status==0)
+            <div class="modal fade" id="edit-purchase" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-purchaseLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title d-block w-100 text-center" id="edit-purchaseLabel">Edit Purchase</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{route('admin#purchaseUpdate')}}" method="post" class="mt-1">
+                                @csrf
+                                @method('PATCH')
+                                <div class="form-group mb-4">
+                                    <label class="mb-1">Product</label>
+                                    <select name="product" id="" class="form-control @error('product') is-invalid @enderror">
+                                        <option value="">Choose Product</option>
+                                        @foreach ($product as $item)
+                                            <option value="{{json_encode(['id'=>$item->id,'name'=>$item->name])}}" @if ($item->name==$purchase->product_name) selected @endif>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('product')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label class="mb-1">Supplier</label>
+                                    <select name="supplier_id" id="" class="form-control @error('supplier_id') is-invalid @enderror">
+                                        <option value="">Choose Supplier</option>
+                                        @foreach ($supplier as $item)
+                                            <option value="{{$item->id}}" @if ($item->id==$purchase->supplier_id) selected @endif>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('supplier_id')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label class="mb-1">Store</label>
+                                    <select name="store_id" id="" class="form-control @error('store_id') is-invalid @enderror">
+                                        <option value="">Choose Store</option>
+                                        @foreach ($store as $item)
+                                            <option value="{{$item->id}}" @if ($item->id==$purchase->store_id) selected @endif>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('store_id')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label class="mb-1">Qty</label>
+                                    <input id="" name="qty" type="number" value="{{$purchase->qty}}" class="form-control @error('qty') is-invalid @enderror" placeholder="Enter product qty">
+                                    @error('qty')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label class="mb-1">Price (For one item)</label>
+                                    <input id="" name="price" type="number" value="{{$purchase->price}}" class="form-control @error('price') is-invalid @enderror" placeholder="Enter product price">
+                                    @error('price')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
+                                <input type="hidden" name="id" value="{{$purchase->id}}">
 
-                            <button type="submit" class="btn btn-primary w-100 my-2">Update</button>
-                        </form>
+                                <button type="submit" class="btn btn-primary w-100 my-2">Update</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal fade" id="delete-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-productLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title d-block w-100 text-center text-danger" id="delete-productLabel">Delete Purchase</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{route('admin#purchaseDelete')}}" method="post" class="mt-1">
-                            @csrf
-                            @method('DELETE')
-                            <div class="py-1">
-                                <p class="text-danger">"Are you sure to delete this."</p>
-                            </div>
-                            <div class="py-1">
-                                <h6>Verify you are admin. Please enter the password.</h6>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="mb-1">Password</label>
-                                <input id="" name="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password." required>
-                                @error('password')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
+        @endif
+        @if ($purchase->status!=1)
+            <div class="modal fade" id="delete-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-productLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title d-block w-100 text-center text-danger" id="delete-productLabel">Delete Purchase</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{route('admin#purchaseDelete')}}" method="post" class="mt-1">
+                                @csrf
+                                @method('DELETE')
+                                <div class="py-1">
+                                    <p class="text-danger">"Are you sure to delete this."</p>
+                                </div>
+                                <div class="py-1">
+                                    <h6>Verify you are admin. Please enter the password.</h6>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="mb-1">Password</label>
+                                    <input id="" name="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password." required>
+                                    @error('password')
+                                        <small class="text-danger">{{$message}}</small>
+                                    @enderror
+                                </div>
 
-                            <input type="hidden" name="id" value="{{$purchase->id}}">
+                                <input type="hidden" name="id" value="{{$purchase->id}}">
 
-                            <button type="submit" class="btn btn-danger w-100 my-2">Delete</button>
-                        </form>
+                                <button type="submit" class="btn btn-danger w-100 my-2">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </main>
-@endsection
-@section('script')
-            <script type="module">
-                import {
-                    ClassicEditor,
-                    Essentials,
-                    Bold,
-                    Italic,
-                    Font,
-                    Paragraph
-                } from 'ckeditor5';
-
-                ClassicEditor
-                    .create( document.querySelector( '#editor' ), {
-                        plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-                        toolbar: {
-                            items: [
-                                'undo', 'redo', '|', 'bold', 'italic', '|',
-                                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                            ]
-                        }
-                    } )
-                    .then( /* ... */ )
-                    .catch( /* ... */ );
-            </script>
 @endsection

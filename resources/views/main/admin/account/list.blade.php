@@ -8,7 +8,7 @@
         <div id="table-bg">
             <div class="d-flex align-items-center justify-content-end flex-wrap gap-1">
                 {{-- <h4 class="py-2">Admin List</h4> --}}
-                @if (in_array(Auth::user()->position,['CEO','manager','developer']))
+                @if (in_array(Auth::user()->position,['CEO','manager','developer','admin']))
                     <div class="py-2">
                         <button type="button" class="btn btn-success add" data-bs-toggle="modal" data-bs-target="#add">Add Account</button>
                     </div>

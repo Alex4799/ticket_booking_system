@@ -64,8 +64,10 @@ class AdminController extends Controller
     }
 
     public function list(){
-        $admin=User::when(request('search_key'),function($query){
-                    $query->where('name','like','%'.request('search_key').'%');
+        $admin=User::select('users.*','cinemas.name as cinema_name')
+                ->leftJoin('cinemas','users.location','cinemas.id')
+                ->when(request('search_key'),function($query){
+                    $query->where('users.name','like','%'.request('search_key').'%');
                 })->paginate(10);
         $cinema=$this->getCinema();
         return view('main.admin.account.list',compact('admin','cinema'));
@@ -80,7 +82,10 @@ class AdminController extends Controller
 
     public function view($id){
         $admin=Cache::rememberForever("admin{$id}", function () use($id) {
-            return User::find($id);
+            return User::select('users.*','cinemas.name as cinema_name')
+                        ->leftJoin('cinemas','users.location','cinemas.id')
+                        ->where('users.id',$id)
+                        ->first();
         });
 
         $cinema=$this->getCinema();

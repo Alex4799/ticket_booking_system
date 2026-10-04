@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="mt-5">
+        <div class="mt-5">
             <div id="table-bg">
                 <div class="d-flex justify-content-between">
                     <h4>Store Item</h4>
@@ -102,6 +102,13 @@
                                                             @csrf
                                                             @method('PATCH')
                                                             <div class="form-group mb-4">
+                                                                <label class="mb-1">Purchase Price</label>
+                                                                <input id="" name="purchase_price" type="text" value="{{$item->purchase_price}}" class="form-control @error('purchase_price') is-invalid @enderror" placeholder="Enter product selling price" readonly>
+                                                                @error('purchase_price')
+                                                                    <small class="text-danger">{{$message}}</small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group mb-4">
                                                                 <label class="mb-1">Selling Price</label>
                                                                 <input id="" name="selling_price" type="text" value="{{$item->selling_price}}" class="form-control @error('selling_price') is-invalid @enderror" placeholder="Enter product selling price">
                                                                 @error('selling_price')
@@ -109,7 +116,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="type" @if ($item->type) checked @endif>
+                                                                <input type="checkbox" name="type" @if ($item->type) value="1" checked @endif>
                                                                 <label for="">No Need Instock</label>
                                                             </div>
                                                             @if (Auth::user()->position!='store-manager')
@@ -180,11 +187,9 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Product Name</th>
-                                    <th>QTY</th>
                                     <th>Purchase Price</th>
                                     <th>Selling Price</th>
                                     <th>Profit</th>
-                                    <th>Instock Level</th>
                                     <th>Active</th>
                                     <th></th>
                                 </tr>
@@ -195,11 +200,9 @@
                                         <tr>
                                             <td>{{$item->id}}</td>
                                             <td>{{$item->product_name}}</td>
-                                            <td>{{$item->qty}} {{$item->unit}} </td>
                                             <td>{{$item->purchase_price}} MMK</td>
                                             <td>{{$item->selling_price}} MMK</td>
                                             <td>{{$item->profit}} MMK</td>
-                                            <td>{{$item->instock_level}}</td>
                                             <td>
                                                 @if ($item->active==0)
                                                     <span class="text-warning">Not Active</span>
@@ -225,6 +228,13 @@
                                                             @csrf
                                                             @method('PATCH')
                                                             <div class="form-group mb-4">
+                                                                <label class="mb-1">Purchase Price</label>
+                                                                <input id="" name="purchase_price" type="text" value="{{$item->purchase_price}}" class="form-control @error('purchase_price') is-invalid @enderror" placeholder="Enter product selling price" readonly>
+                                                                @error('purchase_price')
+                                                                    <small class="text-danger">{{$message}}</small>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group mb-4">
                                                                 <label class="mb-1">Selling Price</label>
                                                                 <input id="" name="selling_price" type="text" value="{{$item->selling_price}}" class="form-control @error('selling_price') is-invalid @enderror" placeholder="Enter product selling price">
                                                                 @error('selling_price')
@@ -232,7 +242,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="type" @if ($item->type) checked @endif>
+                                                                <input type="checkbox" name="type" @if ($item->type) value="1" checked @endif>
                                                                 <label for="">No Need Instock</label>
                                                             </div>
                                                             @if (Auth::user()->position!='store-manager')
@@ -294,10 +304,10 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         {{-- model  --}}
-        {{-- <div class="modal fade" id="create-storeItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-storeItemLabel" aria-hidden="true">
+        <div class="modal fade" id="create-storeItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-storeItemLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -309,13 +319,12 @@
                             @csrf
                             <div class="form-group mb-4">
                                 <label class="mb-1">Product</label>
-                                <select name="product_name" id="" class="form-control @error('product_name') is-invalid @enderror">
-                                    <option value="">Choose Product</option>
+                                <select name="product" id="" class="form-control @error('product') is-invalid @enderror">
                                     @foreach ($product as $item)
-                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                        <option value="{{json_encode(['id'=>$item->id,'name'=>$item->name])}}">{{$item->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('product_name')
+                                @error('product')
                                     <small class="text-danger">{{$message}}</small>
                                 @enderror
                             </div>
@@ -471,7 +480,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
         <div class="modal fade" id="update-store" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="update-storeLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

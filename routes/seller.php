@@ -12,4 +12,10 @@ Route::prefix('seller')->middleware(['auth','login_fail_check'])->group(function
         Route::post('order',[SellerController::class,'order'])->name('seller#order');
         Route::post('hall/rental',[SellerController::class,'orderHallRental'])->name('seller#orderHallRental');
     });
+
+    Route::prefix('product')->group(function () {
+        Route::get('cart',[SellerController::class,'cart'])->name('seller#cart');
+        Route::post('checkout',[SellerController::class,'checkOutProduct'])->name('seller#checkOutProduct');
+        Route::post('order',[SellerController::class,'orderProduct'])->name('seller#orderProduct');
+   });
 });

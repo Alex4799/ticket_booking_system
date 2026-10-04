@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('show_time');
             $table->date('date');
             $table->integer('hall_id');
+            $table->integer('cinema_id');
             $table->json('genre')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('payment_slip')->nullable();

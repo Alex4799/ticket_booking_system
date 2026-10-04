@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CinemaController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HallController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\MoviePlanController;
 use App\Http\Controllers\OrderController;
@@ -13,10 +14,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RecycleController;
+use App\Http\Controllers\ReduceController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\SeatPlanController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\StoreItemController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\WebsiteInfoController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +33,12 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
     Route::get('view/{id}',[AdminController::class,'view'])->name('admin#view');
     Route::patch('update',[AdminController::class,'updateAdmin'])->name('admin#update');
     Route::delete('delete',[AdminController::class,'delete'])->name('admin#delete')->middleware('verify_admin');
+
+    Route::prefix('report')->group(function () {
+        Route::get('ticket',[ReportController::class,'ticket'])->name('admin#reportTicket');
+        Route::get('graph',[ReportController::class,'graph'])->name('admin#reportGraph');
+        Route::get('product',[ReportController::class,'product'])->name('admin#reportProduct');
+    });
 
     Route::prefix('profile')->group(function () {
         Route::get('/',[AdminController::class,'profile'])->name('admin#profile');
@@ -206,6 +216,14 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::get('list',[OrderController::class,'list'])->name('admin#orderList');
         Route::get('view/{id}',[OrderController::class,'view'])->name('admin#orderView');
         Route::post('change/status',[OrderController::class,'changeStatus'])->name('admin#orderChangeStatus');
+        Route::get('invoice/{id}',[OrderController::class,'invoice'])->name('admin#invoice');
+
+        Route::prefix('product')->group(function () {
+            Route::get('/',[OrderController::class,'list_product'])->name('admin#orderListProduct');
+            Route::get('/{id}',[OrderController::class,'view_product'])->name('admin#orderViewProduct');
+            Route::post('change/status',[OrderController::class,'changeStatus_product'])->name('admin#orderChangeStatusProduct');
+            Route::get('invoice/{id}',[OrderController::class,'invoiceProduct'])->name('admin#invoiceProduct');
+        });
 
         Route::prefix('log')->group(function () {
             Route::get('list',[OrderController::class,'orderLog'])->name('admin#orderLog');
@@ -240,6 +258,14 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::get('/view/{id}',[StoreController::class,'view'])->name('admin#storeView');
         Route::patch('/',[StoreController::class,'update'])->name('admin#storeUpdate');
         Route::delete('/',[StoreController::class,'delete'])->name('admin#storeDelete')->middleware('verify_admin');
+
+        Route::prefix('item')->group(function(){
+            Route::get('/{id}',[StoreItemController::class,'view'])->name('admin#storeItemView');
+            Route::post('/',[StoreItemController::class,'create'])->name('admin#storeItemCreate');
+            Route::patch('/',[StoreItemController::class,'update'])->name('admin#storeItemUpdate');
+            Route::post('/reduce/damage',[StoreItemController::class,'damageReduce'])->name('admin#storeItemDamage');
+            Route::post('/reduce',[StoreItemController::class,'reduce'])->name('admin#storeItemReduce');
+        });
     });
 
     Route::prefix('purchase')->group(function () {
@@ -247,7 +273,26 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::post('/',[PurchaseController::class,'create'])->name('admin#purchaseCreate');
         Route::get('/view/{id}',[PurchaseController::class,'view'])->name('admin#purchaseView');
         Route::patch('/',[PurchaseController::class,'update'])->name('admin#purchaseUpdate');
-        Route::delete('/',[PurchaseController::class,'delete'])->name('admin#purchaseDelete');
+        Route::delete('/',[PurchaseController::class,'delete'])->name('admin#purchaseDelete')->middleware('verify_admin');
+        Route::get('change/status/{id}/{status}',[PurchaseController::class,'changeStatus'])->name('admin#purchaseChangeStatus');
+    });
+
+    Route::prefix('reduce')->group(function(){
+        Route::get('/',[ReduceController::class,'list'])->name('admin#reduceList');
+        Route::delete('/',[ReduceController::class,'delete'])->name('admin#reduceDelete');
+
+        Route::prefix('damage')->group(function(){
+            Route::get('/',[ReduceController::class,'list_damage'])->name('admin#reduceDamageList');
+            Route::delete('/',[ReduceController::class,'delete_damage'])->name('admin#reduceDamageDelete');
+        });
+    });
+
+    Route::prefix('inventory')->group(function () {
+        Route::get('/',[InventoryController::class,'list'])->name('admin#inventoryList');
+        Route::post('/',[InventoryController::class,'create'])->name('admin#inventoryCreate');
+        Route::get('/view/{id}',[InventoryController::class,'view'])->name('admin#inventoryView');
+        Route::get('/change/{id}/{status}',[InventoryController::class,'change'])->name('admin#inventoryChangeStatus');
+        Route::delete('/',[InventoryController::class,'delete'])->name('admin#inventoryDelete');
     });
 
 });

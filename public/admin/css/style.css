@@ -1776,14 +1776,14 @@ table tbody tr:nth-child(even){
 .rep-cancel{ background-color: #6c757d; }
 .rep-reject{ background-color: #c62828; }
 
-.export-btn button{
-    background-color: #197bac;
-    color: white;
-    border: 1px solid transparent;
-    border-radius: 5px;
+.export-btn{
+    background-color: #197bac !important;
+    color: white !important;
+    border: 1px solid transparent !important;
+    border-radius: 5px !important;
 }
-.export-btn button i{
-    font-size: 10pt;
+.export-btn i{
+    font-size: 10pt !important;
 }
 /* ........................................... report end ........................................ */
 

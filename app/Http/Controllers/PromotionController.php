@@ -104,13 +104,15 @@ class PromotionController extends Controller
                             ->where('end_date','>=',$currentDate)
                             ->where('active',1)
                             ->first();
-        if ($promotion->max_count) {
-            if ($promotion->max_count<=$promotion->used_count) {
-                $promotion=null;
-            }
-        }
-
         if (isset($promotion)) {
+            if ($promotion->max_count) {
+                if ($promotion->max_count<=$promotion->used_count) {
+                    $data=[
+                        'status'=>'failed',
+                    ];
+                    return response()->json($data, 200);
+                }
+            }
             $data=[
                 'status'=>'success',
                 'data'=>$promotion->toArray(),

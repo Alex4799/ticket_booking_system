@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cinema;
+use App\Models\Product;
 use App\Models\Store;
+use App\Models\StoreItem;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -47,7 +50,21 @@ class StoreController extends Controller
             return Cinema::where('active',1)->get();
         });
         $storeManager=User::where('position','manager')->orWhere('position','store-manager')->get();
-        return view('main.admin.store.view',compact('store','cinema','storeManager'));
+
+        $storeItem=StoreItem::where('store_id',$id)->get();
+
+        $product=Cache::rememberForever('product_active', function () {
+            return Product::select('products.*','product_categories.name as category_name')
+                        ->leftJoin('product_categories','products.category_id','product_categories.id')
+                        ->where('active',1)
+                        ->get();
+        });
+
+        $supplier=Cache::rememberForever('supplier', function () {
+            return Supplier::get();
+        });
+
+        return view('main.admin.store.view',compact('store','cinema','storeManager','storeItem','product','supplier'));
     }
 
     public function update(Request $request){

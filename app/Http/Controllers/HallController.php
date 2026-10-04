@@ -8,6 +8,7 @@ use App\Models\Seat;
 use App\Models\SeatPlan;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,11 @@ class HallController extends Controller
         $hall=Hall::select('halls.*','cinemas.name as cinema_name')
                         ->when(request('search_key'),function($query){
                             $query->where('name','like','%'.request('search_key').'%');
-                        })->leftJoin('cinemas','halls.cinema_id','cinemas.id')
+                        })
+                        ->when(Auth::user()->position=='manager',function($query){
+                            $query->where('cinema_id',Auth::user()->location);
+                        })
+                        ->leftJoin('cinemas','halls.cinema_id','cinemas.id')
                         ->paginate(10);
         $cinema=Cache::rememberForever('cinema_active', function () {
             return Cinema::where('active',1)->get();
@@ -39,10 +44,10 @@ class HallController extends Controller
         $hall=$this->getHall($id);
         $cinema=Cache::rememberForever('cinema_active', function () {
             return Cinema::where('active',1)->get();
-        });;
+        });
         $seatPlan=SeatPlan::where('active',1)->get();
         $seat=Cache::rememberForever("hall{$id}_seat", function () use($id) {
-            return Seat::select('seats.*','seat_plans.name as seat_plan_name','seat_plans.seat_color as seat_color')
+            return Seat::select('seats.*','seat_plans.name as seat_plan_name','seat_plans.seat_color as seat_color','seat_plans.price')
                     ->leftJoin('seat_plans','seats.seat_plan_id','seat_plans.id')
                     ->where('hall_id',$id)
                     ->get();

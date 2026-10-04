@@ -13,7 +13,7 @@
                         <div class="shadow py-2 px-2 bg-primary rounded-circle d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-ticket fs-2 text-white"></i>
                         </div>
-                        <h5 class="py-2">{{$item->order_count}}</h5>
+                        <h5 class="py-2">{{$item->total_count}}</h5>
                     </div>
                 </div>
             </div>
@@ -67,8 +67,8 @@
                 <select name="product_name" class="form-control" style="font-size: 11pt;">
                     <option value="">Filter By Product</option>
                     <option value="">All</option>
-                    @foreach ($purchaseHistory as $item)
-                        <option value="{{$item->product_name}}" @if (request('product_name')===$item->product_name) selected @endif>{{$item->product_name}}</option>
+                    @foreach ($productFilter as $item)
+                        <option value="{{$item}}" @if (request('product_name')===$item) selected @endif>{{$item}}</option>
                     @endforeach
                 </select>
             </div>
@@ -148,13 +148,12 @@
                             @csrf
                             <div class="form-group mb-4">
                                 <label class="mb-1">Product</label>
-                                <select name="product_name" id="" class="form-control @error('product_name') is-invalid @enderror">
-                                    <option value="">Choose Product</option>
+                                <select name="product" id="" class="form-control @error('product') is-invalid @enderror">
                                     @foreach ($product as $item)
-                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                        <option value="{{json_encode(['id'=>$item->id,'name'=>$item->name])}}">{{$item->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('product_name')
+                                @error('product')
                                     <small class="text-danger">{{$message}}</small>
                                 @enderror
                             </div>
