@@ -70,6 +70,9 @@ class SellerController extends Controller
                         'halls.name as hall_name','cinemas.name as cinema_name')
                         ->where('movie_plans.movie_id',$id)
                         ->where('movie_plans.active',1)
+                        ->when(in_array(Auth::user()->position,['manager','ticket-seller']),function($query){
+                            $query->where('halls.cinema_id',Auth::user()->location);
+                        })
                         ->where(function($query) use($now){
                             $query->where('movie_plans.date','>',$now->toDateString())
                                 ->orWhere(function($item) use ($now){

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('promotion_price')->nullable();
             $table->integer('total_price');
             $table->integer('pay_amount')->nullable();
-            $table->integer('change')->nullable();
+            $table->integer('change')->default(0)->nullable();
             $table->string('movie_name');
             $table->string('show_time');
             $table->date('date');
@@ -35,9 +35,9 @@ return new class extends Migration
             $table->integer('movie_plan_id');
             $table->json('seats');
             $table->integer('seat_count');
-            $table->integer('status')->default(0);//0=pending,1=success,2=reject,3=cancel,4=booking
-            $table->integer('ticket_status')->default(0);//0=no,1=yes,
-            $table->integer('order_from')->default(0);//0=seller,1=online,
+            $table->integer('status')->default(0)->nullable();//0=pending,1=success,2=reject,3=cancel,4=booking
+            $table->integer('ticket_status')->default(0)->nullable();//0=no,1=yes,
+            $table->integer('order_from')->default(0)->nullable();//0=seller,1=online,
             $table->softDeletes();
             $table->timestamps();
         });

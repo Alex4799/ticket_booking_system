@@ -86,6 +86,7 @@
             </div>
         </div>
     </form>
+    <div id="order-alerts"></div>
     <div class="">
         <div id="table-bg">
             <div class="">
@@ -142,22 +143,21 @@
 </main>
 @endsection
 @section('script')
-{{-- <script>
+<script>
     Pusher.logToConsole = false;
-    var pusher = new Pusher('4eba68c06c6803d7204c', {
+    var pusher = new Pusher(`{{ env('PUSHER_APP_KEY') }}`, {
     cluster: 'ap1'
     });
     var channel = pusher.subscribe('order-alert-channel');
     channel.bind('order-alert-event', function(data) {
-        // location.reload();
         $order=`
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <a href="{{route('admin#orderList')}}" class=" text-decoration-none">
-                New order OID - ${data.order.id}.
+                New order OID - ${data.orderId}.
             </a>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
-        $('#order-alert').html($order);
+        $('#order-alerts').html($order);
     });
-</script> --}}
+</script>
 @endsection

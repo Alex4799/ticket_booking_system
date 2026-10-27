@@ -123,6 +123,14 @@ class WebsiteInfoController extends Controller
         return back()->with(['success'=>'About image delete successful.']);
     }
 
+    // api
+    public function getWebsite(){
+        $data=Cache::rememberForever('website_info', function () {
+            return WebsiteInfo::where('id',1)->first();
+        });
+        return response()->json($data, 200);
+    }
+
     // private function
     private function removeImage($image){
         if ($image) {

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('profit')->nullable();
             $table->integer('instock_level')->default(10)->nullable();
             $table->integer('store_id');
-            $table->integer('type')->default(0);//0 = default product, 1 = no need instock
+            $table->integer('type')->default(0)->nullable();//0 = default product, 1 = no need instock
             $table->integer('selling_type')->default(0);//0 = default product, 1 = no selling
             $table->string('unit')->nullable();
             $table->string('barcode')->nullable();

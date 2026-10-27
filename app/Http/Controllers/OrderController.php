@@ -207,6 +207,18 @@ class OrderController extends Controller
         return view('main.admin.seller.product.invoice',compact('order','productItem'));
     }
 
+    // api
+    public function orderPendingGet_admin(){
+        try {
+            $data=Order::where('status',0)->leftJoin('halls','orders.hall_id','halls.id')
+            ->where('halls.cinema_id',Auth::user()->location)->get();
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            logger($e);
+            return response()->json(['status'=>'fail'], 200);
+        }
+    }
+
     // private function
     private function removeOrderCache($id){
         Cache::forget("order_{$id}");

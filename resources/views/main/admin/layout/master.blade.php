@@ -62,15 +62,12 @@
                                 <div class="" id="no-noti">
                                     <a class="dropdown-item">There is no notification</a>
                                 </div>
-                                {{-- <div class="d-none" id="order-noti">
+                                <div class="d-none" id="order-noti">
                                     <a href="{{route('admin#orderList')}}" class="dropdown-item" id="order-info"></a>
-                                </div>
-                                <div class="d-none" id="message-noti">
-                                    <a href="{{route('admin#messageList')}}" class="dropdown-item" id="message-info"></a>
                                 </div>
                                 <div class="d-none" id="contact-noti">
                                     <a href="{{route('admin#customerReportList')}}" class="dropdown-item" id="contact-info"></a>
-                                </div> --}}
+                                </div>
 
                             </div>
                         </li>
@@ -167,5 +164,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 
+    <script>
+        $.ajax({
+            type:'get',
+            url:`{{route('getWebsiteInfo')}}`,
+            dataType:'json',
+            success:function(data){
+                $('.company_name').html(data.name);
+            }
+        })
+        $.ajax({
+            type:'get',
+            url:`{{route('getContact')}}`,
+            dataType:'json',
+            success:function(data){
+                if (data.length!=0) {
+                    $('#alert-dot').removeClass('d-none');
+                    $('#no-noti').hide();
+                    $('#contact-noti').removeClass('d-none');
+                    $('#contact-info').html(`${data.length} unread customer report`);
+                }
+
+            }
+        })
+
+    </script>
+    @if (Auth::user()->position=='ticket-seller')
+        <script>
+            function orderCheck(){
+                $.ajax({
+                    type:'get',
+                    url:`{{route('admin#orderPendingGet')}}`,
+                    dataType:'json',
+                    success:function(data){
+                            if (data.length!=0) {
+                                $('#alert-dot').removeClass('d-none');
+                                $('#no-noti').hide();
+                                $('#order-noti').removeClass('d-none');
+                                $('#order-info').html(`${data.length} unresponse order.`);
+                            }
+                        }
+                    })
+            }
+
+            Pusher.logToConsole = false;
+
+            var pusher = new Pusher(`{{ env('PUSHER_APP_KEY') }}`, {
+            cluster: 'ap1'
+            });
+
+            var channel = pusher.subscribe('order-alert-channel');
+            channel.bind('order-alert-event', function(data) {
+                orderCheck();
+            });
+
+            orderCheck();
+        </script>
+    @endif
     @yield('script')
 </html>

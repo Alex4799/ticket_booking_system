@@ -15,7 +15,7 @@ Route::prefix('seller')->middleware(['auth','login_fail_check'])->group(function
 
     Route::prefix('product')->group(function () {
         Route::get('cart',[SellerController::class,'cart'])->name('seller#cart');
-        Route::post('checkout',[SellerController::class,'checkOutProduct'])->name('seller#checkOutProduct');
+        Route::post('check/out',[SellerController::class,'checkOutProduct'])->name('seller#checkOutProduct');
         Route::post('order',[SellerController::class,'orderProduct'])->name('seller#orderProduct');
    });
 });

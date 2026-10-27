@@ -1,0 +1,16 @@
+@extends('mail.layout')
+@section('title')
+    {{$mailData['title']}}
+@endsection
+@section('content')
+    <div class="p-3">
+        <h3>{{$mailData['title']}}</h3>
+        <p>{{$mailData['body']}}</p>
+        <div>
+            <p>{{$mailData['info']}}</p>
+        </div>
+        <div class="d-flex justify-content-center">
+            OTP - {{$mailData['otp']}}
+        </div>
+    </div>
+@endsection

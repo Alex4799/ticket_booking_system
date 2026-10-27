@@ -1,8 +1,10 @@
 <?php
 
+use App\Events\OrderAlertEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CinemaController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HallController;
 use App\Http\Controllers\InventoryController;
@@ -217,6 +219,7 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::get('view/{id}',[OrderController::class,'view'])->name('admin#orderView');
         Route::post('change/status',[OrderController::class,'changeStatus'])->name('admin#orderChangeStatus');
         Route::get('invoice/{id}',[OrderController::class,'invoice'])->name('admin#invoice');
+        Route::get('get',[OrderController::class,'orderPendingGet_admin'])->name('admin#orderPendingGet');
 
         Route::prefix('product')->group(function () {
             Route::get('/',[OrderController::class,'list_product'])->name('admin#orderListProduct');
@@ -295,5 +298,15 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::delete('/',[InventoryController::class,'delete'])->name('admin#inventoryDelete');
     });
 
+    Route::prefix('customer/report')->group(function () {
+        Route::get('list',[ContactController::class,'list_admin'])->name('admin#customerReportList');
+        Route::get('view/{id}',[ContactController::class,'view_admin'])->name('admin#customerReportView');
+        Route::post('reply',[ContactController::class,'reply_admin'])->name('admin#customerReportReply');
+    });
+
 });
 
+Route::get('test',function(){
+    event(new OrderAlertEvent(2));
+    dd('Success');
+});

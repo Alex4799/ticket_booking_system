@@ -10,6 +10,7 @@ use App\Models\MovieSeat;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Seat;
+use App\Models\WebsiteInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,6 +98,7 @@ class MoviePlanController extends Controller
             }
             MovieSeat::insert($moveSeat);
             DB::commit();
+            Cache::forget("all_movie_plan_{$data['movie_id']}");
             return back()->with(['success'=>'Movie plan create successful.']);
         } catch (\Exception $e) {
             logger($e);
@@ -130,7 +132,7 @@ class MoviePlanController extends Controller
                         ->get();
 
         $movie=Cache::rememberForever('movie_active', function () {
-            return Movie::where('active',1)->get();
+            return Movie::where('active',1)->orderBy('created_at','desc')->get();
         });
 
         $payment=Cache::rememberForever('payment_active', function () {
@@ -182,6 +184,7 @@ class MoviePlanController extends Controller
         }
         MoviePlan::where('id',$request->id)->update($data);
         $this->removeMoviePlan($request->id);
+        Cache::forget("all_movie_plan_{$data['movie_id']}");
         return back()->with(['success'=>"Movie Plan update successful."]);
     }
 
@@ -230,6 +233,46 @@ class MoviePlanController extends Controller
                 ->where('seats.seat_plan_id',$request->seat_plan)
                 ->update(['price'=>$request->price]);
         return back()->with(['success'=>'Seat price replace successful.']);
+    }
+
+    // customer
+
+    public function cinemaList_customer(){
+        $website=Cache::rememberForever('website_info', function () {
+            return WebsiteInfo::where('id',1)->first();
+        });
+        $cinema=Cache::rememberForever('cinema_active', function () {
+            return Cinema::where('active',1)->get();
+        });
+        return view('main.customer.time_table.cinemaList',compact('website','cinema'));
+    }
+
+    public function timeTable_customer($id){
+        $ttl=Carbon::now()->addMinutes(20);
+        $cinema=Cache::remember("cinema{$id}", $ttl, function () use($id) {
+            return Cinema::where('id',$id)->first();
+        });
+        $date=request('date')??Carbon::now()->toDateString();
+        $moviePlan=Cache::remember("cinema{$id}_movie_plan_$date", $ttl, function () use($id,$date) {
+            return MoviePlan::select('movie_plans.*','movies.poster','halls.name as hall_name')
+                        ->leftJoin('halls','movie_plans.hall_id','halls.id')
+                        ->leftJoin('movies','movie_plans.movie_id','movies.id')
+                        ->where('halls.cinema_id',$id)
+                        ->where('movie_plans.active',1)
+                        ->where('movie_plans.date',$date)
+                        ->orderBy('movie_plans.start_time')
+                        ->get();
+        });
+        $date=Cache::remember("cinema{$id}_movie_plan_date", $ttl, function () use($id) {
+            return MoviePlan::select('movie_plans.*')
+                        ->leftJoin('halls','movie_plans.hall_id','halls.id')
+                        ->where('halls.cinema_id',$id)
+                        ->where('movie_plans.active',1)
+                        ->where('date','>=',Carbon::now()->toDateString())
+                        ->orderBy('date')
+                        ->pluck('date','date');
+        });
+        return view('main.customer.time_table.list',compact('moviePlan','cinema','date'));
     }
 
     // private function

@@ -24,7 +24,7 @@
 
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css" />
 
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    {{-- <link rel="manifest" href="{{ asset('manifest.json') }}"> --}}
     <meta name="theme-color" content="#000000">
     <link rel="apple-touch-icon" href="{{ asset('images/icon-192x192.png') }}">
 
@@ -63,29 +63,7 @@
                     </button>
                 </div>
                 <div class="offcanvas-body">
-                    <ul class="navbar-nav m-auto" id="nav-order">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#home')}}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#movieList')}}">Movies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#cinemaList')}}">Time Table</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#promotionList')}}">Promotions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#orderCheckPage')}}">Ticket</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#aboutUsPage')}}">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('customer#contactPage')}}">Contact</a>
-                        </li>
-                    </ul>
+                    @include('main.customer.layout.nav')
                     <div class="" id="nav-icon">
                         <div class="dropdown">
                             <a class="btn border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -174,7 +152,7 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
 
     <!-- js  -->
-    <script>
+    {{-- <script>
         $(document).ready(function(){
             $.ajax({
                 type:'get',
@@ -190,7 +168,7 @@
                 }
             })
         })
-    </script>
+    </script> --}}
 
     <script type="importmap">
         {

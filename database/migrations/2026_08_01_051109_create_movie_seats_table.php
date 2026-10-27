@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('movie_plan_id');
             $table->integer('hall_id');
             $table->integer('seat_id');
+            $table->integer('price');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

@@ -125,6 +125,28 @@ class PromotionController extends Controller
         return response()->json($data, 200);
     }
 
+    //customer
+
+    public function list_customer(){
+        $promotion=Cache::remember('promotion_active', now()->addMinutes(10), function () {
+            return Promotion::where('active',1)->get();
+        });
+        return view('main.customer.promotion.list',compact('promotion'));
+    }
+
+    public function view_customer($id){
+        $promotion=Cache::remember("promotion{$id}",now()->addMinutes(30), function () use($id) {
+            return Promotion::select('promotions.*','cinemas.name as cinema_name','halls.name as hall_name',
+                            'movies.name as movie_name')
+                            ->leftJoin('cinemas','promotions.cinema_id','cinemas.id')
+                            ->leftJoin('halls','promotions.hall_id','halls.id')
+                            ->leftJoin('movies','promotions.movie_id','movies.id')
+                            ->where('promotions.id',$id)
+                            ->first();
+        });
+        return view('main.customer.promotion.view',compact('promotion'));
+    }
+
     // private function
     private function validation($request){
         Validator::make($request->all(),[
@@ -162,5 +184,6 @@ class PromotionController extends Controller
 
     private function removePromotion($id){
         Cache::forget("promotion{$id}");
+        Cache::forget("promotion_active");
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ConJobController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MovieSeatController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\WebsiteInfoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +25,6 @@ Route::prefix('conjob/check')->group(function () {
 });
 
 Route::get('cart/filter/product',[SellerController::class,'filterProduct'])->name('filterProduct');
+
+Route::get('get/website',[WebsiteInfoController::class,'getWebsite'])->name('getWebsiteInfo');
+Route::get('get/contact',[ContactController::class,'getContact'])->name('getContact');
