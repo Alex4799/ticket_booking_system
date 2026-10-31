@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'login_fail_check'=>LoginFailMiddleware::class,
             'verify_admin'=>VerifyAdminMiddleware::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'payment/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

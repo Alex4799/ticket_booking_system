@@ -83,7 +83,7 @@
                                         </span>
                             </div>
                             <div class="d-flex gap-1 py-2">
-                                @if ($order->status!=2)
+                                @if ($order->status==0)
                                     <div class="ms-2">
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#finishPayment">Change</button>
                                     </div>

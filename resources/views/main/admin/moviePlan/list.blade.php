@@ -61,6 +61,7 @@
                                 <thead>
                                     <tr>
                                         <th>Plan No</th>
+                                        <th>Plan ID</th>
                                         <th>Movie Name</th>
                                         <th>Show Date</th>
                                         <th>Start Time</th>
@@ -74,6 +75,7 @@
                                     @foreach ($moviePlan as $item)
                                     <tr>
                                         <td>{{$loop->index+1}}</td>
+                                        <td>{{$item->id}}</td>
                                         <td>{{$item->movie_name}}</td>
                                         <td>{{$item->date}}</td>
                                         <td>{{$item->start_time}}</td>

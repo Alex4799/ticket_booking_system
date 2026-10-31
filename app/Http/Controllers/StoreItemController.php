@@ -62,9 +62,10 @@ class StoreItemController extends Controller
     }
 
     public function update(Request $request){
+        // dd($request->all());
         Validator::make($request->all(),[
             'selling_price'=>'required',
-            'qty'=>'required',
+            'qty'=>$request->type?'':'required',
         ])->validate();
         DB::beginTransaction();
         try {
@@ -139,8 +140,8 @@ class StoreItemController extends Controller
             'profit'=>$request->selling_price-$request->purchase_price,
             'instock_level'=>$request->instock_level,
             'store_id'=>$request->store_id,
-            'type'=>$request->type,
-            'selling_type'=>$request->selling_type,
+            'type'=>$request->type??0,
+            'selling_type'=>$request->selling_type??0,
             'unit'=>$request->unit,
             'barcode'=>$request->barcode,
             'active'=>$request->active,

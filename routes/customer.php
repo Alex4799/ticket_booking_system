@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\MoviePlanController;
 use App\Http\Controllers\PromotionController;
 use Illuminate\Support\Facades\Route;
@@ -16,16 +17,21 @@ Route::prefix('movie')->group(function () {
     });
 
 Route::prefix('order/customer')->group(function () {
-    Route::get('/check/out',[CustomerController::class,'movie_checkout'])->name('customer#movieCheckout');
-    Route::get('/verify',[CustomerController::class,'vreify'])->name('customer#verify');
-    Route::post('/manual',[CustomerController::class,'manual_order'])->name('customer#manualOrder');
-    Route::post('/',[CustomerController::class,'order'])->name('customer#order');
-    Route::post('/book',[CustomerController::class,'book'])->name('customer#book');
-    Route::get('/summary/{id}',[CustomerController::class,'summary'])->name('customer#orderSummary');
-    Route::post('/finish',[CustomerController::class,'finish'])->name('customer#orderFinish');
-    Route::get('/check',[CustomerController::class,'orderCheckPage_customer'])->name('customer#checkOrderPage');
-    Route::post('/check',[CustomerController::class,'orderCheck_customer'])->name('customer#checkOrder');
+    Route::get('/check/out',[CustomerOrderController::class,'movie_checkout'])->name('customer#movieCheckout');
+    Route::get('/verify',[CustomerOrderController::class,'vreify'])->name('customer#verify');
+    Route::post('/manual',[CustomerOrderController::class,'manual_order'])->name('customer#manualOrder');
+    Route::post('/',[CustomerOrderController::class,'order'])->name('customer#order');
+    Route::post('/book',[CustomerOrderController::class,'book'])->name('customer#book');
+    Route::get('/summary/{id}',[CustomerOrderController::class,'summary'])->name('customer#orderSummary');
+    Route::post('/finish',[CustomerOrderController::class,'finish'])->name('customer#orderFinish');
+    Route::get('/check',[CustomerOrderController::class,'orderCheckPage_customer'])->name('customer#checkOrderPage');
+    Route::post('/check',[CustomerOrderController::class,'orderCheck_customer'])->name('customer#checkOrder');
+});
 
+Route::prefix('payment')->group(function () {
+    Route::get('/success',[CustomerOrderController::class,'paymentSuccess'])->name('customer#paymentSuccess');
+    Route::get('/cancel',[CustomerOrderController::class,'paymentCancel'])->name('customer#paymentCancel');
+    Route::post('/callback',[CustomerOrderController::class,'paymentCallback'])->name('customer#paymentCallback');
 });
 
 Route::prefix('time/table')->group(function () {

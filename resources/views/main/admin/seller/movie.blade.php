@@ -6,7 +6,7 @@
 @endphp
 
     <div class="d-flex justify-content-end p-2">
-        <a href="#" class="btn btn-primary">Late Ticket</a>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#late-ticket">Late Ticket</button>
     </div>
 
     <div>
@@ -74,5 +74,30 @@
         @endforeach
     </div>
     <!-- movie list end  -->
+
+    <div class="modal fade" id="late-ticket" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="late-ticketLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title d-block w-100 text-center" id="late-ticketLabel">Late Ticket</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('seller#lateTicket')}}" method="post" class="mt-1">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Enter Movie Plan Id</label>
+                            <input name="id" type="number" class="form-control @error('id') is-invalid @enderror" placeholder="Enter your movie plan id." required>
+                            @error('id')
+                                <small class="text-danger">{{$message}}</small>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 my-2">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection

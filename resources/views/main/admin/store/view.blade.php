@@ -116,7 +116,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="type" @if ($item->type) value="1" checked @endif>
+                                                                <input type="checkbox" name="type" @if ($item->type) value="on" checked @endif>
                                                                 <label for="">No Need Instock</label>
                                                             </div>
                                                             @if (Auth::user()->position!='store-manager')
@@ -150,7 +150,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="selling_type" @if ($item->selling_type) checked @endif>
+                                                                <input type="checkbox" name="selling_type" @if ($item->selling_type) value='on' checked @endif>
                                                                 <label for="">No Selling</label>
                                                             </div>
                                                             <div class="form-group mb-4">
@@ -242,7 +242,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="type" @if ($item->type) value="1" checked @endif>
+                                                                <input type="checkbox" name="type" @if ($item->type) value="on" checked @endif>
                                                                 <label for="">No Need Instock</label>
                                                             </div>
                                                             @if (Auth::user()->position!='store-manager')
@@ -276,7 +276,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group mb-4">
-                                                                <input type="checkbox" name="selling_type" @if ($item->selling_type) checked @endif>
+                                                                <input type="checkbox" name="selling_type" @if ($item->selling_type) value="on" checked @endif>
                                                                 <label for="">No Selling</label>
                                                             </div>
                                                             <div class="form-group mb-4">

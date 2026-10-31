@@ -276,9 +276,18 @@ class SellerController extends Controller
         return back()->with(['success'=>'Hall rental create successful.']);
     }
 
+    public function lateTicket(Request $request){
+        $moviePlan=MoviePlan::where('id',$request->id)->where('active',0)->first();
+        if ($moviePlan) {
+            return redirect()->route('seller#selectSeat',$moviePlan->id);
+        }else{
+            return back()->with(['warning'=>'Wrong movie plan id or this movie plan is still active']);
+        }
+    }
+
     // product
     public function cart(){
-        $cinema_id=request('cinema_id')??Auth::user()->location??2;
+        $cinema_id=request('cinema_id')??Auth::user()->location??1;
         $storeItem=StoreItem::select('store_items.*','products.image as product_image','products.category_id')
                             ->leftJoin('stores','store_items.store_id','stores.id')
                             ->leftJoin('products','store_items.product_id','products.id')
@@ -292,10 +301,11 @@ class SellerController extends Controller
         $cinema=Cache::rememberForever('cinema_active', function () {
             return Cinema::where('active',1)->get();
         });
-        return view('main.admin.seller.product.list',compact('storeItem','category','cinema'));
+        return view('main.admin.seller.product.list',compact('storeItem','category','cinema','cinema_id'));
     }
 
     public function checkOutProduct(Request $request){
+        $cinema_id=$request->cinema_id;
         $cart=json_decode($request->data);
         $totalPrice=0;
         foreach ($cart as $item) {
@@ -308,7 +318,7 @@ class SellerController extends Controller
         $payment=Cache::rememberForever('payment_active', function () {
             return Payment::where('payments.active',1)->get();
         });
-        return view('main.admin.seller.product.paymentInfo',compact('cart','totalPrice','payment'));
+        return view('main.admin.seller.product.paymentInfo',compact('cart','totalPrice','payment','cinema_id'));
     }
 
     public function orderProduct(Request $request){
@@ -323,7 +333,7 @@ class SellerController extends Controller
                 'product'=>$request->product,
                 'promotion_id'=>$request->promotion_id,
                 'promotion_price'=>$request->promotion_price,
-                'cinema_id'=>Auth::user()->location,
+                'cinema_id'=>$request->cinema_id,
                 'status'=>1,
             ]);
             $productItem=[];

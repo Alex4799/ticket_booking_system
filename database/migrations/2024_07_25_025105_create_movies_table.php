@@ -18,7 +18,7 @@ return new class extends Migration
             $table->json('genre')->nullable();
             $table->json('cast')->nullable();
             $table->string('director');
-            $table->json('cover')->nulable();
+            $table->json('cover')->nullable();
             $table->string('poster')->nullable();
             $table->string('release_date');
             $table->string('run_time');

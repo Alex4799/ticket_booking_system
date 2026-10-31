@@ -69,7 +69,7 @@
                     <div id="payment-option">
                         <h5>Payment Method</h5>
                         @foreach ($payment as $item)
-                            @if ($item->id!=2)
+                            @if ($item->id!=2 && ($item->cinema_id==null || $item->cinema_id==$cinema_id))
                                 <div class="px-4 mt-3 parents">
                                     <div class="payment">
                                         <div class="custom-radio d-flex align-items-center mb-1">
@@ -112,6 +112,7 @@
                             </div>
                         </div>
                         <span>
+                            <input type="hidden" name="cinema_id" value="{{$cinema_id}}">
                             <input type="hidden" name="payment_method" id="payment_method">
                             <input type="hidden" name="promotion_id" id="promotion_id">
                             <input type="hidden" name="promotion_price" id="promotion_price">
@@ -142,7 +143,7 @@
         let promo_code=$('#promo_code').val();
         let data={
                 promoCode:promo_code,
-                cinema_id:{{Auth::user()->location}},
+                cinema_id:`{{$cinema_id}}`,
                 hall_id:0,
                 movie_id:0
             }

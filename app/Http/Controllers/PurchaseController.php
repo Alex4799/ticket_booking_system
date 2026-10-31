@@ -137,7 +137,7 @@ class PurchaseController extends Controller
                                 ->where('store_id',$purchase->store_id)
                                 ->lockForUpdate()
                                 ->first();
-                                
+
             if (isset($storeItem)) {
                 $storeItem->qty+=$purchase->qty;
                 $storeItem->purchase_price=$purchase->price;
@@ -152,6 +152,8 @@ class PurchaseController extends Controller
                     'profit'=>0,
                     'instock_level'=>10,
                     'store_id'=>$purchase->store_id,
+                    'type'=>0,
+                    'selling_type'=>0,
                 ]);
             }
         }else{

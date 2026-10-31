@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\OrderAlertEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CinemaController;
@@ -304,9 +303,4 @@ Route::prefix('admin')->middleware(['auth','login_fail_check'])->group(function 
         Route::post('reply',[ContactController::class,'reply_admin'])->name('admin#customerReportReply');
     });
 
-});
-
-Route::get('test',function(){
-    event(new OrderAlertEvent(2));
-    dd('Success');
 });

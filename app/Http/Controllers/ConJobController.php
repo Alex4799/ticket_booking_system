@@ -29,7 +29,7 @@ class ConJobController extends Controller
         $current_date=now()->toDateString();
         $currentTime=now()->format('H:i');
         MoviePlan::where('active',1)
-                ->where('date','<',$current_date)
+                ->where('date','<=',$current_date)
                 ->where('end_time','<',$currentTime)
                 ->update(['active'=>0]);
         return response()->json(['status'=>'success'], 200);

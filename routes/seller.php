@@ -11,6 +11,7 @@ Route::prefix('seller')->middleware(['auth','login_fail_check'])->group(function
         Route::get('check/out',[SellerController::class,'checkOut'])->name('seller#checkOut');
         Route::post('order',[SellerController::class,'order'])->name('seller#order');
         Route::post('hall/rental',[SellerController::class,'orderHallRental'])->name('seller#orderHallRental');
+        Route::post('late/ticket',[SellerController::class,'lateTicket'])->name('seller#lateTicket');
     });
 
     Route::prefix('product')->group(function () {

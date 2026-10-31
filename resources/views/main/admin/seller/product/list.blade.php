@@ -105,6 +105,7 @@
                         </div>
                         <form action="{{route('seller#checkOutProduct')}}" method="post" class="d-flex justify-content-end me-3" id="order">
                             @csrf
+                            <input type="hidden" name="cinema_id" value="{{$cinema_id}}">
                             <input type="hidden" name="data" id="data">
                         </form>
                     </div>

@@ -127,6 +127,8 @@ class InventoryController extends Controller
                         'profit'=>0,
                         'instock_level'=>10,
                         'store_id'=>$inventory->receive_store_id,
+                        'type'=>0,
+                        'selling_type'=>0,
                     ]);
                 }
             }else if($status==2){

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('price');
             $table->string('seat_color');
             $table->string('image');
-            $table->integer('active')->default(0);
+            $table->integer('active')->default(0)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

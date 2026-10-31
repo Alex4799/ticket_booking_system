@@ -29,6 +29,8 @@ return new class extends Migration
             $table->integer('cinema_id');
             $table->json('genre')->nullable();
             $table->string('transaction_id')->nullable();
+            $table->string('transaction_reference_number')->nullable();
+            $table->string('signature')->nullable();
             $table->string('payment_slip')->nullable();
             $table->string('payment_type')->nullable();
             $table->string('transaction_fee')->nullable();
