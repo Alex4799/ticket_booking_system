@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Seat;
 use App\Models\SeatPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -32,8 +33,8 @@ class SeatPlanController extends Controller
 
     public function view($id){
         $seatPlan=$this->getSeatPlan($id);
-
-        return view('main.admin.seatPlan.view',compact('seatPlan'));
+        $seatCount=Seat::where('seat_plan_id',$id)->count();
+        return view('main.admin.seatPlan.view',compact('seatPlan','seatCount'));
     }
 
     public function update(Request $request){

@@ -28,6 +28,7 @@ class Movie extends Model
         'start_date',
         'end_date',
         'active',
+        'featured',
     ];
 
     protected $casts = [

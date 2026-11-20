@@ -15,6 +15,9 @@ class PromotionController extends Controller
 {
     public function list(){
         $promotion=Promotion::select('promotions.*','cinemas.name as cinema_name')
+                            ->when(request('search_key'),function($query){
+                                $query->where('promotions.name','like','%'.request('search_key').'%');
+                            })
                             ->leftJoin('cinemas','promotions.cinema_id','cinemas.id')
                             ->paginate(10);
         $cinema=Cache::rememberForever('cinema_active', function () {

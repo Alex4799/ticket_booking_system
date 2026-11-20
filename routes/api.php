@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConJobController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MovieSeatController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SellerController;
@@ -28,3 +29,12 @@ Route::get('cart/filter/product',[SellerController::class,'filterProduct'])->nam
 
 Route::get('get/website',[WebsiteInfoController::class,'getWebsite'])->name('getWebsiteInfo');
 Route::get('get/contact',[ContactController::class,'getContact'])->name('getContact');
+
+Route::get('home/movie',[CustomerController::class,'getHomeMovie']);
+Route::get('home/filter',[CustomerController::class,'getHomeFilter']);
+
+Route::get('get/cinema',[CustomerController::class,'getActiveCinema']);
+
+Route::get('get/movie',[CustomerController::class,'getActiveMovie']);
+
+Route::get('get/genre',[CustomerController::class,'getGenre']);

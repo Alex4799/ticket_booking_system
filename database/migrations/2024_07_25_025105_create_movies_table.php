@@ -29,8 +29,8 @@ return new class extends Migration
             $table->longText('summary');
             $table->string('start_date');
             $table->string('end_date');
-            $table->integer('active')->default(0);
-            $table->integer('featured')->default(0);
+            $table->integer('active')->default(0)->nullable();
+            $table->integer('featured')->default(0)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -26,7 +26,7 @@
                         <div class="accordion-body">
                             <div class="d-flex gap-1">
                                 @foreach ($item['hall'] as $hall)
-                                    <a href="{{route('admin#moviePlanList',$hall['id'])}}" class="btn btn-outline-success">{{$hall['name']}}</a>
+                                    <a href="{{route('admin#moviePlanList',$hall['id'])}}" class="btn btn-outline-success">{{$hall['name']}} @if ($hall['du_id']) (Copy) @endif</a>
                                 @endforeach
                             </div>
                         </div>

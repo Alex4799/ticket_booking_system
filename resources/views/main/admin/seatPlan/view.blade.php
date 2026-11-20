@@ -30,7 +30,7 @@
                                 <div class="col-md-7">
                                     <h5 class="py-2">Name - {{$seatPlan->name}}</h5>
                                     <h5 class="py-2">Price - {{$seatPlan->price}} MMK</h5>
-                                    <h5 class="py-2">Seat Count - {{$seatPlan->seat_count}}</h5>
+                                    <h5 class="py-2">Seat Count - {{$seatCount}}</h5>
                                     <h5 class="py-2">Seat Color - <input type="color" value="{{$seatPlan->seat_color}}" disabled></h5>
                                     <h5 class="py-2">Acitve - @if ($seatPlan->active==0)
                                                     <span class="text-danger">Not Active</span>

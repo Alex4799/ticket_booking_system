@@ -17,7 +17,7 @@ class StoreController extends Controller
     public function list(){
         $store=Store::select('stores.*','users.name as manager_name','cinemas.name as cinema_name')
                     ->when(request('search_key'),function($query){
-                        $query->where('name','like','%'.request('search_key').'%');
+                        $query->where('stores.name','like','%'.request('search_key').'%');
                     })
                     ->leftJoin('users','stores.manager','users.id')
                     ->leftJoin('cinemas','stores.cinema_id','cinemas.id')
@@ -35,7 +35,7 @@ class StoreController extends Controller
         $data=$this->changeFormat($request);
         $store=Store::create($data);
         $this->removeCache($store->id);
-        return redirect()->route('admin#storeView',$store->id)->with(['success'=>'Store cerate successful.']);
+        return redirect()->route('admin#storeView',$store->id)->with(['success'=>'Store create successful.']);
     }
 
     public function view($id){

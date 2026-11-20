@@ -189,5 +189,82 @@ class CustomerController extends Controller
         return view('main.customer.about.aboutUs',compact('website','user'));
     }
 
+    // api
+    public function getHomeMovie(){
+        $data = Cache::remember('home_movies', now()->addHours(6), function () {
+            $today = now()->toDateString();
+
+            return [
+                'now' => Movie::where('active', 1)
+                    ->where('release_date', '<=', $today)
+                    ->get(),
+
+                'coming' => Movie::where('active', 1)
+                    ->where('release_date', '>', $today)
+                    ->get(),
+
+                'popular' => Movie::select('movies.id', 'movies.poster', 'movies.rating', 'movies.name',
+                    DB::raw('COUNT(orders.id) as order_count'))
+                    ->leftJoin('orders','movies.name','orders.movie_name')
+                    ->where('movies.featured', 1)
+                    ->where('movies.active', 1)
+                    ->groupBy('movies.id')
+                    ->orderBy('order_count','desc')
+                    ->limit(5)
+                    ->get(),
+            ];
+        });
+        return response()->json($data, 200);
+    }
+
+    public function getHomeFilter(){
+        $data = Cache::remember('movie_plan_filter', now()->addMinutes(30), function () {
+            $activePlans = MoviePlan::query()
+                ->where('movie_plans.active', 1)
+                ->join('movies', 'movie_plans.movie_id', '=', 'movies.id');
+
+            return [
+                'movie' => (clone $activePlans)
+                    ->select('movies.id as movie_id', 'movies.name as movie_name')
+                    ->distinct()
+                    ->get()
+                    ->toArray(),
+
+                'date' => (clone $activePlans)
+                    ->distinct()
+                    ->pluck('movie_plans.date')
+                    ->toArray(),
+            ];
+        });
+        return response()->json($data, 200);
+    }
+
+    public function getActiveCinema(){
+        $data=Cache::rememberForever('cinema_active', function () {
+            return Cinema::where('active',1)->get();
+        });
+        return response()->json($data, 200);
+    }
+
+    public function getActiveMovie(){
+        $ttl=Carbon::now()->addDay();
+        $data=Cache::remember('movie_active',$ttl, function () {
+            return Movie::where('active',1)->orderBy('created_at','desc')->get();
+        });
+        logger($data);
+        return response()->json($data, 200);
+    }
+
+    public function getGenre(){
+        $ttl=Carbon::now()->addDay();
+        $data=Cache::remember('active_movie_genre', $ttl, function () {
+            return Movie::select('genres.*')
+                            ->leftJoin('genres','movies.main_genre','genres.id')
+                            ->where('active',1)
+                            ->groupBy('movies.main_genre')
+                            ->get();
+        });
+        return response()->json($data, 200);
+    }
 
 }

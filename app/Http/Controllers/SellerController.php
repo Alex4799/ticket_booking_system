@@ -129,6 +129,9 @@ class SellerController extends Controller
 
     public function checkOut(Request $request){
         $seat=json_decode($request->seats);
+        if (count($seat)==0) {
+            return back()->with(['warning'=>'Please select seat first.']);
+        }
         $seatId=[];
         $totalPrice=0;
         foreach ($seat as $item) {

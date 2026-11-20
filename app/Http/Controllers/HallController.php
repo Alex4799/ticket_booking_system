@@ -18,7 +18,7 @@ class HallController extends Controller
     public function list(){
         $hall=Hall::select('halls.*','cinemas.name as cinema_name')
                         ->when(request('search_key'),function($query){
-                            $query->where('name','like','%'.request('search_key').'%');
+                            $query->where('halls.name','like','%'.request('search_key').'%');
                         })
                         ->when(Auth::user()->position=='manager',function($query){
                             $query->where('cinema_id',Auth::user()->location);
@@ -52,6 +52,10 @@ class HallController extends Controller
                     ->where('hall_id',$id)
                     ->get();
         });
+        // $seat=Seat::select('seats.*','seat_plans.name as seat_plan_name','seat_plans.seat_color as seat_color','seat_plans.price')
+        //             ->leftJoin('seat_plans','seats.seat_plan_id','seat_plans.id')
+        //             ->where('hall_id',$id)
+        //             ->get();
         $summary = $seat->groupBy('seat_plan_name')->map(function ($group) {
                         $first = $group->first();
                         return [
@@ -125,6 +129,7 @@ class HallController extends Controller
                             'seat_plan_id'=>$request->to,
                             'updated_at'=>now(),
                         ]);
+            $this->removeHallCache($request->hall_id);
             DB::commit();
             return back()->with(['success'=>"Successfully replaced seat plan for {$seatCount} seat(s)."]);
         } catch (\Exception $e) {
@@ -155,7 +160,9 @@ class HallController extends Controller
     // cache
 
     private function removeHallCache($id){
+        logger($id);
         Cache::forget("hall{$id}");
+        Cache::forget("hall{$id}_seat");
         Cache::forget('hall_active');
     }
 

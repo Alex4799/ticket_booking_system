@@ -27,7 +27,7 @@ class MoviePlanController extends Controller
                     })
                     ->get()
                     ->map(function($item){
-                        $item->hall=Hall::select('halls.id','halls.name')->where('cinema_id',$item->id)->get()->toArray();
+                        $item->hall=Hall::select('halls.id','halls.name','du_id')->where('cinema_id',$item->id)->get()->toArray();
                         return $item->toArray();
                     });
         return view('main.admin.moviePlan.cinema',compact('cinema'));

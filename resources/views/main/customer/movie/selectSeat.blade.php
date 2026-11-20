@@ -85,7 +85,7 @@
                 <div class="swiper-wrapper">
                     @foreach ($seatPlan as $item)
                         <div class="swiper-slide">
-                            <img src="{{Storage::url('seatPlan/'.$item['image'])}}" class="w-100 d-block" alt="">
+                            <img src="{{Storage::url('seat_plan/'.$item['image'])}}" class="w-100 d-block" alt="">
                             <p class="text-center">{{$item['seat_plan_name']}}</p>
                         </div>
                     @endforeach
@@ -330,6 +330,12 @@
                         },
                     })
                 }else{
+                    $('#seat-alert').html(`
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            Unfortunately this seat is selected by someone. Please choose another seat.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
                     $('#loadingOverLay').addClass('d-none');
                 }
             })

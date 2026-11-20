@@ -22,6 +22,9 @@ class CustomerOrderController extends Controller
 {
     public function movie_checkout(Request $request){
         $seat=json_decode($request->seats);
+        if (count($seat)==0) {
+            return back()->with(['warning'=>'Please select seat first.']);
+        }
         $seatId=[];
         $totalPrice=0;
         foreach ($seat as $item) {
@@ -181,7 +184,7 @@ class CustomerOrderController extends Controller
             $data=$this->orderFormat($request);
             $data['status']=4;
             $this->changeStatus($seatId,2,$request->movie_plan_id);
-            $order=Order::create($datas);
+            $order=Order::create($data);
             DB::commit();
             event(new OrderAlertEvent($order->id));
             Mail::to($order->user_email)->send(new OrderMail([

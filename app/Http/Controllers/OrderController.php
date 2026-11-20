@@ -154,9 +154,10 @@ class OrderController extends Controller
     public function view_product($id){
         $order=Cache::remember("product_order_{$id}", now()->addMinutes(15), function () use($id) {
             return ProductOrder::select('product_orders.*','promotions.name as promotion_name','cinemas.name as cinema_name',
-                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount')
+                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount','payments.name as payment_name')
                             ->leftJoin('promotions','product_orders.promotion_id','promotions.id')
                             ->leftJoin('cinemas','product_orders.cinema_id','cinemas.id')
+                            ->leftJoin('payments','product_orders.payment_method','payments.id')
                             ->where('product_orders.id',$id)
                             ->first();
         });
@@ -167,9 +168,10 @@ class OrderController extends Controller
     public function changeStatus_product(Request $request){
         $order=Cache::remember("product_order_{$request->id}", now()->addMinutes(15), function () use($request) {
             return ProductOrder::select('product_orders.*','promotions.name as promotion_name','cinemas.name as cinema_name',
-                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount')
+                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount','payments.name as payment_name')
                             ->leftJoin('promotions','product_orders.promotion_id','promotions.id')
                             ->leftJoin('cinemas','product_orders.cinema_id','cinemas.id')
+                            ->leftJoin('payments','product_orders.payment_method','payments.id')
                             ->where('product_orders.id',$request->id)
                             ->first();
         });
@@ -195,9 +197,10 @@ class OrderController extends Controller
     public function invoiceProduct($id){
         $order=Cache::remember("product_order_{$id}", now()->addMinutes(15), function () use($id) {
             return ProductOrder::select('product_orders.*','promotions.name as promotion_name','cinemas.name as cinema_name',
-                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount')
+                            'promotions.percentage as promotion_percentage','promotions.amount as promotion_amount','payments.name as payment_name')
                             ->leftJoin('promotions','product_orders.promotion_id','promotions.id')
                             ->leftJoin('cinemas','product_orders.cinema_id','cinemas.id')
+                            ->leftJoin('payments','product_orders.payment_method','payments.id')
                             ->where('product_orders.id',$id)
                             ->first();
         });

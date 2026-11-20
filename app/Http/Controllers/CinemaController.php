@@ -41,7 +41,11 @@ class CinemaController extends Controller
 
     public function view($id){
         $cinema=$this->getCinemaCache($id);
-        $hall=Hall::where('cinema_id',$id)->paginate();
+        $hall=Hall::where('cinema_id',$id)
+                    ->when(request('hall_search'),function($query){
+                        $query->where('name','like','%'.request('hall_search').'%');
+                    })
+                    ->paginate(10);
         return view('main.admin.cinema.view',compact('cinema','hall'));
     }
 
@@ -120,7 +124,6 @@ class CinemaController extends Controller
             'name'=>'required',
             'location'=>'required',
             'contact'=>'required',
-            'image' => 'required'
         ])->validate();
     }
 

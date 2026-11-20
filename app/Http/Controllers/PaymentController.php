@@ -16,6 +16,9 @@ class PaymentController extends Controller
             return Cinema::where('active',1)->get();
         });
         $payment=Payment::select('payments.*','cinemas.name as cinema_name')
+                        ->when(request('search_key'),function($query){
+                            $query->where('payments.name','like','%'.request('search_key').'%');
+                        })
                         ->leftJoin('cinemas','payments.cinema_id','cinemas.id')
                         ->paginate(10);
         return view('main.admin.payment.list',compact('payment','cinema'));

@@ -36,7 +36,7 @@ class ConJobController extends Controller
     }
 
     public function checkMovieSeat(){
-        $minutesAgo = Carbon::now()->subMinutes(2);
+        $minutesAgo = Carbon::now()->subMinutes(20);
         $expiredSeats = MovieSeat::select('id','movie_plan_id')
             ->where('status', 1)
             ->where('updated_at', '<=', $minutesAgo)
