@@ -3,9 +3,9 @@
     Recycle Bin
 @endsection
 @section('content')
-<main class="content px-3 mb-5">
+<main class="content p-2 mb-5">
     <div class="container-fluid">
-        <div>
+        <div class="table-bg">
             <div>
                 <div class="table-responsive">
                     <table class="table">
@@ -21,38 +21,37 @@
                                 <td>1</td>
                                 <td>Cinema</td>
                                 <td>
-                                    <a href="{{route('admin#recycleView','cinema')}}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="{{route('admin#recycleView','cinema')}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>2</td>
                                 <td>Hall</td>
                                 <td>
-                                    <a href="{{route('admin#recycleView','hall')}}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="{{route('admin#recycleView','hall')}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>3</td>
                                 <td>Genre</td>
                                 <td>
-                                    <a href="{{route('admin#recycleView','genre')}}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="{{route('admin#recycleView','genre')}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>4</td>
-                                <td>Movie</td>
+                                <td>Movies</td>
                                 <td>
-                                    <a href="{{route('admin#recycleView','movie')}}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="{{route('admin#recycleView','movie')}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>5</td>
                                 <td>Seat Plan</td>
                                 <td>
-                                    <a href="{{route('admin#recycleView','seat_plan')}}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="{{route('admin#recycleView','seat_plan')}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>

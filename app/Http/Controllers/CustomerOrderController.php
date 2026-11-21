@@ -60,9 +60,10 @@ class CustomerOrderController extends Controller
     }
 
     public function vreify(Request $request){
-        $company=Cache::rememberForever('website', function () {
-            return WebsiteInfo::where('id',1)->first();
-        });
+        // $company=Cache::rememberForever('website', function () {
+        //     return WebsiteInfo::where('id',1)->first();
+        // });
+        $company=WebsiteInfo::where('id',1)->first();
         if ($request->status=='pending') {
             $body="Hello $request->username. Your email has a order of seat in $company->name Website.
              Please verify your info.";

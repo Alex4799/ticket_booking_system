@@ -4,112 +4,165 @@
     use App\Helpers\TimeHelper;
     use Carbon\Carbon;
 @endphp
-
-<section class="container">
-    <div class="pt-2">
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{route('seller#productList')}}">List</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Summary</li>
-            </ol>
-        </nav>
-    </div>
-    <div class="row mb-5">
-        <div class="col-md-6 offset-md-3">
-            <div id="booking-summary" class="p-2 rounded">
-                <h5>Order Summary</h5>
-                <div class="px-1 summary-content">
-                    <div class="py-2">
-                        <h6 class="mt-1">Order Code : PID - {{$order->id}}</h6>
-                    </div>
-                    <div id="order-date">
-                        <h6 class="mt-1">Order Date : PID - {{$order->created_at}}</h6>
-                    </div>
-                    <div class=" py-2">
-                        <h6 class="mt-1" >Cinema : {{$order->cinema_name}}</h6>
-                    </div>
-                    <div class="mt-3">
-                        <div class=" d-flex gap-2 flex-wrap mt-1">
-                            <table class="table table-primary" style="font-size: 11pt;">
-                                <thead class="text-dark">
-                                  <tr>
-                                    <th scope="col">Product Name</th>
-                                    <th scope="col">Qty</th>
-                                    <th scope="col">Price</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($order->product as $item)
-                                        <tr>
-                                            <td>{{$item['product_name']}}</td>
-                                            <td>{{$item['qty']}}</td>
-                                            <td>{{$item['qty']*$item['product_price']}} MMK</td>
-                                        </tr>
-                                    @endforeach
-                                    @if ($order->promotion_id!=null)
-                                        <tr>
-                                            <td colspan="2">{{$order->promotion_name}}</td>
-                                            @if ($order->promotion_amount==null)
-                                                <td>- {{$order->promotion_percentage}} %</td>
-                                            @else
-                                                <td>- {{$order->promotion_amount}} MMK</td>
-                                            @endif
-                                        </tr>
-                                    @endif
-                                    <tr class="table-active">
-                                        <td colspan="2">Total</td>
-                                        <td>{{$order->total_price}} MMK</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+<div class="content p-2">
+    <div class="container-fluid">
+        <div>
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('seller#cart')}}">Seller</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Summary</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 order-lg-2 mb-4">
+                <div class="seller-order-detail">
+                    <div class="title">
+                        <div>
+                            <div>
+                                <i class="fa-solid fa-info-circle me-2"></i>
+                                <span class="fw-bold">Order Details</span>
+                            </div>
+                            <span class="order-id">PID - {{$order->id}}</span>
+                        </div>
+                        <div>
+                            <h6>
+                                @if ($order->status==0)
+                                    <span class="status pending">Pending</span>
+                                @elseif ($order->status==1)
+                                    <span class="status success">Success</span>
+                                @elseif ($order->status==2)
+                                    <span class="status reject">Reject</span>
+                                @elseif ($order->status==3)
+                                    <span class="status reject">Cancel</span>
+                                @endif
+                            </h6>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4 py-2">
-                            <label>Cost</label>
-                            <h6 class="mt-1" style="font-size: 12pt;">{{$order->total_price}} Kyats</h6>
+                    <div>
+                        <div class="movie-profile mb-4">
+                            <div>
+                                <i class="fa-solid fa-building me-2"></i>
+                                {{$order->cinema_name}}
+                            </div>
                         </div>
-                        @if ($order->payment_method==1)
-                            <div class="col-sm-4 py-2">
-                                <label>Pay Amount</label>
-                                <h6 class="mt-1" style="font-size: 12pt;">{{$order->pay_amount}} Kyats</h6>
+                        <div class="method-box">
+                            <div class="d-flex align-items-center border-bottom">
+                                <h6>
+                                    <i class="fa-solid fa-calculator me-2"></i>
+                                    Summary
+                                </h6>
                             </div>
-                            <div class="col-sm-4 py-2">
-                                <label>Change</label>
-                                <h6 class="mt-1" style="font-size: 12pt;">{{$order->change}} Kyats</h6>
+                            <div class="p-2">
+                                <div class="d-flex justify-content-between py-2">
+                                    <label>Total Price</label>
+                                    <strong>{{number_format($order->total_price)}} Ks</strong>
+                                </div>
+                                @if ($order->payment_method == 1)
+                                    <div class="d-flex justify-content-between py-2">
+                                        <label>Pay Amount</label>
+                                        <strong>{{number_format($order->pay_amount)}} Ks</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-2">
+                                        <label>Change</label>
+                                        <strong>{{number_format($order->change)}} Ks</strong>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
+                        </div>
+                        <div class="method-box">
+                            <div class="p-2">
+                                <div class="mb-1">
+                                    <label>Order Date</label>
+                                    <p>{{Carbon::parse($order->created_at)->format('F j, Y - h:i A')}}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-2">
-                        <label>Status</label>
-                        <h6>
-                            @if ($order->status==0)
-                                <span class=" text-warning">Pending</span>
-                            @elseif ($order->status==1)
-                                <span class=" text-success">Success</span>
-                            @elseif ($order->status==2)
-                                <span class=" text-danger">Reject</span>
-                            @elseif ($order->status==3)
-                                <span class=" text-danger">Cancel</span>
+                </div>
+            </div>
+            <div class="col-lg-8 order-lg-1 mb-4">
+                <div class="seller-order-detail pb-4">
+                    <div class="title flex-wrap gap-3 mb-3">
+                        <div>
+                            <div>
+                                <i class="fa-solid fa-shopping-cart me-2"></i>
+                                <span class="fw-bold">Product Items</span>
+                            </div>
+                        </div>
+                        <div>
+                            @if ($order->ticket_status==1)
+                                <button class="btn btn-secondary generate-success disabled">
+                                    <i class="fa-solid fa-square-check me-1 text-white"></i>
+                                    Invoice Generated
+                                </button>
+                            @else
+                                <a href="{{route('admin#invoiceProduct',$order->id)}}"  target="_blank" class="generate-invoice">
+                                    <i class="fa-regular fa-file-lines me-2 text-white"></i>Generate Invoice
+                                </a>
                             @endif
-                        </h6>
+                        </div>
                     </div>
-                    @if ($order->ticket_status==1)
-                        <div class="py-2 d-flex justify-content-end">
-                            <button class="btn btn-secondary">Invoice Generated</button>
+                    <div>
+                        <div>
+                            <div class="px-2">
+                                <div class="row text-muted small fw-semibold px-2 pb-2 border-bottom">
+                                    <div class="col-7">Products</div>
+                                    <div class="col-2 text-center">Qty</div>
+                                    <div class="col-3 text-end">Amount (Ks)</div>
+                                </div>
+                                <div class="my-2">
+                                    @foreach ($order->product as $item)
+                                        <div class="row align-items-center p-2 @if (!$loop->last) border-bottom border-light @endif">
+                                            <div class="col-7">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fa-solid fa-square me-3" style="font-size: 4pt;"></i>
+                                                    <div>
+                                                        <h6 class="mb-0" style="max-width: 100%; font-size: 15px;">
+                                                            {{$item['product_name']}}
+                                                        </h6>
+                                                        <div class="text-muted small">
+                                                            {{number_format($item['product_price'])}} Ks
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <h6 class="mb-0" style="font-size: 15px;">
+                                                    {{$item['qty']}}
+                                                </h6>
+                                            </div>
+                                            <h6 class="col-3 text-end mb-0" style="font-size: 15px;">
+                                                {{number_format( $item['product_price'] * $item['qty'] )}}
+                                            </h6>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @if ($order->promotion_id!=null)
+                                <div class="discount-card">
+                                    <div class="promo-name">
+                                        <i class="fa-solid fa-tag me-1"></i> {{$order->promotion_name}}
+                                    </div>
+                                    <div class="promo-price">
+                                        @if ($order->promotion_amount==null)
+                                            - {{$order->promotion_percentage}} %
+                                        @else
+                                            - {{number_format($order->promotion_amount)}} Ks
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                                <strong>Total Price</strong>
+                                <h5 class="mt-1 total-success" style="font-size: 13pt;">{{number_format($order->total_price)}} Ks</h5>
+                            </div>
                         </div>
-                    @else
-                        <div class="py-2 d-flex justify-content-end">
-                            <a href="{{route('seller#productOrderGetInvoice',$order->id)}}" target="_blank" class="btn btn-success">Generate Invoice</a>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-@endsection
-@section('script')
+</div>
 
 @endsection

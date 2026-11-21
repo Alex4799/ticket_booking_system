@@ -90,7 +90,7 @@
                     <strong class="d-block">Our Social Page</strong>
                     @if (count($social)!=0)
                         <div class="d-flex align-items-center mt-4">
-                            <div class="d-flex ms-4 mb-1" id="footer-icon">
+                            <div class="d-flex me-4 mb-1" id="footer-icon">
                                 @foreach ($social as $item)
                                     <a href="{{$item->link}}"><img src="{{Storage::url('social/'.$item->logo)}}" class="w-100 img-thumbnail" alt=""></a>
                                 @endforeach

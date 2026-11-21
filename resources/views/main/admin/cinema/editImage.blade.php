@@ -3,74 +3,83 @@
     Cinema
 @endsection
 @section('content')
-    <main class="content px-3 pt-3 mb-5">
+    <main class="content p-2 mb-5">
         <div class="container-fluid">
             <div>
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{route('admin#cinemaList')}}">List</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('admin#cinemaView',$cinema->id)}}">View</a></li>
-                    <li class="breadcrumb-item active">Edit Image</li>
+                        <li class="breadcrumb-item"><a href="{{route('admin#cinemaList')}}">List</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin#cinemaView',$cinema->id)}}">View</a></li>
+                        <li class="breadcrumb-item active">Edit Image</li>
                     </ol>
                 </nav>
-            </div><!-- End Page Title -->
-            <div class="card mt-4 border-0 shadow">
-                <div class="rounded p-3">
-                    <h4 class="card-title text-center">Edit Cinema Image</h4>
-                    <div class=" d-flex justify-content-end">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Add Image</button>
+            </div>
+
+            <div class="shadow-container-box">
+                <div class="title-page">
+                    <h5>Cinema Images</h5>
+                    <div>
+                        <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#add"><i class="fa-solid fa-plus-square me-2"></i>Add Image</button>
                     </div>
-                    <div class="row p-2">
-                        @foreach ($cinema->image as $key=>$item)
-                            <div class="col-md-3 nav-item p-2 mb-4">
+                </div>
+                <div class="row cinema-images">
+                    @foreach ($cinema->image as $key=>$item)
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="image-cards">
                                 <form action="{{route('admin#cinemaImageUpdate')}}" method="post" enctype="multipart/form-data" class="parents">
                                     @csrf
                                     @method('PATCH')
-                                    <div class="py-2">
-                                        <img src="{{Storage::url('cinema/'.$item)}}" alt="" id="image" class="w-100 rounded img-thumbnail">
+                                    <div class="img-content">
+                                        <a href="{{route('admin#cinemaImageDelete',[$cinema->id,$key])}}" class="btn btn-sm btn-danger py-0" style="font-size: 9pt;"><i class="fa-solid fa-xmark"></i></a>
+                                        <img src="{{Storage::url('cinema/'.$item)}}" alt="" id="image" class="rounded img-thumbnail">
                                     </div>
                                     <div>
                                         <input type="hidden" name="id" value="{{$cinema->id}}">
                                         <input type="hidden" name="index" value="{{$key}}">
                                     </div>
-                                    <div class="py-2">
-                                        <input type="file" name="image" class="form-control input_image">
+                                    <div class="mt-2">
+                                       <input type="file" name="image" class="input_image form-control" style="font-size: 11pt;">
                                     </div>
-                                    <div class="d-flex justify-content-end gap-1">
-                                        <button class="btn btn-outline-primary me-2">Update</button>
-                                        <a href="{{route('admin#cinemaImageDelete',[$cinema->id,$key])}}" class="btn btn-outline-danger">Remove</a>
+                                    <div class="mt-3">
+                                        <button type="submit" class="action-btn w-100" disabled>Update</button>
                                     </div>
                                 </form>
                             </div>
-                        @endforeach
-                        <div class="col-md-3 nav-item p-2 d-none" id="add_form">
-
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
+
+            {{-- modal  --}}
             <div class="modal fade" id="add" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title d-block w-100 text-center" id="addLabel">Add Image</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 class="modal-title d-block w-100 text-center" id="addLabel">Add Image</h5>
+                            <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form action="{{route('admin#cinemaImageCreate')}}" method="post" enctype="multipart/form-data" class="parents">
                                 @csrf
-                                <div class="py-2">
-                                    <img src="{{asset('image/placeholder.webp')}}" alt="" id="image" class="w-100 rounded img-thumbnail">
+                                <div class="row form-group mb-4 align-items-center">
+                                    <div class="col-sm-6">
+                                        <label for="" class="mb-1">Image</label>
+                                        <div>
+                                            <img src="{{asset('image/placeholder.webp')}}" alt="image" class="img-thumbnail" id="image">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="cover_image" class="file-pen-logo mt-3">
+                                            <span><i class="fa-solid fa-upload me-1"></i> Upload Image</span>
+                                        </label>
+                                        <input type="file" name="image" class="d-none" id="cover_image">
+                                    </div>
                                 </div>
                                 <div>
                                     <input type="hidden" name="id" value="{{$cinema->id}}">
                                 </div>
-                                <div class="py-2">
-                                    <input type="file" name="image" class="form-control input_image">
-                                </div>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <button type="submit" class="btn btn-outline-primary me-2">Add</button>
-                                    <button type="button" id="close_form" class="btn btn-outline-danger">Close</button>
+                                <div class="d-flex align-items-center my-2">
+                                    <button type="submit" class="action-btn w-100"><i class="fa-solid fa-square-plus me-2"></i>Add</button>
                                 </div>
                             </form>
                         </div>
@@ -86,8 +95,38 @@
             $('.input_image').change(function(){
                 $parents=$(this).parents('.parents')
                 $parents.find('#image').attr("src",window.URL.createObjectURL(this.files[0]));
-                // document.getElementById('image').src = window.URL.createObjectURL(this.files[0]);
-            })
-        })
+            });
+
+            $('#cover_image').change(function(){
+                $parents=$(this).parents('.parents');
+                $parents.find('#image').attr("src",window.URL.createObjectURL(this.files[0]));
+            });
+        });
+        
+
+        // updatebtn disabled check
+        const forms = document.querySelectorAll('.image-cards');
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll('input');
+            const button = form.querySelector('.action-btn');
+            const initialValues = {};
+            inputs.forEach(input => {
+                initialValues[input.name] = input.value;
+            });
+            function checkUpdateValueForBtn() {
+                let hasChanged = false;
+                inputs.forEach(input => {
+                    if (input.value != initialValues[input.name]) {
+                        hasChanged = true;
+                    }
+                });
+                button.disabled = !hasChanged;
+            }
+            inputs.forEach(input => {
+                input.addEventListener('input', checkUpdateValueForBtn);
+                input.addEventListener('change', checkUpdateValueForBtn);
+            });
+            checkUpdateValueForBtn();
+        });
     </script>
 @endsection

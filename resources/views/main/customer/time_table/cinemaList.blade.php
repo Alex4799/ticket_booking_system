@@ -12,7 +12,7 @@
             <div class="my-5">
                 @foreach ($cinema as $item)
                     <a href="{{route('customer#timeTable',$item->id)}}">
-                        <span><i class="fa-solid fa-location-dot me-2"></i> {{$item->name}}</span>
+                        <span><i class="fa-solid fa-building me-2"></i> {{$item->name}}</span>
                         <span class="ms-5"><i class="fa-solid fa-angle-right"></i></span>
                     </a>
                 @endforeach

@@ -51,7 +51,11 @@ class StoreController extends Controller
         });
         $storeManager=User::where('position','manager')->orWhere('position','store-manager')->get();
 
-        $storeItem=StoreItem::where('store_id',$id)->get();
+        $storeItem=StoreItem::where('store_id',$id)
+                    ->when(request('search_key'),function($query){
+                        $query->where('product_name','like','%'.request('search_key').'%');
+                    })
+                    ->get();
 
         $product=Cache::rememberForever('product_active', function () {
             return Product::select('products.*','product_categories.name as category_name')

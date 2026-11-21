@@ -1,13 +1,13 @@
 @extends('main.admin.layout.master')
 @section('title')
-    Order
+    Ticket Order
 @endsection
 @section('content')
 @php
     use App\Helpers\TimeHelper;
     use Carbon\Carbon;
 @endphp
-<main class="content px-3 py-3 mb-5">
+<main class="content p-2 mb-5">
     <div class="container-fluid">
         <div>
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -18,205 +18,276 @@
             </nav>
         </div>
         <div class="row">
-            <div class="col-md-10 offset-md-1 card border-0 shadow p-2">
-                <div class="card-body">
-                    <h4 class="py-2 text-center">Order Detail</h4>
-                    <div class="d-flex justify-content-around flex-wrap gap-1">
-                        <div class="py-2">
-                            <div class="py-2">
-                                Order ID - {{$order->id}}
-                            </div>
-                            <div class="py-2">
-                                Total Price - {{$order->total_price}} MMK
-                            </div>
-                            <div class="py-2">
-                                Payment Method - {{$order->payment_name}}
-                            </div>
-                            @if ($order->payment_name=='UAB')
-                                <div class="py-2">
-                                    Payment Type - {{$order->payment_type}}
-                                </div>
-                                <div class="py-2">
-                                    Transaction Id - {{$order->transaction_id}}
-                                </div>
-                            @endif
-                            <div class="py-2">
-                                Movie - {{$order->movie_name}}
-                            </div>
-                            <div class="py-2">
-                                Date - {{Carbon::parse($order->date)->format('l, j, m, Y')}}
-                            </div>
-                            <div class="py-2">
-                                Time - {{Carbon::parse($order->start_time)->format('h:i:A')}}
-                            </div>
-                            @if ($order->payment_method==1)
-                                <div class="py-2">
-                                    Pay Amount - {{$order->pay_amount}} Kyats
-                                </div>
-                                <div class="py-2">
-                                    Change - {{$order->change}} Kyats
-                                </div>
-                            @endif
-                        </div>
-                        <div class="py-2">
-                            <div class="py-2">
-                                User Name - {{$order->user_name}}
-                            </div>
-                            <div class="py-2">
-                                User Email - {{$order->user_email}}
-                            </div>
-                            <div class="py-2">
-                                User Phone - {{$order->user_phone}}
-                            </div>
-                            <div class="py-2">
-                                Cinema - {{$order->cinema_name}}
-                            </div>
-                            <div class="py-2">
-                                Hall - {{$order->hall_name}}
-                            </div>
-                            <div class="py-2">
-                                Order Date - {{$order->created_at}}
-                            </div>
-                            <div class="py-2">
-                                Update Date - {{$order->updated_at}}
-                            </div>
-                            <div class="py-2">
-                                Status - <span style="font-size: 11pt;" class="@if ($order->status==0)
-                                                text-dark bg-warning px-3 py-2
-                                            @elseif ($order->status==1)
-                                                text-white bg-success px-3 py-2
-                                            @elseif ($order->status==2)
-                                                text-white bg-danger px-3 py-2
-                                            @elseif ($order->status==3)
-                                                text-white bg-danger px-3 py-2
-                                            @elseif ($order->status==4)
-                                                text-dark bg-warning px-3 py-2
-                                            @endif">
-                                            @if ($order->status==0)
-                                                Pending
-                                            @elseif ($order->status==1)
-                                                Success
-                                            @elseif ($order->status==2)
-                                                Reject
-                                            @elseif ($order->status==3)
-                                                Cancel
-                                            @elseif ($order->status==4)
-                                                Booking
-                                            @endif
-                                        </span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-end mt-5">
-                                @if ($order->status==1)
-                                    @if (Auth::user()->position=='ticket-seller')
-                                        @if ($order->ticket_status==1)
-                                            <div class="py-2 d-flex justify-content-end">
-                                                <button class="btn btn-secondary">Invoice Generated</button>
-                                            </div>
-                                        @else
-                                            <div class="py-2 d-flex justify-content-end">
-                                                <a href="{{route('admin#invoice',$order->id)}}" target="_blank" class="btn btn-success">Generate Invoice</a>
-                                            </div>
-                                        @endif
-                                    @else
-                                        <div class="py-2 d-flex justify-content-end">
-                                            <a href="{{route('admin#invoice',$order->id)}}" target="_blank" class="btn btn-success">Generate Invoice</a>
-                                        </div>
-                                    @endif
-                                @endif
-                                @if ($order->status!=2)
-                                    <div class="d-flex ms-2">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#finishPayment">Change</button>
-                                    </div>
-                                @endif
-                            </div>
+            <div class="col-lg-5 order-lg-2 mb-4">
+                <div class="seller-order-detail">
+                    <div class="title">
+                        <div>
+                            <i class="fa-solid fa-clapperboard me-2"></i>
+                            <span class="fw-bold">{{$order->movie_name}}</span>
                         </div>
                     </div>
                     <div class="">
-                        <div class=" table-responsive">
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Seat Name</th>
-                                    <th scope="col">Plan</th>
-                                    <th scope="col">Price</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (json_decode($order->seats) as $item)
-                                        <tr>
-                                            <td>{{$item->seat_name??''}}</td>
-                                            <td>{{$item->seat_plan??''}}</td>
-                                            <td>{{$item->seat_price}} MMK</td>
-                                        </tr>
-                                    @endforeach
-                                    @if ($order->promotion_id!=null)
-                                        <tr>
-                                            <td colspan="2">{{$order->promotion_name}}</td>
-                                            <td>{{$order->promotion_price}} MMK</td>
-                                        </tr>
-                                    @endif
-                                    <tr>
-                                        <td colspan="2">Total</td>
-                                        <td>{{$order->total_price}} MMK</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="movie-profile mb-4">
+                            <div>
+                                <i class="fa-solid fa-calendar-day me-2"></i>
+                                {{Carbon::parse($order->date)->format('l, F j, Y')}}
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-clock me-2"></i>
+                                {{Carbon::parse($order->start_time)->format('h:i A')}}
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-building me-2"></i>
+                                {{$order->cinema_name}}
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-door-open me-2"></i>
+                                {{$order->hall_name}}
+                            </div>
+                        </div>
+                        <div class="method-box">
+                            <div class="d-flex align-items-center">
+                                <h6>
+                                    <i class="fa-solid fa-credit-card me-1"></i>
+                                    Payment Method
+                                </h6>
+                                <h6>
+                                    <span class="mx-2"> - </span>
+                                    {{$order->payment_name}}
+                                </h6>
+                            </div>
+                            @if($order->payment_name=='UAB')
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div>
+                                        <label>Type</label>
+                                        <p>{{$order->payment_type}}</p>
+                                    </div>
+                                    <div class="me-4">
+                                        <label>Transaction ID</label>
+                                        <p>{{$order->transaction_id}}</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="method-box">
+                            <h6 class="">
+                                <i class="fa-solid fa-user me-1"></i>
+                                Customer
+                            </h6>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between flex-wrap gap-2">
+                                    <div>
+                                        <label>Name</label>
+                                        <p>{{$order->user_name}}</p>
+                                    </div>
+                                    <div class="mb-2 me-4">
+                                        <label>Phone</label>
+                                        <p>{{$order->user_phone}}</p>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <label>Email</label>
+                                    <p>{{$order->user_email}}</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="row">
+                </div>
+            </div>
+            <div class="col-lg-7 order-lg-1">
+                <div class="seller-order-detail">
+                    <div class="title">
+                        <div>
+                            <div>
+                                <i class="fa-solid fa-ticket me-2"></i>
+                                <span class="fw-bold">Ticket Details</span>
+                            </div>
+                            <span class="order-id">OID - {{$order->id}}</span>
+                        </div>
+                        <div>
+                            <h6>
+                                @if ($order->status==0)
+                                    <span class="status pending">Pending</span>
+                                @elseif ($order->status==1)
+                                    <span class="status success">Success</span>
+                                @elseif ($order->status==2)
+                                    <span class="status reject">Reject</span>
+                                @elseif ($order->status==3)
+                                    <span class="status reject">Cancel</span>
+                                @elseif ($order->status==4)
+                                    <span class="status booking">Booking</span>
+                                @endif
+                            </h6>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label>Selected Seats</label>
+                            <div class="seat-card-wrapper mt-2">
+                                @foreach (json_decode($order->seats) as $item)
+                                    <div class="seat-card">
+                                        <div class="seat-name">
+                                            {{$item->seat_name??''}}
+                                        </div>
+                                        <div class="seat-plan">
+                                            {{$item->seat_plan??''}}
+                                        </div>
+                                        <div class="seat-price">
+                                            {{number_format($item->seat_price)}} Ks
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @if ($order->promotion_id!=null)
+                                <div class="discount-card">
+                                    <div class="promo-name">
+                                        <i class="fa-solid fa-tag me-1"></i> {{$order->promotion_name}}
+                                    </div>
+                                    <div class="promo-price">
+                                        @if ($order->promotion_price==null)
+                                            - {{$order->promotion_percentage}} %
+                                        @else
+                                            - {{number_format($order->promotion_price)}} Ks
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="payment-check">
+                            @if ($order->payment_method==1)
+                                <div>
+                                    <label>Pay Amount</label>
+                                    <h6 class="mt-1">{{number_format($order->pay_amount)}} Ks</h6>
+                                </div>
+                            @endif
+                            <div>
+                                <label>Total Price</label>
+                                <h6 class="mt-1 total-success">{{number_format($order->total_price)}} Ks</h6>
+                            </div>
+                            @if ($order->payment_method==1)
+                                <div>
+                                    <label>Change</label>
+                                    <h6 class="mt-1">{{number_format($order->change)}} Ks</h6>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="date-check">
+                            <div>
+                                <label>Order Date</label>
+                                <h6 class="mt-1 date">{{Carbon::parse($order->created_at)->format('F j, Y - h:i A')}}</h6>
+                            </div>
+                            <div>
+                                <label>Update Date</label>
+                                <h6 class="mt-1 date">{{Carbon::parse($order->updated_at)->format('F j, Y - h:i A')}}</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end gap-3 mt-3">
+                            @if($order->status==1)
+                                <a href="{{route('admin#invoice',$order->id)}}" target="_blank" class="generate-invoice">
+                                    <i class="fa-regular fa-file-lines me-2 text-white"></i>Generate Invoice
+                                </a>
+                            @endif
+                            @if($order->status!=2)
+                                <button class="action-btn" data-bs-toggle="modal" data-bs-target="#finishPayment">
+                                    <i class="fa-solid fa-pen-to-square me-2 text-white"></i>Change
+                                </button>
+                            @endif
+                        </div>
+
                         @if ($order->payment_slip!=null)
-                            <div class="py-2 col-md-4 offset-md-4">
-                                <img src="{{asset('storage/slip/'.$order->payment_slip)}}" class="w-100" alt="">
+                            <div class="row mt-5">
+                                <div class="col-sm-6 offset-sm-3">
+                                    <img src="{{asset('storage/slip/'.$order->payment_slip)}}" class="w-100 img-thumbnail" alt="">
+                                </div>
                             </div>
                         @endif
+
+                        <div class="modal fade" id="finishPayment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finishPaymentLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title d-block w-100 text-center" id="finishPaymentLabel">Update Order</h5>
+                                        <button type="button"  class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{route('admin#orderChangeStatus')}}" method="post" enctype="multipart/form-data" class="parents">
+                                            @csrf
+                                            <div class="update-btn-group">
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group mb-4">
+                                                        <label class="mb-1">Payment Method</label>
+                                                        <select name="payment_method" id="" class="form-select">
+                                                            <option value="">Choose Payment</option>
+                                                            <option value="1" @if ($order->payment_method==1) selected @endif>Cash</option>
+                                                            @foreach ($payment as $item)
+                                                                <option value="{{$item->id}}" @if ($order->payment_method==$item->id) selected @endif>{{$item->name}} ({{$item->username}})</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-6 form-group mb-4">
+                                                        <label class="mb-1">Status</label>
+                                                        <select name="status" id="" class="form-select" required>
+                                                            <option value="">Choose Status</option>
+                                                            <option value="1" @if ($order->status==1) selected @endif>Success</option>
+                                                            @if (Auth::user()->position=='ticket-seller')
+                                                                @if (Auth::user()->can_reject==1)
+                                                                    <option value="2" @if ($order->status==2) selected @endif>Reject</option>
+                                                                    <option value="3" @if ($order->status==3) selected @endif>Cancel</option>
+                                                                @endif
+                                                            @else
+                                                                <option value="2" @if ($order->status==2) selected @endif>Reject</option>
+                                                                <option value="3" @if ($order->status==3) selected @endif>Cancel</option>
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" name="id" value="{{$order->id}}">
+                                                </div>
+                                                <div class="d-flex align-items-center my-2">
+                                                    <button type="submit" class="action-btn w-100" disabled><i class="fa-solid fa-floppy-disk me-2"></i>Save Changes</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-                <div class="modal fade" id="finishPayment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finishPaymentLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title d-block w-100 text-center" id="finishPaymentLabel">Finish Payment</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{route('admin#orderChangeStatus')}}" method="post" enctype="multipart/form-data" class="parents">
-                                    @csrf
-                                    <div class="mb-4">
-                                        <label for="name" class="form-label mb-1">Payment Method</label>
-                                        <select name="payment_method" id="" class="form-control">
-                                            @foreach ($payment as $item)
-                                                @if ($item->id!=2)
-                                                    <option value="{{$item->id}}" @if ($order->payment_method==$item->id) selected @endif>{{$item->name}} ({{$item->username}})</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="name" class="form-label mb-1">Stauts</label>
-                                        <select name="status" id="" class="form-control">
-                                            @if (Auth::user()->position!='order-reject')
-                                                <option value="1" @if ($order->status==1) selected @endif>Success</option>
-                                                @if (Auth::user()->position=='developer')
-                                                    <option value="2" @if ($order->status==2) selected @endif>Reject</option>
-                                                    <option value="3" @if ($order->status==3) selected @endif>Cancel</option>
-                                                @endif
-                                            @else
-                                                <option value="2" @if ($order->status==2) selected @endif>Reject</option>
-                                            @endif
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <input type="hidden" name="id" value="{{$order->id}}">
-                                    </div>
-                                    <div class="d-flex justify-content-end gap-1">
-                                        <button type="submit" class="btn btn-primary w-100">Finish</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    </div>
 </main>
+@endsection
+
+
+@section('script')
+    <script>
+        // updatebtn disabled check
+        const forms = document.querySelectorAll('.update-btn-group');
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll('input,select');
+            const button = form.querySelector('.action-btn');
+            const initialValues = {};
+            inputs.forEach(input => {
+                initialValues[input.name] = input.value;
+            });
+            function checkUpdateValueForBtn() {
+                let hasChanged = false;
+                inputs.forEach(input => {
+                    if (input.value != initialValues[input.name]) {
+                        hasChanged = true;
+                    }
+                });
+                button.disabled = !hasChanged;
+            }
+            inputs.forEach(input => {
+                input.addEventListener('input', checkUpdateValueForBtn);
+                input.addEventListener('change', checkUpdateValueForBtn);
+            });
+            checkUpdateValueForBtn();
+        });
+    </script>
 @endsection

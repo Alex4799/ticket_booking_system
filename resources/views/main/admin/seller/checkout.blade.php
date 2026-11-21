@@ -5,200 +5,252 @@
     use Carbon\Carbon;
 @endphp
 
-    <div id="selected-movie-label" class="row mx-auto align-items-center">
-        <div class="col-lg-4">
-            <a href="{{ url()->previous() }}">
-                <button class="btn"><i class="fa-solid fa-circle-left me-2"></i>Change Seat</button>
-            </a>
-        </div>
-    </div>
-
-    <!-- payment section start  -->
-    <section id="payment" class="mt-3 pb-5">
-        <div class="mx-4">
-            <div class="row">
-                <div class="col-lg-5 order-lg-2">
-                   <div id="booking-summary" class="shadow p-2 rounded">
-                        <h5>Booking Summary</h5>
-                        <div class="px-1 summary-content">
-                            <div class="item-right">
-                                <span class="up-border"></span>
-                                <span class="down-border"></span>
-                            </div>
-                            <div>
-                                @foreach (json_decode($moviePlan->cover) as $item)
-                                    @if ($loop->index==0)
-                                        <img src="{{Storage::url('cover/'.$item)}}" class="d-block rounded" alt="">
-                                    @endif
-                                @endforeach
-                            </div>
-                            <div class="my-4">
-                                <div class="d-flex align-items-center">
-                                    <h5 class="fw-bold">{{$moviePlan->movie_name}}</h5>
-                                </div>
-                                <div class="mt-2">
-                                    <label>Cinema</label>
-                                    <h6 class="mt-1">{{$moviePlan->cinema_name}}</h6>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-sm-6 mb-2">
-                                    <label>Date</label>
-                                    <h6 class="mt-1">{{Carbon::parse($moviePlan->date)->format('l, F j, Y')}}</h6>
-                                </div>
-                                <div class="col-sm-6 ps-sm-5 mb-2">
-                                    <label>Time</label>
-                                    <h6 class="mt-1">{{Carbon::parse($moviePlan->start_time)->format('h:i A')}}</h6>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-sm-6 mb-3">
-                                    <label>Hall</label>
-                                    <h6 class="mt-1">{{$moviePlan->hall_name}}</h6>
-                                </div>
-                                <div class="col-sm-6 ps-sm-5 mb-3">
-                                    <label>Selected Seats</label>
-                                    <h6 class="mt-1">
-                                        @foreach ($seat as $item)
-                                            {{$item->seat_name}} ,
+    <div class="content px-2 py-3">
+        <div class="container-fluid">
+            <div>
+                <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{route('seller#movie')}}">Seller</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('seller#moviePlan',$moviePlan->movie_id)}}">Booking</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url()->previous() }}">Seat</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Payment</li>
+                    </ol>
+                </nav>
+            </div>
+            <div id="payment">
+                <div class="row mb-3">
+                    <div class="col-lg-5 order-lg-2 mb-4">
+                        <div id="booking-summary">
+                            <h6 class="fw-bold">Movie Details</h6>
+                            <div class="summary-content">
+                                <div>
+                                    @if ($moviePlan->cover != null)
+                                        @foreach (json_decode($moviePlan->cover) as $item)
+                                            @if ($loop->index==0)
+                                                <img src="{{Storage::url('cover/'.$item)}}" class="d-block" alt="image">
+                                            @endif
                                         @endforeach
-                                    </h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-7 order-lg-1">
+                                    @else
+                                        <img src="{{asset('image/placeholder.webp')}}" alt="Default" class="d-block">
+                                    @endif
 
-                    <div class="py-3">
-                        <div id="booking-total">
-                            <h5>Amount Payable</h5>
-                            <div class="px-5 mb-4">
-                                <div class="d-flex align-items-center justify-content-between mt-3" id="booking-total-content">
+                                </div>
+                                <div class="my-4">
                                     <div class="d-flex align-items-center">
-                                        <span>{{count($seat)}}</span>
-                                        <label>Ticket(s)</label>
+                                        <h5>{{$moviePlan->movie_name}}</h5>
                                     </div>
-                                    <label><span id="seatTotalPrice">{{$totalPrice}}</span> Kyats</label>
-                                </div>
-                                <div id="promotion">
-
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="d-flex align-items-center justify-content-between mt-3 px-5" id="total-price">
-                                <label for="">Total</label>
-                                <label><span id="subTotal">{{$totalPrice}}</span> Kyats</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="py-3">
-                        <div id="promo-code">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <h5>Promotion Code</h5>
-                                <i class="fa-solid fa-circle-plus promo-icon"></i>
-                            </div>
-                            <div id="promo-form">
-                                <hr>
-                                <div id="promo_alert">
-
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="from-group w-75">
-                                        <input type="text" id="promo_code" class="form-control" placeholder="Enter promo code">
+                                    <div class="mt-2">
+                                        <label>Cinema</label>
+                                        <h6 class="mt-1">{{$moviePlan->cinema_name}}</h6>
                                     </div>
-                                    <button class="btn btn-primary" id="add_promotion">Apply</button>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-sm-6 mb-2">
+                                        <label>Date</label>
+                                        <h6 class="mt-1">{{Carbon::parse($moviePlan->date)->format('l, F j, Y')}}</h6>
+                                    </div>
+                                    <div class="col-sm-6 ps-sm-5 mb-2">
+                                        <label>Time</label>
+                                        <h6 class="mt-1">{{Carbon::parse($moviePlan->start_time)->format('h:i A')}}</h6>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-6 mb-3">
+                                        <label>Hall</label>
+                                        <h6 class="mt-1">{{$moviePlan->hall_name}}</h6>
+                                    </div>
+                                    <div class="col-sm-6 ps-sm-5 mb-3">
+                                        <label>Selected Seats</label>
+                                        <h6 class="mt-1">
+                                            @foreach ($seat as $item)
+                                                {{$item->seat_name}} @if (!$loop->last), @endif
+                                            @endforeach
+                                        </h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="py-3">
-                        <div id="payment-option">
-                            <h5>Payment Method</h5>
-                            @foreach ($payment as $item)
-                                @if (($item->cinema_id==null || $item->cinema_id==$moviePlan->cinema_id) && $item->id!=2)
-                                    <div class="px-4 mt-3 parents">
-                                        <div class="payment">
-                                            <div class="custom-radio d-flex align-items-center mb-1">
-                                                <input type="radio" id="paymentMethod" name="paymentMethod" value="{{$item->id}}" class="payment-radio" data-target=".payment-content-{{$item->id}}">
-                                                <label class="ms-3" for="radio1">{{$item->name}}</label>
-                                            </div>
-                                            <div class="payment-content payment-content-{{$item->id}}">
-                                                <div class="d-flex align-items-center mb-3">
-                                                    <strong>{{$item->name}} : </strong>
-                                                    <label class="ms-3">{{$item->number}}</label>
-                                                </div>
-                                                <div class="d-flex align-items-center">
-                                                    <strong>Name : </strong>
-                                                    <label class="ms-3">{{$item->username}}</label>
-                                                </div>
-                                                @if ($item->image!=null)
-                                                    <div class="d-flex justify-content-center py-2 align-items-center">
-                                                        <img src="{{Storage::url('payment/'.$item->image)}}" class="w-50 img-thumbnail" alt="">
+                    <div class="col-lg-7 pe-lg-4 order-lg-1">
+                        <div>
+                            <div id="promo_alert"></div>
+                            <div id="payment_alert"></div>
+                            <div id="booking-total">
+                                <div class="title">
+                                    <div>
+                                        <i class="fa-solid fa-wallet me-2"></i>
+                                        <span class="fw-bold">Payment Summary</span>
+                                    </div>
+                                    <div id="promo-code">
+                                        <button class="btn" data-bs-toggle="modal" data-bs-target="#promo">
+                                            <i class="fa-solid fa-circle-plus promo-icon me-2"></i>Promo
+                                        </button>
+                                        <div class="modal fade" id="promo" tabindex="-1" aria-labelledby="promo-modalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title d-block w-100 text-center" id="add-PaymentLabel">Add Promotion</h5>
+                                                        <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                @endif
+                                                    <div class="modal-body">
+                                                        <div class="from-group mb-4">
+                                                            <input type="text" id="promo_code" class="form-control" placeholder="Enter promo code">
+                                                        </div>
+                                                        <div class="d-flex align-items-center my-2">
+                                                            <button class="action-btn w-100" id="add_promotion" data-bs-dismiss="modal"><i class="fa-solid fa-square-plus me-2"></i>Apply</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <hr>
                                     </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div id="" class="">
-                        <div id="payment_alert">
-
-                        </div>
-                        <form method="POST" action="{{route('seller#order')}}" enctype="multipart/form-data" id="order_form">
-                            @csrf
-                            <div class="py-3" id="pay_amount">
-                                <div>
-                                    <label for="" class="py-2 fs-4">Pay Amount</label>
-                                    <input type="number" class="form-control" name="pay_amount">
+                                </div>
+                                <div class="ticket-content mt-3">
+                                    <div class="mx-5">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <span>{{count($seat)}}</span>
+                                                <label class="ms-2">Ticket(s)</label>
+                                            </div>
+                                            <label><span id="seatTotalPrice">{{ number_format($totalPrice) }}</span> Kyats</label>
+                                        </div>
+                                        <div id="promotion"></div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between px-5" id="total-price">
+                                        <label for="">Total</label>
+                                        <label><span id="subTotal">{{ number_format($totalPrice) }}</span> Kyats</label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="book d-none" id="book">
-                                <div class="py-2">
-                                    <label for="" class="py-1">User Name</label>
-                                    <input type="hidden" name="user_name" id="user_name" class="form-control" placeholder="Enter user name" value="{{Auth::user()->name}}">
+                            <div id="payment-option">
+                                <div class="title mb-3">
+                                    <div>
+                                        <i class="fa-solid fa-credit-card me-2"></i>
+                                        <span class="fw-bold">Payment Method</span>
+                                    </div>
                                 </div>
-                                <div class="py-2">
-                                    <label for="" class="py-1">User Email</label>
-                                    <input type="hidden" name="user_email" id="user_email" class="form-control" placeholder="Enter user email" value="{{Auth::user()->email}}">
+                                <div class="payment-grid">
+                                    @foreach ($payment as $item)
+                                        @if($item->id == 1 || $item->cinema_id == $moviePlan->cinema_id)
+                                            <label class="payment-card parents">
+                                                <div class="payment">
+                                                    <input type="radio" id="paymentMethod" name="paymentMethod" value="{{$item->id}}" class="payment-radio" data-target="#payment-{{$item->id}}" @if($loop->first) checked @endif>
+                                                    <div class="payment-card-body">
+                                                        @if($item->id == 1)
+                                                            <i class="fa-solid fa-money-bill-wave payment-icon"></i>
+                                                        @else
+                                                            <i class="fa-solid fa-mobile-screen-button payment-icon"></i>
+                                                        @endif
+                                                        <h6>{{$item->name}}</h6>
+                                                        <span class="check">
+                                                            <i class="fa-solid fa-circle-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        @endif
+                                    @endforeach
                                 </div>
-                                <div class="py-2">
-                                    <label for="" class="py-1">User Phone</label>
-                                    <input type="hidden" name="user_phone" id="user_phone" class="form-control" placeholder="Enter user phone" value="{{Auth::user()->email}}">
+                                <div class="payment-details mt-4">
+                                    @foreach ($payment as $item)
+                                        @if($item->id == 1 || $item->cinema_id == $moviePlan->cinema_id)
+                                            <div class="payment-info @if(!$loop->first) d-none @endif" id="payment-{{$item->id}}">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-7">
+                                                        <div class="info-item">
+                                                            <label>Payment Type</label>
+                                                            <h6>{{$item->name}}</h6>
+                                                        </div>
+                                                        @if($item->id != 1)
+                                                            <div class="info-item">
+                                                                <label>Phone Number</label>
+                                                                <h6>{{$item->number}}</h6>
+                                                            </div>
+                                                            <div class="info-item">
+                                                                <label>Account Name</label>
+                                                                <h6>{{$item->username}}</h6>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    @if($item->image)
+                                                        <div class="col-md-5 text-center">
+                                                            <img src="{{Storage::url('payment/'.$item->image)}}" class="payment-qr">
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
-                            <span>
-                                <input type="hidden" name="payment_method" id="payment_method">
-                                <input type="hidden" name="promotion_id" id="promotion_id">
-                                <input type="hidden" name="promotion_price" id="promotion_price">
-                                <input type="hidden" name="total_price" id="total_price" value="{{$totalPrice}}">
-                                <input type="hidden" name="movie_plan_id" id="movie_plan_id" value="{{$moviePlan->id}}">
-                                <input type="hidden" name="seats" id="seats" value="{{json_encode($seat)}}">
-                                <input type="hidden" name="seat_count" id="seat_count" value="{{count($seat)}}">
-                                <input type="hidden" name="order_status" id="order_status" value="order">
-                            </span>
-                        </form>
+                            <div id="paying-amount">
+                                <div class="title mb-3">
+                                    <div class="pay_amount">
+                                        <i class="fa-solid fa-money-bill me-2"></i>
+                                        <span class="fw-bold">Pay Amount</span>
+                                    </div>
+                                </div>
+                                <div class="content">
+                                    <form method="POST" action="{{route('seller#order')}}" enctype="multipart/form-data" id="order_form">
+                                        @csrf
+                                        <div class="pay_amount">
+                                            <div>
+                                                <input type="number" class="form-control" name="pay_amount" placeholder="Enter customer payment amount">
+                                            </div>
+                                        </div>
+                                        <div class="book d-none" id="book">
+                                            <div class="row">
+                                                <div class="col-sm-6 mb-3">
+                                                    <div>
+                                                        <label for="" class="py-1">User Name</label>
+                                                        <input type="hidden" name="user_name" id="user_name" class="form-control" placeholder="Enter user name" value="{{Auth::user()->name}}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-3">
+                                                    <div>
+                                                        <label for="" class="py-1">User Phone</label>
+                                                        <input type="hidden" name="user_phone" id="user_phone" class="form-control" placeholder="Enter user phone" value="{{Auth::user()->phone}}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div>
+                                                        <label for="" class="py-1">User Email</label>
+                                                        <input type="hidden" name="user_email" id="user_email" class="form-control" placeholder="Enter user email" value="{{Auth::user()->email}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span>
+                                            <input type="hidden" name="payment_method" id="payment_method">
+                                            <input type="hidden" name="promotion_id" id="promotion_id">
+                                            <input type="hidden" name="promotion_price" id="promotion_price">
+                                            <input type="hidden" name="total_price" id="total_price" value="{{$totalPrice}}">
+                                            <input type="hidden" name="movie_plan_id" id="movie_plan_id" value="{{$moviePlan->id}}">
+                                            <input type="hidden" name="seats" id="seats" value="{{json_encode($seat)}}">
+                                            <input type="hidden" name="seat_count" id="seat_count" value="{{count($seat)}}">
+                                            <input type="hidden" name="order_status" id="order_status" value="order">
+                                        </span>
+                                    </form>
+                                    <div class="my-3 d-flex justify-content-end gap-1">
+                                        <button class="btn me-2" type="button" id="seller_booking"><i class="fa-solid fa-calendar-check me-2"></i>Booking</button>
+                                        <button class="btn" type="button" id="seller_order">
+                                            <i id="seller_order_icon" class="fa-regular fa-circle-check me-1"></i>
+                                            <span id="seller_order_text">Confirm Order</span>
+                                        </button>
+                                        <button class="btn btn-danger d-none ms-2" type="button" id="booking_cancel"><i class="fa-solid fa-ban me-2"></i>Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="py-2 d-flex justify-content-end gap-1">
-                        <button class="btn text-white px-3 me-2" type="button" id="seller_order">Order</button>
-                        <button class="btn text-white px-3" type="button" id="seller_booking">Booking</button>
-                        <button class="btn btn-danger d-none px-3 ms-2" type="button" id="booking_cancel">Cancel</button>
-                    </div>
-
                 </div>
             </div>
         </div>
-    </section>
-    <!-- payment section end  -->
+    </div>
 
 @endsection
+
+
 @section('script')
 <script>
 
@@ -210,10 +262,13 @@
         $('#book').removeClass('d-none');
         $('#booking_cancel').removeClass('d-none');
         $('#seller_booking').addClass('d-none');
-        $('#seller_order').html('Book');
-        $("#user_name").attr("type", "text");
-        $("#user_email").attr("type", "email");
-        $("#user_phone").attr("type", "text");
+        $('#seller_order_text').text('Booking');
+        $('#seller_order_icon')
+            .removeClass('fa-regular fa-circle-check')
+            .addClass('fa-solid fa-calendar-check');
+        $('#user_name').attr('type', 'text');
+        $('#user_email').attr('type', 'email');
+        $('#user_phone').attr('type', 'text');
         $('#order_status').val('book');
     })
 
@@ -221,11 +276,14 @@
         $('#book').addClass('d-none');
         $('#booking_cancel').addClass('d-none');
         $('#seller_booking').removeClass('d-none');
-        $('#seller_order').html('Order');
-        $("#user_name").attr("type", "hidden");
-        $("#user_email").attr("type", "hidden");
-        $("#user_phone").attr("type", "hidden");
-        $('#order_status').val('order');
+        $('#seller_order_text').text('Confirm Order');
+        $('#seller_order_icon')
+            .removeClass('fa-solid fa-calendar-check')
+            .addClass('fa-regular fa-circle-check');
+        $('#user_name').attr('type', 'hidden');
+        $('#user_email').attr('type', 'hidden');
+        $('#user_phone').attr('type', 'hidden');
+        $('#order_status').val('');
     })
 
     $('#add_promotion').click(function(){
@@ -253,14 +311,12 @@
                         promotion_price=promotion.amount;
                     }
                     total_price=total_price-promotion_price;
-                    $('#promotion').html(
-                        `<div class="d-flex align-items-center justify-content-between mt-3" id="booking-total-content">
-                                        <div class="d-flex align-items-center">
-                                            <span>${promotion.name}</span>
-                                        </div>
-                                        <label><span id="seatTotalPrice">- ${promotion_price}</span> Kyats</label>
-                                    </div>`
-                    );
+                    $('#promotion').html(`
+                        <div class="d-flex align-items-center justify-content-between gap-3 mt-3" id="taxes">
+                            <label>${promotion.name}</label>
+                            <label class="text-nowrap"> - ${Number(promotion_price).toLocaleString()} Kyats</label>
+                        </div>
+                    `);
                     $('#subTotal').html(total_price);
                     $('#promo-code').hide();
                     $('#promo_code').val('');
@@ -269,9 +325,9 @@
                     $('#total_price').val(total_price);
                 }else{
                     $('#promo_alert').html(`
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            Your promo code is wrong or promotion period is over.Please check and try again.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 10pt;">
+                            Your promo code is wrong or promotion period is over. Please check and try again.
+                            <button type="button" class="btn-close border-none shadow-none btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     `);
                 }

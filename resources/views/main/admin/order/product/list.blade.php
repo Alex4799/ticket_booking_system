@@ -1,90 +1,41 @@
 @extends('main.admin.layout.master')
 @section('title')
-    Order
+    Product Order
 @endsection
 @section('content')
 @php
     use App\Helpers\TimeHelper;
     use Carbon\Carbon;
 @endphp
-<main class="content px-4 pt-3 mb-5">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-1">
-        <div class="bg-white text-dark px-3 border rounded pt-2 h-100 text-center">
-            <h5>Total - {{$order->total()}}</h5>
-        </div>
-        <div>
-            <form action="" method="get">
-                <div class="d-flex">
-                    <input type="text" value="PID" disabled class="w-25 form-control">
-                    <input type="text" name="search_key" value="{{request('search_key')}}" class="form-control">
-                    <div>
-                        <input type="submit" value="Search" class="btn btn-primary">
+<main class="content p-2 mb-5">
+    <div class="container-fluid">
+        <div class="table-bg">
+            <div>
+                <div class="total-count-title">
+                    <div class="d-flex align-items-center">
+                        <div class="count-content">
+                            <h5 class="mb-0">Total - {{$order->total()}}</h5>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <form action="" method="get" id="search-form">
+                            <div class="search-cinema">
+                                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
+                                <input placeholder="Search by PID" value="{{request('search_key')}}" name="search_key" type="text" class="input">
+                            </div>
+                        </form>
+                        <a href="{{route('admin#orderListProduct')}}" title="Refresh this page" class="btn btn-primary btn-sm"><i class="fa-solid fa-arrows-rotate"></i></a>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-    {{-- <div class="py-2 d-flex justify-content-between gap-1 flex-wrap">
-        <div>
-            <label for="">Filter By Order Stauts</label>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  @if (request('status')==null)
-                  All
-                  @elseif (request('status')==0)
-                    Pending
-                  @elseif (request('status')==1)
-                    Success
-                  @elseif (request('status')==2)
-                    Reject
-                  @elseif (request('status')==3)
-                    Cancel
-                  @elseif (request('status')==4)
-                    Booking
-                  @endif
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{route('admin#orderList')}}">All</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['status'=>0])}}">Pending</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['status'=>1])}}">Success</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['status'=>2])}}">Reject</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['status'=>3])}}">Cancel</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['status'=>4])}}">Booking</a></li>
-                </ul>
-              </div>
-        </div>
-        <div>
-            <label for="">Filter By Order From</label>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  @if (request('from')==null)
-                  All
-                  @elseif (request('from')==0)
-                    Seller
-                  @elseif (request('from')==1)
-                    Online
-                  @endif
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{route('admin#orderList')}}">All</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['from'=>0])}}">Seller</a></li>
-                  <li><a class="dropdown-item" href="{{route('admin#orderList',['from'=>1])}}">Online</a></li>
-                </ul>
-              </div>
-        </div>
-    </div> --}}
-    <div class="">
-        <div id="table-bg">
-            <div class="">
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>PID</th>
-                                <th>Total Price</th>
-                                <th>Time</th>
-                                <th>Status</th>
+                                <th class="text-end">Total Price</th>
+                                <th class="text-center">Date & Time</th>
+                                <th class="text-center">Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -93,9 +44,9 @@
                             <tr>
                                 <td>{{$loop->index+1}}</td>
                                 <td>PID - {{$item->id}}</td>
-                                <td>{{$item->total_price}}</td>
-                                <td>{{Carbon::parse($item->created_at)->format('d/m/Y')}}</td>
-                                <td>
+                                <td class="text-end">{{number_format($item->total_price)}}</td>
+                                <td class="text-center">{{Carbon::parse($item->created_at)->format('d/m/Y - h:i A')}}</td>
+                                <td class="text-center">
                                     @if ($item->status==0)
                                         <span class="text-warning">Pending</span>
                                     @elseif($item->status==1)
@@ -109,7 +60,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{route('admin#orderViewProduct',$item->id)}}" class="btn btn-outline-primary">See More</a>
+                                    <a href="{{route('admin#orderViewProduct',$item->id)}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-info me-2"></i>Details</a>
                                 </td>
                             </tr>
                             @endforeach
@@ -134,11 +85,11 @@
     channel.bind('order-alert-event', function(data) {
         // location.reload();
         $order=`
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <a href="{{route('admin#orderList')}}" class=" text-decoration-none">
-                New order PID - ${data.order.id}.
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 11pt;">
+            <a href="{{route('admin#orderList')}}" class="text-decoration-none">
+                New order OID - ${data.order.id}.
             </a>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
         $('#order-alert').html($order);
     });

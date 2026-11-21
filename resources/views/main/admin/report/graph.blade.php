@@ -1,53 +1,45 @@
 @extends('main.admin.layout.master')
 @section('title')
-  Monthly Graph
+    Ticket Graph
 @endsection
 @section('content')
-<main class="content p-4 mb-5">
-    <div>
-        <div class="bg-body-secondary rounded p-2 mb-4">
-            <form action="" method="get">
-                @csrf
-                <div class="d-flex flex-wrap gap-1">
-                    <div class="">
-                        <div>
-                            <label for="" style="font-size: 11pt;">Start Date</label>
-                            <input type="date" name="start_date" value="{{$startDate}}" id="" class="form-control @error('start_date') is-invalid @enderror">
-                            @error('start_date')
-                                <small class="text-danger">{{$message}}</small>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="">
-                        <div>
-                            <label for="" style="font-size: 11pt;">End Date</label>
-                            <input type="date" name="end_date" value="{{$endDate}}" id="" class="form-control @error('end_date') is-invalid @enderror">
-                            @error('end_date')
-                                <small class="text-danger">{{$message}}</small>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class="">
-                            <label for="" style="font-size: 11pt;">Cinema</label>
-                            <select name="cinema" id="" class="form-control">
-                                <option value="">All</option>
-                                @foreach ($cinema as $item)
-                                    <option value="{{$item->name}}" @if (request('cinema')==$item->id) selected @endif>{{$item->name}}</option>
-                                @endforeach
-                            </select>
-                            @error('cinema')
-                                <small class="text-danger">{{$message}}</small>
-                            @enderror
-                        </div>
-                    </div>
+<main class="content p-2 mb-5">
+    <div class="container-fluid">
+        <form action="" method="get" class="bg-body-secondary rounded px-3 py-2 mb-4">
+            @csrf
+            <div class="d-flex gap-3 flex-wrap">
+                <div>
+                    <label class="label-small mb-0">Start Date</label>
+                    <input type="date" style="font-size: 11pt;" name="start_date" value="{{$startDate}}" id="" class="form-control @error('start_date') is-invalid @enderror">
+                    @error('start_date')
+                        <small class="text-danger">{{$message}}</small>
+                    @enderror
                 </div>
-                <div class="d-flex align-items-center justify-content-end mt-2 mb-1">
-                    <input type="submit" value="Filter" class="btn btn-primary me-2" style="font-size: 11pt;">
-                    <a href="{{route('admin#reportGraph')}}" style="font-size: 11pt;" class="btn btn-danger">Clear</a>
+                <div>
+                    <label class="label-small mb-0">End Date</label>
+                    <input type="date" style="font-size: 11pt;" name="end_date" value="{{$endDate}}" id="" class="form-control @error('end_date') is-invalid @enderror">
+                    @error('end_date')
+                        <small class="text-danger">{{$message}}</small>
+                    @enderror
                 </div>
-            </form>
-        </div>
+                <div>
+                    <label class="label-small mb-0">Cinema</label>
+                    <select name="cinema" class="form-select" style="font-size: 11pt;">
+                        <option value="">All</option>
+                        @foreach ($cinema as $item)
+                            <option value="{{$item->name}}" @if (request('cinema')==$item->name) selected @endif>{{$item->name}}</option>
+                        @endforeach
+                    </select>
+                    @error('cinema')
+                        <small class="text-danger">{{$message}}</small>
+                    @enderror
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-end w-100 mt-3 mb-2">
+                <button class="d-flex align-items-center btn btn-primary me-2" style="font-size: 10pt;"><i class="fa-solid fa-filter me-2" style="font-size: 8pt;"></i>Filter</button>
+                <a href="{{route('admin#reportGraph')}}" class="d-flex align-items-center btn btn-secondary" style="font-size: 10pt;" ><i class="fa-solid fa-rotate-left me-2" style="font-size: 10pt;"></i>Reset</a>
+            </div>
+        </form>
 
         <div class="report-graph">
             <div class="row ">

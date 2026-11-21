@@ -12,7 +12,7 @@
                 @if (!empty($movie->cover[0]))
                     <img src="{{Storage::url('cover/'.$movie->cover[0])}}" alt="">
                 @else
-                    <img src="{{asset('image/default.jpg')}}" alt="">
+                    <img src="{{asset('image/placeholder.webp')}}" alt="">
                 @endif
                 <span></span>
             </div>
@@ -61,7 +61,7 @@
                         <li class="col-lg-3 col-md-4 col-sm-6">
                             <a href="{{route('customer#movieBook',[$movie->id,'date'=>$item])}}">
                                 <button class="js-select-date">
-                                    <span>{{Carbon::parse($item)->format('l, j, m, Y')}}</span>
+                                    <span>{{Carbon::parse($item)->format('Y-m-j (D)')}}</span>
                                 </button>
                             </a>
                         </li>
@@ -86,10 +86,10 @@
                         @foreach ($moviePlan as $key=>$item)
                             @if (count($item)!=0)
                                 <div class="cinema-section">
-                                    <div class="d-flex align-items-center justify-content-between ct-toggle-btn">
-                                        <div class="d-flex align-items-center" id="cinema-name">
-                                            <h6 class="me-4">{{$item[0]->cinema_name}} - {{$item[0]->cinema_location}}</h6>
-
+                                    <div class="d-flex align-items-center justify-content-between gap-5 ct-toggle-btn">
+                                        <div id="cinema-name">
+                                            <h6><i class="fa-solid fa-building me-2"></i> {{$item[0]->cinema_name}}</h6>
+                                            <h6>( {{$item[0]->cinema_location}} )</h6>
                                         </div>
                                         <span class="">
                                             <i class="fa-solid fa-chevron-down cinema-down"></i>
@@ -102,7 +102,7 @@
                                                 <li class="col-lg-2 col-md-3 col-sm-4">
                                                     <button data-bs-toggle="modal" data-bs-target="#{{'select-seat-modal'.$planItem->id}}">
                                                         <div>{{$planItem->date}}</div>
-                                                        <div>{{Carbon::parse($planItem->start_time)->format('h:i:A')}}</div>
+                                                        <div>{{Carbon::parse($planItem->start_time)->format('h:i A')}}</div>
                                                     </button>
                                                 </li>
                                                 <!-- select seat modal  -->

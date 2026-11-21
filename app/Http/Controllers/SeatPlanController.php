@@ -33,7 +33,7 @@ class SeatPlanController extends Controller
 
     public function view($id){
         $seatPlan=$this->getSeatPlan($id);
-        $seatCount=Seat::where('seat_plan_id',$id)->count();
+        $seatCount=Seat::where('seat_plan_id',$id)->where('active',1)->count();
         return view('main.admin.seatPlan.view',compact('seatPlan','seatCount'));
     }
 

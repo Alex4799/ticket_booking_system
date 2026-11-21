@@ -123,18 +123,6 @@ var swiper = new Swiper(".mySwiper3", {
 // ..................................................... cinema details end ....................................
 
 
-//................................................. footer dropdown start ...........................................
-$(document).ready(function(){
-  $('#toggle-btn').click(function(){
-    $('#drop-items').toggle(500);
-    $('#down').toggle();
-    $('#up').toggle();
-  });
-  $('#drop-items').hide();
-});
-// ................................................... footer dropdown end ........................................
-
-
 //....................................... ......category active link start .........................................
 document.addEventListener('DOMContentLoaded', function () {
     const categoryContent = document.querySelector('#category-content');
@@ -387,61 +375,94 @@ var swiper = new Swiper(".mySwiper6", {
 
 
 // ..................................................... showtime select date start ....................................
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded', function () {
     const selectDates = document.querySelectorAll('.js-select-date');
     const firstDateButton = document.getElementById('first-date-button');
     const scrollContainer = document.querySelector('#select-date > ul');
 
+    const currentUrl = window.location.href;
+    const previousUrl = sessionStorage.getItem('previousUrl');
+
+    // Check whether the user came from another page
+    if (previousUrl) {
+        const previousPath = new URL(previousUrl).pathname;
+        const currentPath = window.location.pathname;
+
+        if (previousPath !== currentPath) {
+            localStorage.removeItem('activeDate');
+            localStorage.removeItem('scrollPosition');
+        }
+    }
+
+    // Store current URL
+    sessionStorage.setItem('previousUrl', currentUrl);
+
+    // Restore selected date
     const storedDate = localStorage.getItem('activeDate');
     let foundMatch = false;
-    if(storedDate){
-      selectDates.forEach(button => {
-        const label = button.querySelector('span').textContent.trim();
-          if( label === storedDate.trim()){
-              button.classList.add('js-select-active');
-              foundMatch = true;
 
-              setTimeout(() => {
-                  const storedScroll = localStorage.getItem('scrollPosition');
-                  if(scrollContainer && storedScroll){
-                      scrollContainer.scrollLeft = parseInt(storedScroll);
-                  }
-              }, 0);
-          }
-      });
+    if (storedDate) {
+        selectDates.forEach(button => {
+            const label = button.querySelector('span').textContent.trim();
+
+            if (label === storedDate.trim()) {
+                button.classList.add('js-select-active');
+                foundMatch = true;
+            }
+        });
     }
 
-    if(!foundMatch){
-      if(firstDateButton){
-          firstDateButton.classList.add('js-select-active');
-          const label = firstDateButton.querySelector('span').textContent.trim();
-          localStorage.setItem('activeDate', label);
-
-          if(scrollContainer){
-              scrollContainer.scrollLeft = 0;
-              localStorage.setItem('scrollPosition', '0');
-          }
-      }
+    // Default to All
+    if (!foundMatch && firstDateButton) {
+        firstDateButton.classList.add('js-select-active');
+        localStorage.setItem(
+            'activeDate',
+            firstDateButton.querySelector('span').textContent.trim()
+        );
     }
 
+    // Restore scroll position
+    if (scrollContainer) {
+        const storedScroll = localStorage.getItem('scrollPosition');
+
+        if (storedScroll !== null && foundMatch) {
+            scrollContainer.scrollLeft = parseInt(storedScroll);
+        } else {
+            scrollContainer.scrollLeft = 0;
+        }
+    }
+
+    // Handle date selection
     selectDates.forEach(button => {
-      button.addEventListener('click',function(){
-          selectDates.forEach(btn => { btn.classList.remove('js-select-active') });
-          button.classList.add('js-select-active');
+        button.addEventListener('click', function () {
 
-          const label = button.querySelector('span').textContent.trim();
-          localStorage.setItem('activeDate', label);
+            selectDates.forEach(btn => {
+                btn.classList.remove('js-select-active');
+            });
 
-          if(scrollContainer){
-            localStorage.setItem('scrollPosition',scrollContainer.scrollLeft);
-          }
+            button.classList.add('js-select-active');
+
+            const label = button.querySelector('span').textContent.trim();
+
+            localStorage.setItem('activeDate', label);
+
+            if (scrollContainer) {
+                localStorage.setItem(
+                    'scrollPosition',
+                    scrollContainer.scrollLeft
+                );
+            }
         });
     });
 
-    if(scrollContainer){
-      scrollContainer.addEventListener('scroll',function(){
-          localStorage.setItem('scrollPosition', scrollContainer.scrollleft);
-      });
+    // Save scroll position
+    if (scrollContainer) {
+        scrollContainer.addEventListener('scroll', function () {
+            localStorage.setItem(
+                'scrollPosition',
+                scrollContainer.scrollLeft
+            );
+        });
     }
 });
 // ..................................................... showtime select date end ....................................
@@ -458,67 +479,53 @@ $(document).ready(function(){
 // ....................................... showtime select cinema and time dropdown end ....................................
 
 
-//.............................................. Select the single seat plan container start .................................
-document.addEventListener('DOMContentLoaded',function(){
-  const seatPlan = document.getElementById('seat-plan');
-  const seatPlanRow = document.querySelectorAll('.seat-plan-row');
-  const seats = document.querySelectorAll('.seat');
-  const swipeLeft = document.getElementById('swipe-left');
+//.......................................  seat in theater start..................................
+document.addEventListener('DOMContentLoaded', function () {
+    const seatPlan = document.getElementById('seat-plan');
+    const seatPlanContainer = document.getElementById('seat-plan-container');
 
-  seatPlanRow.forEach(sr => {
-    const totalSeats = sr.querySelectorAll('.seat').length;
+    if (!seatPlan || !seatPlanContainer) return;
 
-    if (totalSeats > 20) {
-      sr.style.display = 'grid';
-      sr.style.gridTemplateColumns = `auto repeat(${totalSeats}, auto)`;
+    document.querySelectorAll('.seat-plan-row').forEach(row => {
+        const totalSeats = row.querySelectorAll('.seat').length;
+        if (totalSeats > 20) {
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = `auto repeat(${totalSeats}, auto)`;
+        }
+    });
+
+    document.querySelectorAll('.seat').forEach(seat => {
+        seat.addEventListener('click', function () {
+            if (this.classList.contains('available')) {
+                this.classList.toggle('selected');
+            }
+        });
+    });
+
+    // zoom
+    let zoomLevel = 1;
+    const zoomStep = 0.1;
+    const minZoom = 0.5;
+
+    function updateZoom() {
+        seatPlan.style.transform = `scale(${zoomLevel})`;
     }
 
-    if (seatPlan.scrollWidth > seatPlan.clientWidth) {
-      swipeLeft.style.display = 'block';
-    } else {
-      swipeLeft.style.display = 'none';
-    }
-  });
-
-  seats.forEach(seatClick => {
-    seatClick.addEventListener('click',function(){
-      if(seatClick.classList.contains('available')){
-          seatClick.classList.toggle('selected');
-      }
+    document.getElementById('zoom-out')?.addEventListener('click', function () {
+        zoomLevel = Math.max(zoomLevel - zoomStep, minZoom);
+        updateZoom();
     });
 
-  });
+    document.getElementById('zoom-reset')?.addEventListener('click', function () {
+        zoomLevel = 1;
+        updateZoom();
 
-  if(seatPlan){
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    seatPlan.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - seatPlan.offsetLeft;
-        scrollLeft = seatPlan.scrollLeft;
-        e.preventDefault();
+        seatPlanContainer.scrollLeft = (seatPlanContainer.scrollWidth - seatPlanContainer.clientWidth) / 2;
+        seatPlanContainer.scrollTop = (seatPlanContainer.scrollHeight - seatPlanContainer.clientHeight) / 2;
     });
-
-    seatPlan.addEventListener('mouseleave', () => {
-        isDown = false;
-    });
-
-    seatPlan.addEventListener('mouseup', () => {
-        isDown = false;
-    });
-
-    seatPlan.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - seatPlan.offsetLeft;
-        const walk = (x - startX) * 2;
-        seatPlan.scrollLeft = scrollLeft - walk;
-    });
-  }
 });
-//.............................................. Select the single seat plan container end .................................
+//.......................................  seat in theater end ..................................
+
 
 
 //....................................................... seat design swiper start ...........................................
@@ -587,34 +594,9 @@ var swiper = new Swiper(".mySwiper8", {
 //....................................................... team members swiper end ...........................................
 
 
-//.................................................... payment promotion code start .........................................
-$(document).ready(function(){
-  $('#promo-code > .d-flex').click(function(){
-    $('#promo-form').slideToggle(500);
-  });
-});
-//.................................................... payment promotion code end .........................................
-
-
 //................................................... payment method start ..............................................
 $(document).ready(function(){
-  $('.payment-content').not(':first').hide();
-
-  $('.custom-radio').each(function() {
-      if ($(this).find('input').is(':checked')) {
-          $(this).addClass('active').removeClass('inactive');
-      } else {
-          $(this).addClass('inactive').removeClass('active');
-      }
-  });
-
- $('.custom-radio').on('click', function(){
-    $(this).find('input[type="radio"]').prop('checked', true);
-
-    $('.payment-content').hide();
-
-    const target = $(this).find('input[type="radio"]').data('target');
-    $(target).show();
+    $('.payment-content').not(':first').hide();
 
     $('.custom-radio').each(function() {
         if ($(this).find('input').is(':checked')) {
@@ -623,7 +605,29 @@ $(document).ready(function(){
             $(this).addClass('inactive').removeClass('active');
         }
     });
-  });
+
+    $('.custom-radio').on('click', function(){
+        $(this).find('input[type="radio"]').prop('checked', true);
+
+        $('.payment-content').hide();
+
+        const target = $(this).find('input[type="radio"]').data('target');
+        $(target).show();
+
+        $('.custom-radio').each(function() {
+            if ($(this).find('input').is(':checked')) {
+                $(this).addClass('active').removeClass('inactive');
+            } else {
+                $(this).addClass('inactive').removeClass('active');
+            }
+        });
+    });
+
+    $(document).on('change', '.payment-radio', function () {
+        $('.payment-info').addClass('d-none');
+        let paymentId = $(this).val();
+        $('#payment-' + paymentId).removeClass('d-none');
+    });
 });
 
 //................ upload screenshot start ..........
@@ -635,17 +639,3 @@ var loadFile = function (event) {
 
 //................................................... payment method end ..............................................
 
-
-//............................ video modal mute start ..................................
-document.addEventListener('DOMContentLoaded', function() {
-  const modals = document.querySelectorAll('.modal');
-
-  modals.forEach(function(modal) {
-    const video = modal.querySelector('iframe');
-
-    modal.addEventListener('hidden.bs.modal', function () {
-        video.src = video.src;
-    });
-  });
-});
-//............................ video modal mute end ..................................

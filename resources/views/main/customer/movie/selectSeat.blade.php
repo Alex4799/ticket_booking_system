@@ -1,22 +1,4 @@
 @extends('main.customer.layout.master')
-@section('style')
-<style>
-    /* Full-screen overlay */
-    #loadingOverLay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background-color: rgba(19, 20, 20, 0.918); /* Semi-transparent background */
-      z-index: 100000; /* High z-index to cover other elements */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-</style>
-@endsection
 @section('content')
 @php
     use App\Helpers\TimeHelper;
@@ -54,39 +36,49 @@
                 </div>
             </div>
         </div>
-       <div class="p-1">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" style="font-size: 10pt;" role="alert">
-                    {{session('success')}}
-                <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+       <div class="row mx-1 mb-3">
+            <div class="col-lg-6 offset-lg-6">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                        {{session('success')}}
+                    <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
 
-            @if (session('warning'))
-                <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
-                    {{session('warning')}}
-                <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+                @if (session('warning'))
+                    <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                        {{session('warning')}}
+                    <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
 
-            @if (session('danger'))
-                <div class="alert alert-danger alert-dismissible fade show" style="font-size: 10pt;" role="alert">
-                    {{session('danger')}}
-                <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+                @if (session('danger'))
+                    <div class="alert alert-danger alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                        {{session('danger')}}
+                    <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+            </div>
         </div>
         <div class="container-lg" id="seat-design">
-            <div class="text-center">
-                <h5>{{$moviePlan->cinema_name}}</h5>
-                <label class="mt-3 fw-medium">{{$moviePlan->hall_name}}</label>
+            <div class="mb-4">
+                <div class="place-meta">
+                    <div class="meta-item">
+                        <i class="fa-solid fa-building me-1"></i>
+                        <span>{{$moviePlan->cinema_name}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-door-open me-1"></i>
+                        <span>{{$moviePlan->hall_name}}</span>
+                    </div>
+                </div>
             </div>
             <div class="swiper mySwiper7">
                 <div class="swiper-wrapper">
                     @foreach ($seatPlan as $item)
                         <div class="swiper-slide">
-                            <img src="{{Storage::url('seat_plan/'.$item['image'])}}" class="w-100 d-block" alt="">
-                            <p class="text-center">{{$item['seat_plan_name']}}</p>
+                            <img src="{{Storage::url('seat_plan/'.$item['image'])}}" class="w-100 d-block" alt="image">
+                            <p class="text-center mt-2">{{$item['seat_plan_name']}}</p>
                         </div>
                     @endforeach
                 </div>
@@ -95,7 +87,15 @@
         </div>
 
         <div id="theater-seat-content">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mx-auto" id="seat-color">
+            <div id="loadingOverLay" class="d-none">
+                <div class="loading-card">
+                    <div class="spinner-border text-warning" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-white" style="font-size: 9pt;">Please Wait</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5 mx-auto" id="seat-color">
                 <div class="d-flex align-items-center">
                     <h6 class="sold-seat me-5">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-armchair"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
@@ -111,33 +111,34 @@
                     </h6>
                 </div>
                 <div id="swipe-left">
-                    <h6>စျေးနှုန်းကြည့်ရန်အတွက် မိမိရွေးချယ်လိုသည့်ထိုင်ခုံကို နည်းနည်းကြာကြာ ဖိထားပါ</h6>
+                    <h6>စျေးနှုန်းကြည့်ရန်အတွက် မိမိရွေးချယ်လိုသည့်ထိုင်ခုံကို ဖွဖွလေး ဖိထားပါ</h6>
                 </div>
                 <div id="time-left">
                     <div>
-                        <i class="fa-regular fa-clock"></i>
+                        <i class="fa-regular fa-clock me-1"></i>
                         <span>Time Left - <span id="timer">02:30</span> </span>
                     </div>
                 </div>
             </div>
-            <div class="">
-                <div class="screen-container">
-                    <div class="screen-label">SCREEN</div>
-                    <div class="screen"></div>
+            <div class="cinema-seating">
+                <div class="screen-wrapper">
+                    <div class="screen">
+                        <span>SCREEN</span>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <div id="seat-alert">
-
-                </div>
-                <div class="d-flex justify-content-center">
-                    <div id="loadingOverLay" class="d-none">
-                        <div id="loading-content">
-                            <div class="spinner-border text-warning" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2 text-white" style="font-size: 10pt;">Please Wait</p>
-                        </div>
+                @if ($moviePlan->seat_column > 10)
+                    <div class="align-items-center justify-content-end gap-2 zoom-btn me-3 mb-1">
+                        <button type="button" id="zoom-out">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <button type="button" id="zoom-reset">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                @endif
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-6">
+                        <div id="seat-alert"></div>
                     </div>
                 </div>
                 <div id="seat-plan-container">
@@ -145,62 +146,54 @@
                         @foreach ($movieSeat as $item)
                         <div class="mx-auto">
                             <div class="parents seat @if ($item->status==0) available @elseif($item->status==1) selected @else sold @endif" id="seat{{$item->id}}">
-                                    @if ($item->active!=0)
-                                         @if ($item->seat_type==1)
-                                                <div class="box arrow-bottom">{{$item->price}} Kyats</div>
-                                                <div class="seat-content seat_class">
-                                                    <text x="12" y="20" text-anchor="middle" class="svg-number">{{$item->seat_name}}</text>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-armchair">
-                                                        <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"></path>
-                                                        <path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"></path>
-                                                        <path d="M5 18v2"></path>
-                                                        <path d="M19 18v2"></path>
-                                                    </svg>
-                                                </div>
-                                                <input type="hidden" id="seat_id" value="{{$item->id}}">
-                                                <input type="hidden" id="seat_name" value="{{$item->seat_name}}">
-                                                <input type="hidden" id="seat_price" value="{{$item->price}}">
-                                                <input type="hidden" id="seat_plan" value="{{$item->seat_plan_name}}">
-                                                <input type="hidden" id="seat_status_{{$item->id}}" value="{{$item->status}}">
-                                            @else
-                                                <div class="box arrow-bottom">{{$item->price}} Kyats</div>
-                                                <div class="seat-content seat_class">
-                                                    <text x="12" y="20" text-anchor="middle" class="svg-number">{{$item->seat_name}}</text>
-                                                    <svg class="lucide lucide-couple-armchair" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <!-- Mirrored and shortened Left backrest -->
-                                                        <path d="M22 12V10a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v8" />
-
-                                                        <!-- Shortened Right backrest -->
-                                                        <path d="M26 12V10a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3v8" />
-
-                                                        <!-- Shared seat base -->
-                                                        <path d="M2 30a3 3 0 0 0 3 3h38a3 3 0 0 0 3-3v-8a3 3 0 0 0-6 0v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a3 3 0 0 0-6 0z" />
-
-                                                        <!-- Legs -->
-                                                        <path d="M6 34v6" />
-                                                        <path d="M24 34v6" />
-                                                        <path d="M42 34v6" />
-                                                    </svg>
-                                                </div>
-                                                <input type="hidden" id="seat_id" value="{{$item->id}}">
-                                                <input type="hidden" id="seat_name" value="{{$item->seat_name}}">
-                                                <input type="hidden" id="seat_price" value="{{$item->price}}">
-                                                <input type="hidden" id="seat_plan" value="{{$item->seat_plan_name}}">
-                                                <input type="hidden" id="seat_status_{{$item->id}}" value="{{$item->status}}">
-                                            @endif
-                                    @endif
+                                @if ($item->active!=0)
+                                        @if ($item->seat_type==1)
+                                            <div class="box arrow-bottom">{{number_format($item->price)}}</div>
+                                            <div class="seat-content seat_class">
+                                                <text text-anchor="middle" class="svg-number">{{$item->seat_name}}</text>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-armchair">
+                                                    <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"></path>
+                                                    <path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"></path>
+                                                    <path d="M5 18v2"></path>
+                                                    <path d="M19 18v2"></path>
+                                                </svg>
+                                            </div>
+                                            <input type="hidden" id="seat_id" value="{{$item->id}}">
+                                            <input type="hidden" id="seat_name" value="{{$item->seat_name}}">
+                                            <input type="hidden" id="seat_price" value="{{$item->price}}">
+                                            <input type="hidden" id="seat_plan" value="{{$item->seat_plan_name}}">
+                                            <input type="hidden" id="seat_status_{{$item->id}}" value="{{$item->status}}">
+                                        @else
+                                            <div class="box arrow-bottom">{{number_format($item->price)}}</div>
+                                            <div class="seat-content seat_class">
+                                                <text text-anchor="middle" class="svg-number">{{$item->seat_name}}</text>
+                                                <svg class="lucide lucide-couple-armchair" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M22 12V10a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v8" />
+                                                    <path d="M26 12V10a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3v8" />
+                                                    <path d="M2 30a3 3 0 0 0 3 3h38a3 3 0 0 0 3-3v-8a3 3 0 0 0-6 0v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a3 3 0 0 0-6 0z" />
+                                                    <path d="M6 34v6" />
+                                                    <path d="M24 34v6" />
+                                                    <path d="M42 34v6" />
+                                                </svg>
+                                            </div>
+                                            <input type="hidden" id="seat_id" value="{{$item->id}}">
+                                            <input type="hidden" id="seat_name" value="{{$item->seat_name}}">
+                                            <input type="hidden" id="seat_price" value="{{$item->price}}">
+                                            <input type="hidden" id="seat_plan" value="{{$item->seat_plan_name}}">
+                                            <input type="hidden" id="seat_status_{{$item->id}}" value="{{$item->status}}">
+                                        @endif
+                                @endif
                             </div>
                         </div>
                         @endforeach
                     </div>
                 </div>
             </div>
-
-             <div class="container-lg" id="check-out">
+            <div class="container-lg" id="check-out">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-8">
                         <h5>Selected Seats :</h5>
-                        <div class="row mt-3 ms-1 me-3" id="seat-number">
+                        <div class="row mt-3 ms-1" id="seat-number">
                             <label>Tap on a seat to select it.</label>
                         </div>
                     </div>
@@ -213,7 +206,7 @@
                             @csrf
                             <input type="hidden" name="seats" id="inputSeat" value="[]">
                             <input type="hidden" name="moviePlanId" value="{{$moviePlan->id}}">
-                            <button type="submit" class="btn" id="ticket-btn">Check Out</button>
+                            <button type="submit" class="btn" id="ticket-btn">Check Out <i class="fa-solid fa-arrow-right ms-2"></i></button>
                         </form>
                     </div>
                 </div>
@@ -223,6 +216,8 @@
     <!-- select seat end  -->
 
 @endsection
+
+
 @section('script')
     <script>
         Pusher.logToConsole = true;
@@ -317,11 +312,11 @@
                                 summary();
                             }else{
                                 $('#seat-alert').html(`
-                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                            Unfortunately this seat is selected by someone. Please choose another seat.
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                        </div>
-                                    `);
+                                     <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                                        Unfortunately this seat is selected by someone. Please choose another seat.
+                                    <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                `);
                             }
                             $('#loadingOverLay').addClass('d-none');
                         },
@@ -331,9 +326,9 @@
                     })
                 }else{
                     $('#seat-alert').html(`
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
                             Unfortunately this seat is selected by someone. Please choose another seat.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     `);
                     $('#loadingOverLay').addClass('d-none');
@@ -356,13 +351,13 @@
                         $totalPrice+=parseInt(element.seat_price);
                     });
                 } else {
-                    $list=`<p class="text-warning">There is no select</p>`;
+                    $list=`<label>Tap on a seat to select it.</label>`;
                     $totalPrice=0
                 }
                 $stringData=JSON.stringify(selected_seat);
                 $('#inputSeat').val($stringData);
                 $('#seat-number').html($list);
-                $('#total_price').html($totalPrice);
+                $('#total_price').html($totalPrice.toLocaleString());
             }
 
             $(document).on("click",".selected_seat",function(){
@@ -389,11 +384,11 @@
                                 summary();
                             }else{
                                 $('#seat-alert').html(`
-                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                            An error occurred. Please try again.
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                        </div>
-                                    `);
+                                    <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                                        An error occurred. Please try again.
+                                        <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                `);
                             }
                             $('#loadingOverLay').addClass('d-none');
                         },
@@ -412,11 +407,11 @@
                         success:function(data){
                             if(data.status!='success'){
                                 $('#seat-alert').html(`
-                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                            An error occurred. Please try again.
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                        </div>
-                                    `);
+                                    <div class="alert alert-warning alert-dismissible fade show" style="font-size: 10pt;" role="alert">
+                                        An error occurred. Please try again.
+                                        <button type="button" class="btn-close border-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                `);
                             }
                         }
                 })

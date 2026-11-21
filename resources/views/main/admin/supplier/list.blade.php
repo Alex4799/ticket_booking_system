@@ -3,169 +3,200 @@
     Supplier
 @endsection
 @section('content')
-<main class="content px-4 py-3 mb-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="bg-white text-dark px-3 border rounded pt-2 h-100 text-center">
-            <h5>Total - {{$supplier->total()}}</h5>
-        </div>
-        <form action="" id="search-form">
-            <div class="search-cinema">
-                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
-                <input placeholder="Search" type="search" name="search_key" value="{{request('search_key')}}" class="input">
-            </div>
-        </form>
-        <div class="form-group">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-supplier">Add Supplier</button>
-        </div>
-    </div>
-    <form action="" id="search-form-small" class="mb-3">
-        <div class="search-cinema">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
-            <input placeholder="Search" type="search" name="search_key" value="{{request('search_key')}}" class="input">
-        </div>
-    </form>
-    <div class="">
-        <div id="table-bg">
-            <div class="my-3">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Contact</th>
-                                <th>Address</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($supplier as $item)
-                            <tr>
-                                <td>{{$item->id}}</td>
-                                <td>{{$item->name}}</td>
-                                <td>{!!$item->contact!!}</td>
-                                <td>{!!$item->address!!}</td>
-                                <td>
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit-supplier{{$item->id}}">Edit</button>
-                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete-supplier{{$item->id}}">Delete</button>
-                                </td>
-                            </tr>
-                            <div class="modal fade" id="edit-supplier{{$item->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-supplier{{$item->id}}Label" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title d-block w-100 text-center" id="edit-supplier{{$item->id}}Label">Edit Supplier</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="{{route('admin#supplierUpdate')}}" method="post" class="mt-1">
-                                                @csrf
-                                                @method('PATCH')
-                                                <div class="form-group mb-4">
-                                                    <label class="mb-1">Name</label>
-                                                    <input id="" name="name" type="text" value="{{$item->name}}" class="form-control @error('name') is-invalid @enderror" placeholder="Enter supplier name">
-                                                    @error('name')
-                                                        <small class="text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label class="mb-1">Contact</label>
-                                                    <textarea name="contact" class="editor" cols="30" rows="10" placeholder="Enter supplier contact">{{$item->contact}}</textarea>
-                                                    @error('contact')
-                                                        <small class="text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label class="mb-1">Address</label>
-                                                    <textarea name="address" class="editor" cols="30" rows="10" placeholder="Enter supplier address">{{$item->address}}</textarea>
-                                                    @error('address')
-                                                        <small class="text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-                                                <input type="hidden" name="id" value="{{$item->id}}">
-
-                                                <button type="submit" class="btn btn-primary w-100 my-2">Update</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+<main class="content p-2 mb-5">
+    <div class="container-fluid">
+        <div class="table-bg">
+            <div>
+                <div class="total-count-title">
+                    <div class="d-flex align-items-center">
+                        <div class="count-content">
+                            <h5 class="mb-0">Total - {{$supplier->total()}}</h5>
+                        </div>
+                        <div class="ms-3">
+                            <button class="add-btn" data-bs-toggle="modal" data-bs-target="#add-supplier">
+                                <i class="fa-solid fa-square-plus me-2"></i>Add Supplier
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <form action="" method="get" id="search-form">
+                            <div class="search-cinema">
+                                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
+                                <input placeholder="Search" value="{{request('search_key')}}" name="search_key" type="text" class="input">
                             </div>
-                            <div class="modal fade" id="delete-supplier{{$item->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-supplier{{$item->id}}Label" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title d-block w-100 text-center" id="delete-supplier{{$item->id}}Label">Delete Supplier</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="{{route('admin#supplierDelete')}}" method="post" class="mt-1">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div class="py-1">
-                                                    <p class="text-danger text-wrap">Are you sure to delete this.</p>
-                                                </div>
-                                                <div class="py-1">
-                                                    <h6>Verify you are admin. Please enter the password.</h6>
-                                                </div>
-                                                <div class="form-group mb-3">
-                                                    <label class="mb-1">Password</label>
-                                                    <input id="" name="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password." required>
-                                                    @error('password')
-                                                        <small class="text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-
-                                                <input type="hidden" name="id" value="{{$item->id}}">
-
-                                                <button type="submit" class="btn btn-danger w-100 my-2">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div>
-                        {{$supplier->appends(request()->query())->links()}}
+                        </form>
+                        <a href="{{route('admin#supplierList')}}" title="Refresh this page" class="btn btn-primary btn-sm"><i class="fa-solid fa-arrows-rotate"></i></a>
                     </div>
                 </div>
+                @if (count($supplier)!=0)
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Address</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($supplier as $item)
+                                <tr>
+                                    <td>{{$loop->index+1}}</td>
+                                    <td>{{$item->name}}</td>
+                                    <td>{!!$item->contact!!}</td>
+                                    <td>{!!$item->address!!}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#edit-supplier{{$item->id}}"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <button type="button" class="btn btn-danger btn-sm delete" data-bs-toggle="modal" data-bs-target="#delete-supplier{{$item->id}}"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <div class="modal fade" id="edit-supplier{{$item->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-supplier{{$item->id}}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title d-block w-100 text-center" id="edit-supplier{{$item->id}}Label">Edit Supplier</h5>
+                                                <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{route('admin#supplierUpdate')}}" method="post" class="mt-1">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <div class="update-btn-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group mb-4">
+                                                                    <label class="mb-1">Name</label>
+                                                                    <input id="" name="name" type="text" value="{{$item->name}}" class="form-control @error('name') is-invalid @enderror" required>
+                                                                    @error('name')
+                                                                        <small class="text-danger">{{$message}}</small>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group mb-4">
+                                                                    <label class="mb-1">Contact</label>
+                                                                    <textarea name="contact" cols="30" rows="3" class="form-control">{{$item->contact}}</textarea>
+                                                                    @error('contact')
+                                                                        <small class="text-danger">{{$message}}</small>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group mb-4">
+                                                                    <label class="mb-1">Address</label>
+                                                                    <textarea name="address" cols="30" rows="7" class="form-control">{{$item->address}}</textarea>
+                                                                    @error('address')
+                                                                        <small class="text-danger">{{$message}}</small>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <input type="hidden" name="id" value="{{$item->id}}">
+                                                        <div class="d-flex align-items-center my-2">
+                                                            <button type="submit" class="action-btn w-100" disabled><i class="fa-solid fa-floppy-disk me-2"></i>Save Changes</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="delete-supplier{{$item->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-supplier{{$item->id}}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title d-block w-100 text-center" id="delete-supplier{{$item->id}}Label">Delete Supplier</h5>
+                                                <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{route('admin#supplierDelete')}}" method="post" class="mt-1">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="delete-confirmation">
+                                                        <div class="delete-warning">
+                                                            <div class="delete-icon">
+                                                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                                            </div>
+                                                            <div class="delete-message">
+                                                                <h6>Are you sure to delete "{{$item->name}}" ?</h6>
+                                                                <small>Verify you are admin. Please enter the password.</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group my-3">
+                                                        <label class="mb-1">Password</label>
+                                                        <input id="" name="password" type="password" class="form-control @error('password') is-invalid @enderror" required>
+                                                        @error('password')
+                                                            <small class="text-danger">{{$message}}</small>
+                                                        @enderror
+                                                    </div>
+
+                                                    <input type="hidden" name="id" value="{{$item->id}}">
+                                                    <div class="d-flex align-items-center justify-content-end">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div>
+                            {{$supplier->appends(request()->query())->links()}}
+                        </div>
+                    </div>
+                @else
+                    <h6 class="text-center mt-5 mb-4 text-secondary" style="font-size: 11pt;">There is no supplier.</h6>
+                @endif
             </div>
         </div>
-        <div class="modal fade" id="add-supplier" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-supplierLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title d-block w-100 text-center" id="add-supplierLabel">Add Supplier</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{route('admin#supplierCreate')}}" method="post" class="mt-1">
-                            @csrf
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Name</label>
-                                <input id="" name="name" type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Enter supplier name">
-                                @error('name')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Contact</label>
-                                <textarea name="contact" class="editor" cols="30" rows="10" placeholder="Enter supplier contact"></textarea>
-                                @error('contact')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-4">
-                                <label class="mb-1">Address</label>
-                                <textarea name="address" class="editor" cols="30" rows="10" placeholder="Enter supplier address"></textarea>
-                                @error('address')
-                                    <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </div>
 
-                            <button type="submit" class="btn btn-primary w-100 my-2">Add</button>
-                        </form>
+        <div>
+            <div class="modal fade" id="add-supplier" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-supplierLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title d-block w-100 text-center" id="add-supplierLabel">Add Supplier</h5>
+                            <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{route('admin#supplierCreate')}}" method="post" class="mt-1">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group mb-4">
+                                            <label class="mb-1">Name</label>
+                                            <input id="" name="name" type="text" class="form-control @error('name') is-invalid @enderror" required>
+                                            @error('name')
+                                                <small class="text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label class="mb-1">Contact</label>
+                                            <textarea name="contact" cols="30" rows="3" class="form-control"></textarea>
+                                            @error('contact')
+                                                <small class="text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group mb-4">
+                                            <label class="mb-1">Address</label>
+                                            <textarea name="address" cols="30" rows="7" class="form-control"></textarea>
+                                            @error('address')
+                                                <small class="text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center my-2">
+                                    <button type="submit" class="action-btn w-100"><i class="fa-solid fa-square-plus me-2"></i>Create</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,35 +204,32 @@
     </div>
 </main>
 @endsection
+
 @section('script')
-<script type="module">
-    import {
-        ClassicEditor,
-        Essentials,
-        Bold,
-        Italic,
-        Font,
-        Paragraph
-    } from 'ckeditor5';
-
-    document.querySelectorAll('.editor').forEach(editorElement => {
-    ClassicEditor
-        .create(editorElement, {
-            plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-            toolbar: {
-                items: [
-                    'undo', 'redo', '|', 'bold', 'italic', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                ]
+    <script>
+        // updatebtn disabled check
+        const forms = document.querySelectorAll('.update-btn-group');
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll('input,textarea');
+            const button = form.querySelector('.action-btn');
+            const initialValues = {};
+            inputs.forEach(input => {
+                initialValues[input.name] = input.value;
+            });
+            function checkUpdateValueForBtn() {
+                let hasChanged = false;
+                inputs.forEach(input => {
+                    if (input.value != initialValues[input.name]) {
+                        hasChanged = true;
+                    }
+                });
+                button.disabled = !hasChanged;
             }
-        })
-        .then(editor => {
-            console.log('Editor initialized for', editorElement);
-        })
-        .catch(error => {
-            console.error('Error initializing editor:', error);
+            inputs.forEach(input => {
+                input.addEventListener('input', checkUpdateValueForBtn);
+                input.addEventListener('change', checkUpdateValueForBtn);
+            });
+            checkUpdateValueForBtn();
         });
-});
-
-</script>
+    </script>
 @endsection

@@ -4,236 +4,255 @@
 @endsection
 @section('style')
 <style>
-    /* Full-screen overlay */
-    #loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-      z-index: 100000; /* High z-index to cover other elements */
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    #loading{
+        position: fixed;
+        inset: 0;
+        background-color: #1419238c;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .plan-loading{
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,.18);
     }
 </style>
 @endsection
 @section('content')
-    <div class="d-flex justify-content-center">
-        <div id="loading" class="d-none">
+@php
+    use App\Helpers\TimeHelper;
+    use Carbon\Carbon;
+@endphp
+    <div id="loading" class="d-none">
+        <div class="plan-loading">
             <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Loading...</span>
             </div>
         </div>
     </div>
-    <main class="content px-3 py-4">
+    <main class="content p-2 mb-5">
         <div class="container-fluid">
-            <div class="">
+            <div>
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('admin#moviePlanCinemaList')}}">Cinema</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin#moviePlanCinemaList')}}">Cinemas</a></li>
                         <li class="breadcrumb-item active" aria-current="page">List Plan</li>
                     </ol>
                 </nav>
-            </div><!-- End Page Title -->
-            <div class="">
-                <div class="card mt-4 px-4 border-0 shadow">
-                    <h5 class="card-title text-center mt-3">{{$hall->name}}</h5>
-                    <div class=" d-flex justify-content-between flex-wrap gap-1 mt-2">
+            </div>
+            <div class="table-bg">
+                <div class="hall-view">
+                    <h5 class="text-center">
+                        <i class="fa-solid fa-door-open me-1"></i>
+                        {{$hall->name}}@if ($hall->du_id!=null) (Copy) @endif
+                    </h5>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 my-2">
                         <div>
                             <form action="" method="get">
-                                <label for="">Choose Date</label>
+                                <label class="label-small">Choose Date</label>
                                 <div class="d-flex">
-                                    <input type="date" name="date" value="{{request('date')}}" id="" class="form-control">
-                                    <input type="submit" class="btn btn-secondary">
+                                    <input type="date" style="font-size: 11pt;" name="date" value="{{request('date')}}" id="" class="form-control" required>
+                                    <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary rounded"><i class="fa-solid fa-filter me-2" style="font-size: 8pt;"></i>Filter</button>
                                 </div>
                             </form>
                         </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#add-plan"><i class="fa-solid fa-square-plus me-2"></i>Add Plan</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-plan" style="font-size: 11pt;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Movie Name</th>
+                                    <th class="text-center">Plan ID</th>
+                                    <th class="text-center">Show Date</th>
+                                    <th class="text-center">Start Time</th>
+                                    <th class="text-center">Clean Time</th>
+                                    <th class="text-center">End Time</th>
+                                    <th class="text-center">Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($moviePlan as $item)
+                                <tr>
+                                    <td>{{$loop->index+1}}</td>
+                                    <td>{{$item->movie_name}}</td>
+                                    <td class="text-center">{{$item->id}}</td>
+                                    <td class="text-center">{{$item->date}}</td>
+                                    <td class="text-center">{{Carbon::parse($item->start_time)->format('h:i A')}}</td>
+                                    <td class="text-center">{{$item->clean_time}} min</td>
+                                    <td class="text-center">{{Carbon::parse($item->end_time)->format('h:i A')}}</td>
+                                    <td class="text-center">
+                                        @if ($item->active==1)
+                                            <span class="text-success">Active</span>
+                                        @else
+                                            <span class="text-danger">Not Active</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{route('admin#moviePlanView',$item->id)}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-calendar-check me-2"></i>View Plan</a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                         <div>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-plan"><i class="fa-solid fa-plus me-2"></i>Add Plan</button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-plan">Delete</button>
+                            {{$moviePlan->appends(request()->query())->links()}}
                         </div>
-                    </div>
-                    <div class="row" id="table-bg">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Plan No</th>
-                                        <th>Plan ID</th>
-                                        <th>Movie Name</th>
-                                        <th>Show Date</th>
-                                        <th>Start Time</th>
-                                        <th>Clean Time</th>
-                                        <th>End Time</th>
-                                        <th>Active</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($moviePlan as $item)
-                                    <tr>
-                                        <td>{{$loop->index+1}}</td>
-                                        <td>{{$item->id}}</td>
-                                        <td>{{$item->movie_name}}</td>
-                                        <td>{{$item->date}}</td>
-                                        <td>{{$item->start_time}}</td>
-                                        <td>{{$item->clean_time}} min</td>
-                                        <td>{{$item->end_time}}</td>
-                                        <td>
-                                            @if ($item->active==1)
-                                                <span class="text-success">Active</span>
-                                            @else
-                                                <span class="text-danger">Not Active</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{route('admin#moviePlanView',$item->id)}}" class="btn btn-outline-primary">View Plan</a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div>
-                                {{$moviePlan->appends(request()->query())->links()}}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="modal fade" id="add-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-planLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title d-block w-100 text-center" id="add-planLabel">Add Plan</h4>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{route('admin#moviePlanCreate')}}" method="post" enctype="multipart/form-data" class="parents">
-                                            @csrf
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Choose Movie</label>
-                                                <select name="movie_id" id="movie" class="form-control movie">
-                                                    @foreach ($movie as $item)
-                                                        <option value="{{$item->id}}" data-run_time="{{$item->run_time}}">{{$item->name}} ({{$item->run_time}} min)</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Show Date</label>
-                                                @if (isset($lastPlan))
-                                                    <input type="date" value="{{$lastPlan->date}}" name="date" class="form-control">
-                                                @else
-                                                    <input type="date" name="date" class="form-control">
-                                                @endif
-
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Start Time</label>
-                                                @if (isset($lastPlan))
-                                                    <input type="time" name="start_time" value="{{$lastPlan->end_time}}" class="form-control start_time" id="start_time">
-                                                @else
-                                                    <input type="time" name="start_time" class="form-control start_time" id="start_time">
-                                                @endif
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Clean Time (MIN)</label>
-                                                <input type="number" name="clean_time" class="form-control clean_time" id="clean_time">
-                                            </div>
-                                            <div class="mb-4" id="end_time">
-
-                                            </div>
-                                            <div class="row mb-1">
-                                                <div class="mb-4 col-md-6">
-                                                    <label for="name" class="form-label mb-1">Online Booking</label>
-                                                    <select name="online_book" id="" class="form-control">
-                                                        <option value="1">True</option>
-                                                        <option value="0">False</option>
-                                                    </select>
-                                                    @error('online_book')
-                                                        <small class=" text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-                                                <div class="mb-4 col-md-6">
-                                                    <label for="name" class="form-label mb-1">Online Buy</label>
-                                                    <select name="online_buy" id="" class="form-control">
-                                                        <option value="1">True</option>
-                                                        <option value="0">False</option>
-                                                    </select>
-                                                    @error('online_buy')
-                                                        <small class=" text-danger">{{$message}}</small>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="name" class="form-label mb-1 @error('active') is-invalid @enderror">Active</label>
-                                                <select name="active" class="form-control ">
-                                                    <option value="1">Active</option>
-                                                    <option value="0">Not Active</option>
-                                                </select>
-                                                @error('active')
-                                                    <small class=" text-danger">{{$message}}</small>
-                                                @enderror
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Day Count</label>
-                                                <input type="number" name="day_count" class="form-control" value="1">
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="" class="mb-1">Note</label>
-                                                <textarea name="note" id="editor" cols="30" rows="10" class=" @error('note') is-invalid @enderror"></textarea>
-                                            </div>
-                                            <div>
-                                                <input type="hidden" name="hall_id" value="{{$hall->id}}">
-                                            </div>
-                                            <div class="d-flex justify-content-end gap-1">
-                                                <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-upload me-2"></i>Add</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- <div class="modal fade" id="delete-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-planLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title d-block w-100 text-center" id="delete-planLabel">Delete Movie Plan</h4>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{route('admin#deleteAllMoviePlan')}}" method="post" class="mt-1">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class="py-1">
-                                                <p class="text-danger">Are you sure to delete this.</p>
-                                            </div>
-                                            <div class="py-1">
-                                                <h6>Verify you are admin. Please enter the password.</h6>
-                                            </div>
-                                            <div>
-                                                <input type="hidden" name="hall_id" value="{{$hall->id}}">
-                                            </div>
-                                            <div class="form-group mb-3">
-                                                <label class="mb-1">Password</label>
-                                                <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password." required>
-                                                @error('password')
-                                                    <small class="text-danger">{{$message}}</small>
-                                                @enderror
-                                            </div>
-
-                                            <button type="submit" class="btn btn-danger w-100 my-2">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
+            </div>
+
+            <div>
+                <div class="modal fade" id="add-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-planLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title d-block w-100 text-center" id="add-planLabel">Add Plan</h5>
+                                <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{route('admin#moviePlanCreate')}}" method="post" enctype="multipart/form-data" class="parents mt-1">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-sm-12 form-group mb-4">
+                                            <label class="mb-1">Choose Movie</label>
+                                            <select name="movie_id" id="movie" class="form-select movie">
+                                                @foreach ($movie as $item)
+                                                    <option value="{{$item->id}}" data-run_time="{{$item->run_time}}">{{$item->name}} ({{$item->run_time}} min)</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Show Date</label>
+                                            @if (isset($lastPlan))
+                                                <input type="date" value="{{$lastPlan->date}}" name="date" class="form-control">
+                                            @else
+                                                <input type="date" name="date" class="form-control">
+                                            @endif
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Day Count</label>
+                                            <input type="number" name="day_count" class="form-control" value="1">
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Start Time</label>
+                                            @if (isset($lastPlan))
+                                                <input type="time" name="start_time" value="{{$lastPlan->end_time}}" class="form-control start_time" id="start_time">
+                                            @else
+                                                <input type="time" name="start_time" class="form-control start_time" id="start_time" required>
+                                            @endif
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Clean Time (Min)</label>
+                                            <input type="number" name="clean_time" class="form-control clean_time" id="clean_time" required>
+                                        </div>
+                                        <div id="end_time">
+
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Online Booking</label>
+                                            <select name="online_book" id="" class="form-select">
+                                                <option value="1">True</option>
+                                                <option value="0">False</option>
+                                            </select>
+                                            @error('online_book')
+                                                <small class="text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                        <div class="col-sm-6 form-group mb-4">
+                                            <label class="mb-1">Online Buy</label>
+                                            <select name="online_buy" id="" class="form-select">
+                                                <option value="1">True</option>
+                                                <option value="0">False</option>
+                                            </select>
+                                            @error('online_buy')
+                                                <small class="text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                        <div class="col-sm-12 form-group mb-4">
+                                            <label class="mb-1">Status</label>
+                                            <select name="active" class="form-select">
+                                                <option value="1">Active</option>
+                                                <option value="0">Not Active</option>
+                                            </select>
+                                            @error('active')
+                                                <small class=" text-danger">{{$message}}</small>
+                                            @enderror
+                                        </div>
+                                        <div class="col-sm-12 form-group mb-4">
+                                            <label class="mb-1">Note</label>
+                                            <textarea name="note" id="editor" cols="30" rows="10" class=" @error('note') is-invalid @enderror"></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <input type="hidden" name="hall_id" value="{{$hall->id}}">
+                                    </div>
+                                    <div class="d-flex align-items-center my-2">
+                                        <button type="submit" class="action-btn w-100"><i class="fa-solid fa-square-plus me-2"></i>Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- <div class="modal fade" id="delete-plan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-planLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title d-block w-100 text-center" id="delete-planLabel">Delete Movie Plan</h5>
+                                <button type="button" class="btn-close border-none shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{route('admin#deleteAllMoviePlan')}}" method="post" class="mt-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="delete-confirmation">
+                                        <div class="delete-warning">
+                                            <div class="delete-icon">
+                                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                            </div>
+                                            <div class="delete-message">
+                                                <h6>Are you sure to delete all plans?</h6>
+                                                <small>Verify you are admin. Please enter the password.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-3">
+                                        <label class="mb-1">Password</label>
+                                        <input id="" name="password" type="password" class="form-control @error('password') is-invalid @enderror" required>
+                                        @error('password')
+                                            <small class="text-danger">{{$message}}</small>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <input type="hidden" name="hall_id" value="{{$hall->id}}">
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-end">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
             </div>
         </div>
     </main>
 @endsection
+
+{{-- backend need to update  --}}
+
 @section('script')
     <script>
         $(document).ready(function(){
@@ -271,8 +290,10 @@
                 let formattedMinutes = String(endMinutes).padStart(2, '0');
                 $endTime=`${formattedHours}:${formattedMinutes}`;
                 $('#end_time').html(`
-                    <label for="" class="py-2">End Time</label>
-                    <input type="time" readonly name="end_time" value='${$endTime}' class="form-control">
+                    <div class="col-sm-12 form-group mb-4">
+                        <label class="mb-1">End Time</label>
+                        <input type="time" readonly name="end_time" value='${$endTime}' class="form-control">
+                    </div>
                 `);
                 $('#loading').addClass('d-none');
             }

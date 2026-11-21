@@ -5,94 +5,87 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarNav = document.querySelector('.sidebar-nav');
     const links = document.querySelectorAll('.sidebar-link-name, .sidebar-link');
 
-  const toggleSidebar = (state) => {
-    sidebar.classList.toggle('expand', state);
-    sessionStorage.setItem('sidebar-state', state ? 'expanded' : 'collapsed');
-  };
-  toggleSidebar(sessionStorage.getItem('sidebar-state') === 'expanded');
+    const toggleSidebar = (state) => {
+        sidebar.classList.toggle('expand', state);
+        sessionStorage.setItem('sidebar-state', state ? 'expanded' : 'collapsed');
+    };
+    toggleSidebar(sessionStorage.getItem('sidebar-state') === 'expanded');
 
-
-  hamBurgers.forEach((hamBurger) => {
-    hamBurger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleSidebar(!sidebar.classList.contains('expand'));
-    });
-  });
-
-
-  document.body.addEventListener('click', function (event) {
-  if (window.innerWidth >= 992 && !sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
-      toggleSidebar(false);
-  }
-  });
-
-  sidebar.addEventListener('click', (e) => e.stopPropagation());
-
-  const currentURL = new URL(window.location.href);
-
-  links.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const parentItem = link.closest('.sidebar-item');
-      const hasDropdown = parentItem?.querySelector('.sidebar-dropdown');
-      if (link.classList.contains('sidebar-link-name') && hasDropdown) {
-        toggleSidebar(true);
-      } else {
-        toggleSidebar(false);
-      }
-      links.forEach((l) => l.classList.remove('active'));
-      (parentItem?.querySelector('.sidebar-link-name') || link).classList.add('active');
+    hamBurgers.forEach((hamBurger) => {
+        hamBurger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSidebar(!sidebar.classList.contains('expand'));
+        });
     });
 
-    const href = link.getAttribute('href');
-    if (href && (currentURL.pathname === href || currentURL.href.includes(href))) {
-        const parentLink = link.closest('.sidebar-item')?.querySelector('.sidebar-link-name');
-        (parentLink || link).classList.add('active');
-    }
-  });
+    document.body.addEventListener('click', function (event) {
+        if (window.innerWidth >= 992 && !sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+            toggleSidebar(false);
+        }
+    });
 
-  sidebarNav.scrollTop = +sessionStorage.getItem('sidebar-scroll-position') || 0;
-  sidebarNav.addEventListener('scroll', () =>
-    sessionStorage.setItem('sidebar-scroll-position', sidebarNav.scrollTop)
-  );
-  });
-  //................................ dashboard side bar toggle end .......................
+    sidebar.addEventListener('click', (e) => e.stopPropagation());
 
+    const currentURL = new URL(window.location.href);
 
-  //................................ sidebar toggle phone size start .......................
-  const sidebarToggle = document.querySelector("#sidebar-toggle");
-  const sidebar = document.querySelector("#sidebar");
+    links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+            e.stopPropagation();
+                const parentItem = link.closest('.sidebar-item');
+                const hasDropdown = parentItem?.querySelector('.sidebar-dropdown');
+                if (link.classList.contains('sidebar-link-name') && hasDropdown) {
+                    toggleSidebar(true);
+                } else {
+                    toggleSidebar(false);
+                }
+                links.forEach((l) => l.classList.remove('active'));
+                (parentItem?.querySelector('.sidebar-link-name') || link).classList.add('active');
+        });
 
-  sidebarToggle.addEventListener("click", function () {
+        const href = link.getAttribute('href');
+        if (href) {
+            const linkURL = new URL(href, window.location.origin);
+            if (
+                currentURL.pathname === linkURL.pathname &&
+                currentURL.hash === linkURL.hash
+            ) {
+                const parentLink = link.closest('.sidebar-item')?.querySelector('.sidebar-link-name');
+                (parentLink || link).classList.add('active');
+            }
+        }
+    });
+
+    sidebarNav.scrollTop = +sessionStorage.getItem('sidebar-scroll-position') || 0;
+    sidebarNav.addEventListener('scroll', () =>
+        sessionStorage.setItem('sidebar-scroll-position', sidebarNav.scrollTop)
+    );
+});
+//................................ dashboard side bar toggle end .......................
+
+//................................ sidebar toggle phone size start .......................
+const sidebarToggle = document.querySelector("#sidebar-toggle");
+const sidebar = document.querySelector("#sidebar");
+sidebarToggle.addEventListener("click", function () {
     sidebar.classList.toggle("active");
+});
+//............................... sidebar toggle phone size  end .......................
 
-  });
-  //............................... sidebar toggle phone size  end .......................
+//................................. profile tab click start ...........................
+document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function () {
+            const target = this.getAttribute("data-target");
+            tabs.forEach(t => t.classList.remove("active"));
+            contents.forEach(c => c.classList.remove("active"));
+            this.classList.add("active");
+            document.getElementById(target).classList.add("active");
+        });
+    });
+});
+//........................................ profile tab click end ................................
 
-
-//................................. profile edit click start ...........................
-let detailsText = document.getElementsByClassName('text-content');
-const editProfile = document.getElementById('edit-profile');
-const changePassword = document.getElementById('change-password');
-let currentDetails = 0;
-
-function detailsClick(event,elementId){
-  event.preventDefault();
-  const clickText = event.target;
-
-  if(clickText.classList.contains('text-active')){
-    return;
-  }
-  for(let d of detailsText){
-    d.classList.remove('text-active');
-  }
-  clickText.classList.add('text-active');
-  currentDetails = Array.from(detailsText).indexOf(clickText);
-
-  editProfile.style.display = elementId === 'editProfile' ? 'block' : 'none';
-  changePassword.style.display = elementId === 'changePassword' ? 'block' : 'none';
-}
-//........................................ profile edit click end ................................
 
 //....................................... schedule table start ..................................
 document.addEventListener("DOMContentLoaded", function() {
@@ -119,60 +112,51 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 //.......................................  seat in theater start..................................
-document.addEventListener('DOMContentLoaded',function(){
-  const seatPlan = document.getElementById('seat-plan');
-  const seatPlanRow = document.querySelectorAll('.seat-plan-row');
-  const seats = document.querySelectorAll('.seat');
+document.addEventListener('DOMContentLoaded', function () {
+    const seatPlan = document.getElementById('seat-plan');
+    const seatPlanContainer = document.getElementById('seat-plan-container');
 
-  seatPlanRow.forEach(sr => {
-    const totalSeats = sr.querySelectorAll('.seat').length;
+    if (!seatPlan || !seatPlanContainer) return;
 
-    if (totalSeats > 20) {
-      sr.style.display = 'grid';
-      sr.style.gridTemplateColumns = `auto repeat(${totalSeats}, auto)`;
+    document.querySelectorAll('.seat-plan-row').forEach(row => {
+        const totalSeats = row.querySelectorAll('.seat').length;
+        if (totalSeats > 20) {
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = `auto repeat(${totalSeats}, auto)`;
+        }
+    });
+
+    document.querySelectorAll('.seat').forEach(seat => {
+        seat.addEventListener('click', function () {
+            if (this.classList.contains('available')) {
+                this.classList.toggle('selected');
+            }
+        });
+    });
+
+    // zoom
+    let zoomLevel = 1;
+    const zoomStep = 0.1;
+    const minZoom = 0.7;
+
+    function updateZoom() {
+        seatPlan.style.transform = `scale(${zoomLevel})`;
     }
-  });
 
-  seats.forEach(seatClick => {
-    seatClick.addEventListener('click',function(){
-      if(seatClick.classList.contains('available')){
-          seatClick.classList.toggle('selected');
-      }
+    document.getElementById('zoom-out')?.addEventListener('click', function () {
+        zoomLevel = Math.max(zoomLevel - zoomStep, minZoom);
+        updateZoom();
     });
 
-  });
+    document.getElementById('zoom-reset')?.addEventListener('click', function () {
+        zoomLevel = 1;
+        updateZoom();
 
-  if(seatPlan){
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    seatPlan.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startX = e.pageX - seatPlan.offsetLeft;
-        scrollLeft = seatPlan.scrollLeft;
-        e.preventDefault();
+        seatPlanContainer.scrollLeft = (seatPlanContainer.scrollWidth - seatPlanContainer.clientWidth) / 2;
+        seatPlanContainer.scrollTop = (seatPlanContainer.scrollHeight - seatPlanContainer.clientHeight) / 2;
     });
-
-    seatPlan.addEventListener('mouseleave', () => {
-        isDown = false;
-    });
-
-    seatPlan.addEventListener('mouseup', () => {
-        isDown = false;
-    });
-
-    seatPlan.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - seatPlan.offsetLeft;
-        const walk = (x - startX) * 2;
-        seatPlan.scrollLeft = scrollLeft - walk;
-    });
-  }
 });
 //.......................................  seat in theater end ..................................
-
 
 
 // ..................................................... showtime select date start ....................................
@@ -194,50 +178,14 @@ document.addEventListener('DOMContentLoaded',function(){
 // ..................................................... showtime select date end ....................................
 
 
-// ....................................... showtime select cinema and time dropdown start ................................
-$(document).ready(function(){
-  $('.ct-toggle-btn').click(function(){
-    $(this).closest('.cinema-section').find('.select-time').slideToggle(500);
-    $(this).find('.cinema-down').toggle();
-    $(this).find('.cinema-up').toggle();
-  });
-});
-// ....................................... showtime select cinema and time dropdown end ....................................
-
-$(document).ready(function(){
-    $('.promo-icon').click(function(){
-      $('#promo-form').slideToggle(500);
-    });
-});
-
-
 //.................................. payment method start .............................
-  $(document).ready(function(){
-    $('.payment-content').not(':first').hide();
-
-    $('.custom-radio').each(function() {
-        if ($(this).find('input').is(':checked')) {
-            $(this).addClass('active').removeClass('inactive');
-        } else {
-            $(this).addClass('inactive').removeClass('active');
-        }
+$(document).ready(function(){
+    $('.payment-radio').on('change', function () {
+        $('.payment-info').addClass('d-none');
+        $($(this).data('target')).removeClass('d-none');
+        $('#payment_method').val($(this).val());
     });
-
-   $('.custom-radio').on('click', function(){
-      $(this).find('input[type="radio"]').prop('checked', true);
-
-      $('.payment-content').hide();
-
-      const target = $(this).find('input[type="radio"]').data('target');
-      $(target).show();
-
-      $('.custom-radio').each(function() {
-          if ($(this).find('input').is(':checked')) {
-              $(this).addClass('active').removeClass('inactive');
-          } else {
-              $(this).addClass('inactive').removeClass('active');
-          }
-      });
-    });
-  });
+    $('#payment_method').val($('.payment-radio:checked').val());
+});
 //.................................. payment method end .............................
+

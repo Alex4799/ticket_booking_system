@@ -31,7 +31,7 @@
 <body class="@yield('body-class')">
     <section class="wrapper">
         <div id="sidebar">
-            <div class="d-flex">
+            <div class="d-flex align-items-center">
                 <button class="toggle-btn" type="button">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -43,18 +43,18 @@
         </div>
         <div class="main">
             <nav class="navbar navbar-expand shadow-sm sticky-top">
-                <button class="toggle-btn p-0 ms-4" type="button" id="sidebar-toggle">
+                <button class="toggle-btn p-0 ms-3 mt-1" type="button" id="sidebar-toggle">
                     <i class="fa-solid fa-bars fs-5"></i>
                 </button>
                 <div class="">
                     <h4>@yield('title')</h4>
                 </div>
                 <div class="navbar-collapse">
-                    <ul class="navbar-nav">
+                     <ul class="navbar-nav d-flex align-items-center">
                         <li class="nav-item dropdown me-5">
-                            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-info">
+                            <button type="button" data-bs-toggle="dropdown" class="btn btn-sm btn-outline-info bg-transparent text-info px-3">
                                 <i class="fa-solid fa-bell"></i>
-                                <span class="d-none position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle" id="alert-dot">
+                                <span class="d-none position-absolute top-1 start-100 translate-middle p-2 bg-danger border border-info rounded-circle" id="alert-dot">
                                     <span class="visually-hidden">New alerts</span>
                                 </span>
                             </button>
@@ -68,18 +68,18 @@
                                 <div class="d-none" id="contact-noti">
                                     <a href="{{route('admin#customerReportList')}}" class="dropdown-item" id="contact-info"></a>
                                 </div>
-
                             </div>
                         </li>
-                        <li class="nav-item dropdown ms-3 mt-1">
-                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-3 fs-5 text-info">
-                                <i class="fa-regular fa-user"></i>
-                            </a>
+                        <li class="nav-item dropdown">
+                             <button class="btn dropdown-toggle border-0 d-flex align-items-center text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user"></i>
+                                <span class="ms-2">{{ Auth::user()->name }}</span>
+                            </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a href="{{route('admin#profile')}}" class="dropdown-item">Profile</a>
+                                <a href="{{route('admin#profile')}}" class="dropdown-item mb-1">Profile</a>
                                 <form action="{{route('logout')}}" method="post">
                                     @csrf
-                                    <input type="submit" class="btn btn-danger dropdown-item" value="Logout">
+                                    <input type="submit" class="btn text-danger dropdown-item" value="Logout">
                                 </form>
                             </div>
                         </li>
@@ -88,42 +88,51 @@
             </nav>
 
             <!-- admin dashboard start  -->
-                <div class=" position-relative">
-                    <div class=" position-absolute top-0 end-0" id="order-alert">
+            <div class="position-relative">
+                <div class="position-absolute top-0 end-0 z-3" id="order-alert">
 
-                    </div>
-                    @if($errors->any())
-                        @foreach ($errors->all() as $error)
-                            <div class="alert alert-danger py-3 alert-dismissible fade show" role="alert">
-                                {{ $error }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endforeach
-                    @endif
-                    <div class="px-2">
-                        @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{session('success')}}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        @if (session('warning'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                {{session('warning')}}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        @if (session('danger'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{session('danger')}}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-                    </div>
-                    @yield('content')
                 </div>
+
+                <div class="container-fluid mt-3">
+                    <div class="px-2">
+                            <div class="row">
+                            <div class="col-lg-6 offset-lg-6">
+                                @if (session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 10pt;">
+                                        {{session('success')}}
+                                        <button type="button" class="btn-close border-none shadow-none btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                @endif
+
+                                @if (session('warning'))
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 10pt;">
+                                        {{session('warning')}}
+                                        <button type="button" class="btn-close border-none shadow-none btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                @endif
+
+                                @if (session('danger'))
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 10pt;">
+                                        {{session('danger')}}
+                                        <button type="button" class="btn-close border-none shadow-none btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                @endif
+
+                                @if($errors->any())
+                                    @foreach ($errors->all() as $error)
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 10pt;">
+                                            {{ $error }}
+                                            <button type="button" class="btn-close border-none shadow-none btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @yield('content')
+            </div>
             <!-- admin dashboard end -->
         </div>
     </section>

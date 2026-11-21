@@ -152,7 +152,7 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
 
     <!-- js  -->
-    {{-- <script>
+    <script>
         $(document).ready(function(){
             $.ajax({
                 type:'get',
@@ -168,7 +168,7 @@
                 }
             })
         })
-    </script> --}}
+    </script>
 
     <script type="importmap">
         {

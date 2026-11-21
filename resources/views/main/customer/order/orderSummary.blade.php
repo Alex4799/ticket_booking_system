@@ -6,7 +6,7 @@
 @endphp
 
 <section class="container-lg">
-    <div class="p-2">
+    <div class="py-2">
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" style="font-size: 10pt;" role="alert">
                 {!!session('success')!!}
@@ -50,7 +50,7 @@
                     </div>
                     <div class="">
                         <div class="mb-4">
-                            <img src="{{Storage::url('poster/'.$order->poster)}}" class="d-block rounded w-100" alt="">
+                            <img src="{{Storage::url('poster/'.$order->poster)}}" class="d-block rounded" alt="image">
                             <h5 class="fw-bold text-center mt-3">{{$order->movie_name}}</h5>
                         </div>
                         <div class="border-dotted">
@@ -88,7 +88,7 @@
                                     </div>
                                     <div class="col-sm-6 ps-sm-5 mb-2">
                                         <label>Time</label>
-                                        <h6 class="mt-1">{{Carbon::parse($order->start_time)->format('h:i:A')}}</h6>
+                                        <h6 class="mt-1">{{Carbon::parse($order->start_time)->format('h:i A')}}</h6>
                                     </div>
                                 </div>
                                 <div class="mt-2">
@@ -111,7 +111,7 @@
                                                     <tr>
                                                         <td>{{$item->seat_name??''}}</td>
                                                         <td>{{$item->seat_plan??''}}</td>
-                                                        <td>{{$item->seat_price}} MMK</td>
+                                                        <td class="text-end">{{number_format($item->seat_price)}}</td>
                                                     </tr>
                                                 @endforeach
                                                 @if ($order->promotion_id!=null)
@@ -120,13 +120,13 @@
                                                         @if ($order->amount==null)
                                                             <td class="text-end">- {{$order->percentage}} %</td>
                                                         @else
-                                                            <td class="text-end">- {{$order->amount}}</td>
+                                                            <td class="text-end">- {{number_format($order->amount)}}</td>
                                                         @endif
                                                     </tr>
                                                 @endif
                                                 <tr class="table-active">
                                                     <td colspan="2">Total</td>
-                                                    <td class="text-end">{{$order->total_price}}</td>
+                                                    <td class="text-end fw-bold">{{number_format($order->total_price)}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -135,7 +135,7 @@
                                 <div class="row">
                                     <div class="col-sm-4 py-2">
                                         <label>Cost</label>
-                                        <h6 class="mt-1">{{$order->total_price}} Kyats</h6>
+                                        <h6 class="mt-1">{{number_format($order->total_price)}} Kyats</h6>
                                     </div>
                                     <div class="col-sm-8 py-2">
                                         <div class="d-flex align-items-center">
@@ -170,125 +170,112 @@
                                 @if ($order->status==4)
                                     @if ($order->online_buy==1)
                                         <div class="mt-4 d-flex justify-content-end">
-                                            <button class="btn btn-success" style="font-size: 11pt;" type="button" data-bs-toggle="modal" data-bs-target="#payment">Finish Payment</button>
+                                            <button class="btn btn-success" style="font-size: 11pt;" type="button" data-bs-toggle="modal" data-bs-target="#payment">
+                                                <i class="fa-solid fa-mobile-screen-button me-1"></i>
+                                                Finish Payment
+                                            </button>
                                         </div>
                                     @endif
                                     <div class="modal fade" id="payment" tabindex="-1" aria-labelledby="paymentLabel" aria-hidden="true">
                                         <div class="modal-dialog">
-                                        <div class="modal-content bg-nav-bar">
-                                            <div class="modal-header d-flex align-items-center justify-content-between">
-                                                <h1 class="modal-title fs-6" id="paymentLabel">Finish Payment</h1>
-                                                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-                                            </div>
-                                            <form action="{{route('customer#orderFinish')}}" method="post" class="p-3" enctype="multipart/form-data">
-                                                @csrf
-                                                @if ($website->payment_type)
-                                                    <div>
-                                                        <select name="payment_type" class="form-control">
-                                                            <option value="mmqr">MMQR ( Kpay , Wave Pay , AYA Pay , uabpay ,..... )</option>
-                                                            <option value="visa_master">Visa and Master Card</option>
-                                                            <option value="upi">UPI</option>
-                                                            <option value="mpu">MPU</option>
-                                                            <option value="uabpay">uabpay</option>
-                                                        </select>
-                                                    </div>
-                                                @else
-                                                    <div class="py-2">
-                                                        <label for="">Payment Method</label>
-                                                        <select name="payment_method" id="payment_method" class="form-control">
-                                                            <option value="">Choose Payment</option>
-                                                            @foreach ($payment as $item)
-                                                                @if ($item->id!=2)
-                                                                    <option value="{{$item->id}}" id="{{$item->id}}">{{$item->name}}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="" id="payment_container">
-                                                        @foreach ($payment as $item)
-                                                            <div class="d-none py-2 payment_info" id="{{$item->id}}info">
-                                                                <h6>Payment Info</h6>
-                                                                <div class="border border-black rounded p-2">
-                                                                    <h6 class="py-1">Name - {{$item->name}}</h6>
-                                                                    <h6 class="py-1">UserName - {{$item->username}}</h6>
-                                                                    <h6 class="py-1">Payment No - {{$item->number}}</h6>
-                                                                    @if ($item->image!=null)
-                                                                        <div class="d-flex justify-content-center py-2 align-items-center">
-                                                                            <img src="{{Storage::url('payment/'.$item->image)}}" class="w-50 img-thumbnail" alt="">
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-
-                                                    <div class="py-2 d-none" id="payment_slip">
-                                                        <label for="">Payment Slip</label>
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <img src="{{asset('image/default.jpg')}}" id="output" class="w-100 rounded img-thumbnail" alt="">
-                                                            </div>
-                                                            <div class="col-6 m-auto">
-                                                                <input type="file" class="form-control" name="slip" id="file" accept="image/*" onchange="loadFile(event);">
-                                                            </div>
+                                            <div class="modal-content bg-nav-bar">
+                                                <div class="modal-header d-flex align-items-center justify-content-between">
+                                                    <h1 class="modal-title fs-6" id="paymentLabel">Finish Payment</h1>
+                                                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                                                </div>
+                                                <form action="{{route('customer#orderFinish')}}" method="post" class="p-3" enctype="multipart/form-data">
+                                                    @csrf
+                                                    @if ($website->payment_type)
+                                                        <div>
+                                                            <label class="mb-1">Payment Method</label>
+                                                            <select name="payment_type" class="form-select">
+                                                                <option value="">Choose Payment</option>
+                                                                <option value="mmqr">MMQR ( Kpay , Wave Pay , AYA Pay , UAB Pay ,..... )</option>
+                                                                <option value="visa_master">Visa and Master Card</option>
+                                                                <option value="upi">UPI</option>
+                                                                <option value="mpu">MPU</option>
+                                                                <option value="uabpay">UAB Pay</option>
+                                                            </select>
                                                         </div>
-                                                    </div>
-                                                @endif
-                                                <div class="p-2">
-                                                    @if($errors->has('g-recaptcha-response'))
-                                                        <div class="alert alert-danger alert-dismissible fade show p-2 mb-4" style="font-size: 9pt;" role="alert">
-                                                            {{ $errors->first('g-recaptcha-response') }}
+                                                    @else
+                                                        <div id="finish-payment-select">
+                                                            <div>
+                                                                <label class="mb-2">Payment Method</label>
+                                                                <select name="payment_method" id="payment_method" class="form-select">
+                                                                    <option value="">Choose Payment</option>
+                                                                    @foreach ($payment as $item)
+                                                                        @if ($item->id!=2)
+                                                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="payment-details mt-2 mb-5" id="payment_container">
+                                                                @foreach  ($payment as $item)
+                                                                    <div class="payment_info d-none" id="{{$item->id}}info">
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-md-6">
+                                                                                <div class="info-item">
+                                                                                    <label>Payment Type</label>
+                                                                                    <h6>{{$item->name}}</h6>
+                                                                                </div>
+                                                                                <div class="info-item">
+                                                                                    <label>Phone Number</label>
+                                                                                    <h6>{{$item->number}}</h6>
+                                                                                </div>
+                                                                                <div class="info-item">
+                                                                                    <label>Account Name</label>
+                                                                                    <h6>{{$item->username}}</h6>
+                                                                                </div>
+                                                                            </div>
+                                                                            @if($item->image!=null)
+                                                                                <div class="col-md-6 text-center">
+                                                                                    <img src="{{Storage::url('payment/'.$item->image)}}" class="payment-qr">
+                                                                                </div>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
                                                         </div>
                                                     @endif
 
-                                                    {!! NoCaptcha::renderJs() !!}
-
-                                                    <div class="custom-recaptcha-wrapper">
-                                                        {!! NoCaptcha::display() !!}
+                                                    <div class="d-none" id="payment_slip">
+                                                        <label for="" >Payment Slip <br> (ငွေပေးချေမှု အတည်ပြုနိုင်ရန် ငွေလွှဲပြေစာပုံကို ဤနေရာတွင် တင်ပေးပါ။)</label>
+                                                        <div id="payment-picture">
+                                                            <div class="w-100">
+                                                                <img src="{{asset('image/placeholder.webp')}}" id="output" alt="image">
+                                                            </div>
+                                                            <label for="file">
+                                                                <span><i class="fa-solid fa-cloud-arrow-up me-1"></i></span>
+                                                                <span>Upload Image</span>
+                                                            </label>
+                                                            <input type="file" name="slip" id="file" accept="image/*" onchange="loadFile(event);">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <input type="hidden" name="id" value="{{$order->id}}">
 
-                                                <div class="py-2 mb-1">
-                                                    <button type="submit" class="btn w-100" id="ticket-btn">Pay</button>
+                                                    <div class="mt-5">
+                                                        {!! NoCaptcha::renderJs() !!}
+
+                                                        <div class="custom-recaptcha-wrapper">
+                                                            {!! NoCaptcha::display() !!}
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="id" value="{{$order->id}}">
+
+                                                    <div class="my-3">
+                                                        <button type="submit" class="btn w-100" id="ticket-btn">Pay</button>
+                                                    </div>
+                                                </form>
                                                 </div>
-                                            </form>
                                             </div>
-                                        </div>
                                         </div>
                                     </div>
                                 @endif
-                                <div class="d-none justify-content-center mt-5 text-center" id="verifyLoading">
-                                    <div id="loading-content">
-                                        <div class="spinner-border text-warning" role="status">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <p class="mt-2 text-white" style="font-size: 9pt;">Please Wait</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div id="OTP" class="mx-1 mb-3 d-none">
-                <h5>Verify Contact Info</h5>
-                <div class="d-none justify-content-center mt-3 text-center" id="cancelLoading">
-                    <div id="loading-content">
-                        <div class="spinner-border text-warning" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2 text-white" style="font-size: 8pt;">Please Wait</p>
-                    </div>
-                </div>
-                <div  id="otp_alert" class="px-3"></div>
-                <div class="otp-form mt-3">
-                    <label for="username">OTP*</label>
-                    <input type="text" class="form-control" id="otp_input" placeholder="Enter OTP number">
-                </div>
-                <div class="mt-4 pe-4 d-flex justify-content-end">
-                    <button class="btn btn-danger" type="button" id="order">Cancel</button>
                 </div>
             </div>
         </div>
@@ -298,7 +285,7 @@
                 <button class="btn py-2" style="font-size: 10pt;"><i class="fa-solid fa-house me-1"></i>Return Home</button>
             </a>
             <span class="mx-3 mb-2">  > </span>
-            <a href="#">
+            <a href="{{route('customer#checkOrderPage')}}">
                 <button class="btn py-2" style="font-size: 10pt;"><i class="fa-solid fa-ticket me-1"></i>Ticket Status Check</button>
             </a>
         </div>
@@ -307,22 +294,34 @@
 
 @endsection
 @section('script')
-@if ($order->status==4 && $website->payment_type==0)
-<script>
-    $(document).ready(function(){
-        $('#payment_method').change(function(){
-            console.log('test');
+    @if ($order->status==4 && $website->payment_type==0)
+        <script>
+            $(document).ready(function(){
+               $('#payment_method').change(function(){
+                    let id = $(this).val();
+                    $('.payment_info').addClass('d-none');
+                    $('#payment_slip').addClass('d-none');
 
-            $id=$(this).val();
-            $('.payment_info').addClass('d-none');
-            $(`#${$id}info`).removeClass('d-none');
-            $('#payment_slip').removeClass('d-none');
+                    if(id != ''){
+                        $(`#${id}info`).removeClass('d-none');
+                        $('#payment_slip').removeClass('d-none');
+                    }
+                });
+            })
+        </script>
+    @endif
+
+    <script>
+        $('#download-screenshot').click(function () {;
+            const element = document.getElementById('capture-area');
+            html2canvas(element).then(function (canvas) {
+                const dataURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'orderscreenshot.png';
+                link.click();
+            });
         });
-    })
-</script>
-@endif
-<script>
-    $('#download-screenshot').click(function () {;
         const element = document.getElementById('capture-area');
         html2canvas(element).then(function (canvas) {
             const dataURL = canvas.toDataURL('image/png');
@@ -331,14 +330,5 @@
             link.download = 'orderscreenshot.png';
             link.click();
         });
-    });
-    const element = document.getElementById('capture-area');
-    html2canvas(element).then(function (canvas) {
-        const dataURL = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataURL;
-        link.download = 'orderscreenshot.png';
-        link.click();
-    });
-</script>
+    </script>
 @endsection

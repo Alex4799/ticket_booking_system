@@ -78,7 +78,7 @@
                                         </a>
                                     </div>
                                     <div class="col-lg-8 col-md-8 col-sm-7">
-                                        <a href="#">
+                                        <a href="{{route('customer#movieView',$item->id)}}">
                                             <h4>{{$item->name}}</h4>
                                         </a>
                                         <span>{{ TimeHelper::convertMinutesToHoursMinutes($item->run_time) }}</span>
@@ -90,7 +90,7 @@
                                         <strong>Release Date :</strong><label class="ms-2">{{Carbon::parse($item->release_date)->format('l, F j, Y')}}</label>
                                         <hr>
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <a href="#">
+                                            <a href="{{route('customer#movieBook',$item->id)}}">
                                                 <button class="btn" id="ticket-btn">
                                                     <span><i class="fa-solid fa-ticket"></i></span>
                                                     <label>Book Ticket</label>
@@ -162,15 +162,11 @@
 @section('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get all modal elements
             const modals = document.querySelectorAll('.modal');
-
-            // Loop through each modal to add event listeners
             modals.forEach(function(modal) {
                 const video = modal.querySelector('iframe');
-
                 modal.addEventListener('hidden.bs.modal', function () {
-                    video.src = video.src; // Clear the src to stop the video
+                    video.src = video.src;
                 });
             });
         });

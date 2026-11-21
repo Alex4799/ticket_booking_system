@@ -12,7 +12,7 @@
                 @if (!empty($movie->cover[0]))
                     <img src="{{Storage::url('cover/'.$movie->cover[0])}}" alt="">
                 @else
-                    <img src="{{asset('image/default.png')}}" alt="">
+                    <img src="{{asset('image/placeholder.webp')}}" alt="">
                 @endif
                 <span></span>
             </div>
@@ -82,16 +82,23 @@
         </div>
         <div id="more-cover-poster">
             <h4>Photos</h4>
-            <div class="swiper mySwiper5 mt-4">
-                <div class="swiper-wrapper">
-                    @foreach ($movie->cover as $item)
-                        <div class="swiper-slide">
-                            <img src="{{Storage::url('cover/'.$item)}}" alt="">
-                        </div>
-                    @endforeach
+            @if ($movie->cover!=null && count($movie->cover) != 0)
+                <div class="swiper mySwiper5 mt-4">
+                    <div class="swiper-wrapper">
+                        @foreach ($movie->cover as $item)
+                            <div class="swiper-slide">
+                                <img src="{{Storage::url('cover/'.$item)}}" alt="">
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-pagination"></div>
-            </div>
+            @else
+                <div class="py-5 px-3 mt-3">
+                    <h6 class="text-center text-secondary" style="font-size: 10pt;">No photo available at the moment.</h6>
+                </div>
+            @endif
+
         </div>
         <div id="movie-cast">
             <h4>Movie Cast</h4>
